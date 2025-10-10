@@ -484,6 +484,14 @@ class ack_filter(django_filters.FilterSet):
                 'id' : 'station'
             })
     )
+    builty__onaccount = django_filters.ModelChoiceFilter(
+        queryset=onaccount.objects.all(),
+        widget=forms.Select(
+            attrs={
+                'class' : 'form-control sele',
+                'id' : 'onaccount'
+            })
+    )
     builty__petrol_pump = django_filters.ModelChoiceFilter(
         queryset=petrol_pump.objects.all(),
         widget=forms.Select(
@@ -546,6 +554,7 @@ class ack_filter(django_filters.FilterSet):
             'builty__user',
             'builty__article',
             'builty__truck_details',
+            'builty__onaccount',
             'select_all_except_one',
             'builty__truck_owner',
             'builty__station_from',

@@ -241,9 +241,9 @@
       <div class="form-group" style="display: flex;
         gap: 14px;">
 
-        {% comment %} <label for="name" class="control-label mb-1" style="margin-left : 0px;">Builty No</label>
+        <label for="name" class="control-label mb-1" style="margin-left : 0px;">Builty No</label>
                 {{ builty_filter.form.builty_no }}
-                     {% endcomment %}
+                    
                 
         <label for="name" class="control-label mb-1" style="margin-left : 0px;">Station From</label>
           {{ builty_filter.form.station_from }}
@@ -261,7 +261,9 @@
             
           </select><input id="select_all_truck_details" type="checkbox" >
                         
-              
+                <label for="name" class="control-label mb-1">Builty Date To</label>
+        {{ builty_filter.form.onaccount }}
+
       </div>
 
       <div class="form-group" style="display: flex;
@@ -291,9 +293,6 @@
 
             {% endfor %}
           
-              <label for="name" class="control-label mb-1 la">Onaccount</label>
-                {{ builty_filter.form.builty__onaccount }}
-
             
         </select><input id="select_all_truck_details" type="checkbox" >
 
