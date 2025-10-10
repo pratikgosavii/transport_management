@@ -199,10 +199,10 @@
 
       <div class="form-group" style="display: flex;gap: 14px;">
 
-        <label for="name" class="control-label mb-1" style="margin-left : 0px;">Builty No</label>
+        {% comment %} <label for="name" class="control-label mb-1" style="margin-left : 0px;">Builty No</label>
                 {{ builty_filter.form.builty__builty_no }}
                     
-                
+                 {% endcomment %}
         <label for="name" class="control-label mb-1" style="margin-left : 0px;">Station From</label>
                 {{ builty_filter.form.builty__station_from }}
                     
@@ -240,7 +240,7 @@
 
           <label for="name" class="control-label mb-1 la">Onaccount</label>
         {{ builty_filter.form.onaccount }}
-        
+
         
         <label for="name" class="control-label mb-1" style="margin-left : 0px;">Truck Owner</label>
         <select class="sele" name="truck_owner" id="truck_owner" multiple="multiple">
