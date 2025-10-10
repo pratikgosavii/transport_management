@@ -154,6 +154,106 @@
             height: 38px;
           }
           
+
+
+          /* === Select2 Multi-select Checkbox Style === */
+
+.select2-container {
+  width: 100% !important;
+}
+
+.select2-container .select2-selection--multiple {
+  min-height: 40px !important;
+  border-radius: 6px !important;
+  border: 1px solid #ccc !important;
+  padding: 4px 8px !important;
+  cursor: pointer;
+}
+
+/* Placeholder and text styling */
+.select2-selection__rendered {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 4px;
+  align-items: center;
+}
+
+.select2-selection__choice {
+  background-color: #007bff !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 4px !important;
+  padding: 2px 8px !important;
+  font-size: 13px !important;
+}
+
+/* Dropdown container */
+.select2-container--open .select2-dropdown--below {
+  width: auto !important;
+  min-width: 200px !important;
+  border-radius: 6px !important;
+  border: 1px solid #ddd !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Checkbox look before option text */
+.select2-results__option::before {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  border: 2px solid #ccc;
+  border-radius: 3px;
+  background: #fff;
+  vertical-align: middle;
+}
+
+/* Checked state */
+.select2-results__option[aria-selected="true"]::before {
+  content: "✔";
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+  font-size: 12px;
+  line-height: 14px;
+  text-align: center;
+}
+
+/* Hover effect */
+.select2-results__option--highlighted[aria-selected] {
+  background-color: #f2f8ff !important;
+  color: #000 !important;
+}
+
+/* Scrollable dropdown for long lists */
+.select2-results {
+  max-height: 250px !important;
+  overflow-y: auto !important;
+}
+
+/* Optional "Select All" checkbox alignment */
+.select-all-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.select-all-container input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Smooth transitions */
+.select2-results__option {
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+
+
     </style>
 
     
