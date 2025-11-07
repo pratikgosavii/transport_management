@@ -2,11 +2,7 @@
 
 <header id="header" class="header">
     <div class="top-left">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="./"><img src="{% static 'images/demo.png' %}" alt="Logo"></a>
-            <a class="navbar-brand hidden" href="./"><img src="{% static 'images/logo2.png' %}" alt="Logo"></a>
-            <a id="menuToggle" class="menutoggle"><i class="fa fa-bars"></i></a>
-        </div>
+       
     </div>
     <div class="top-right">
         <div class="header-menu">
@@ -36,10 +32,7 @@
                     <img class="user-avatar rounded-circle" src="{% static 'images/admin.jpg' %}" alt="User Avatar">
                 </a>
 
-                <div class="user-menu dropdown-menu">
-
-                    <a class="nav-link" href="{% url 'logout' %}"><i class="fa fa-power -off"></i>Logout</a>
-                </div>
+              
             </div>
 
            <a href="{% url 'add_close_balance' %}"> <button style="margin: 8px 0px 8px 22px;" class="btn btn-info"> Close Balance </button> </a>
