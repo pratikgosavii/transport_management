@@ -22,9 +22,9 @@ def numOfDays(date1):
     dt1 = date1.split('T')
 
     dt1 = dt1[0]
-    
+
     dt1 = dt1.split('-')
-    
+
 
     year = int(dt1[0])
     month = int(dt1[1])
@@ -47,7 +47,7 @@ from expenses.models import *
 @user_is_active
 def add_transaction(request):
 
-    
+
 
     if request.method == 'POST':
 
@@ -71,14 +71,14 @@ def add_transaction(request):
         year_1 = financial_year[0]
         year_2 = financial_year[1]
 
-            
+
         # Assuming 'financial_year' is in the format 'YYYY-YYYY'
         start_date = datetime(int(year_1), 4, 1)  # April 1st of year_1
         end_date = datetime(int(year_2), 3, 31)     # March 31st of year_2
 
         consignor_builty_count = builty.objects.filter(
-            consignor=consignor_instance, 
-            DC_date__gte=start_date, 
+            consignor=consignor_instance,
+            DC_date__gte=start_date,
             DC_date__lte=end_date
         ).count()
 
@@ -90,11 +90,11 @@ def add_transaction(request):
             user_instance = User.objects.get(id = user_id)
 
             updated_request.update({'DC_date': date_time, 'builty_no' : builty_code, 'company' : user_instance.company})
-        
+
         else:
 
             updated_request.update({'DC_date': date_time, 'builty_no' : builty_code, 'company' : request.user.company, 'user' : request.user})
-       
+
         forms = builty_Form(request.user, updated_request)
         if forms.is_valid():
 
@@ -151,7 +151,7 @@ def add_transaction(request):
                 article_data = article.objects.filter(company_name = request.user.company, office_location = request.user.office_location)
                 consignor_data = consignor.objects.filter(company = request.user.company, office_location = request.user.office_location)
                 onaccount_data = onaccount.objects.filter(company = request.user.company, office_location = request.user.office_location)
-            
+
             data = builty.objects.filter(user = request.user, deleted = False, DC_date = date.today()).order_by('-id')
 
             context = {
@@ -174,7 +174,7 @@ def add_transaction(request):
             return render(request, 'transactions/add_builty.html', context)
 
 
-        
+
 
     else:
 
@@ -192,13 +192,39 @@ def add_transaction(request):
         form_article = article_Form(user = request.user)
 
         total_mt_today = 0
+        total_godown_mt_today = 0
+        total_railhead_mt_today = 0
+        total_mt_today = 0
         total_freight = 0
         total_advance = 0
         total_balance = 0
-        
+
         data = builty.objects.filter(user = request.user, deleted = False, DC_date = date.today()).order_by('-id')
-        
+
         for i in data:
+
+            if request.user.office_location.id == 1:
+
+                if i.station_from.id == 1:
+
+                    total_railhead_mt_today  = total_railhead_mt_today + i.mt
+
+                elif i.station_from.id == 20:
+
+                     total_godown_mt_today = total_godown_mt_today + i.mt
+
+            elif request.user.office_location.id == 2:
+
+                if i.station_from.id == 48:
+
+                    total_railhead_mt_today  = total_railhead_mt_today + i.mt
+
+                elif i.station_from.id == 55:
+
+                     total_godown_mt_today = total_godown_mt_today + i.mt
+
+
+
             total_mt_today = total_mt_today + i.mt
             total_freight = total_freight + i.freight
             total_advance = total_advance + i.less_advance
@@ -232,6 +258,8 @@ def add_transaction(request):
             'consignor_data' : consignor_data,
             'onaccount_data' : onaccount_data,
             'total_mt_today' : total_mt_today,
+            'total_railhead_mt_today' : total_railhead_mt_today,
+            'total_godown_mt_today' : total_godown_mt_today,
             'total_balance' : total_balance,
             'total_advance' : total_advance,
             'total_freight' : total_freight,
@@ -240,7 +268,7 @@ def add_transaction(request):
         return render(request, 'transactions/add_builty.html', context)
 
 
-    
+
 import copy
 
 @user_is_active
@@ -260,7 +288,7 @@ def update_builty(request, bulity_id):
             date_time = numOfDays(DC_date)
         else:
             date_time = datetime.now(IST)
-       
+
         updated_request = request.POST.copy()
 
         if request.user.is_superuser:
@@ -269,11 +297,11 @@ def update_builty(request, bulity_id):
             user_instance = User.objects.get(id = user_id)
 
             updated_request.update({'DC_date': date_time, 'company' : user_instance.company, 'editable' : False})
-        
+
         else:
 
             updated_request.update({'DC_date': date_time, 'company' : request.user.company, 'user' : request.user, 'editable' : False})
-       
+
         forms = builty_Form(request.user, updated_request, instance = instance)
         if forms.is_valid():
 
@@ -291,11 +319,11 @@ def update_builty(request, bulity_id):
             try:
 
                 diesel_expense_instance = diesel_expense.objects.get(builty = forms.instance)
-                diesel_expense_instance.liter = diesel_liter 
+                diesel_expense_instance.liter = diesel_liter
                 diesel_expense_instance.amount = diesel_amount
                 diesel_expense_instance.save()
 
-            
+
             except diesel_expense.DoesNotExist:
 
                 pass
@@ -305,9 +333,9 @@ def update_builty(request, bulity_id):
 
                 builty_expense_advance_instance = builty_expense.objects.get(builty = forms.instance, is_advance = True)
 
-               
-        
-                
+
+
+
                 builty_expense_advance_instance_copy = copy.copy(builty_expense_advance_instance.amount)
                 builty_expense_advance_instance.amount = less_advance_amount
                 builty_expense_advance_instance.save()
@@ -319,8 +347,8 @@ def update_builty(request, bulity_id):
                 user_instance = request.user
                 user_instance.balance = user_instance.balance - float(less_advance_amount)
                 user_instance.save()
-                
-               
+
+
             except builty_expense.DoesNotExist:
 
                 print('not here')
@@ -343,7 +371,7 @@ def update_builty(request, bulity_id):
             except builty_expense.DoesNotExist:
 
                 pass
-            
+
 
 
             return redirect('list_transaction')
@@ -374,14 +402,14 @@ def update_builty(request, bulity_id):
 
             }
 
-            
+
             return render(request, 'transactions/update_builty.html', context)
 
 
     else:
 
         forms = builty_Form(request.user, instance = instance)
-        
+
         company_data = company.objects.all()
 
         if request.user.is_superuser:
@@ -395,7 +423,7 @@ def update_builty(request, bulity_id):
             article_data = article.objects.filter(company_name = request.user.company, office_location = request.user.office_location)
             consignor_data = consignor.objects.filter(company = request.user.company, office_location = request.user.office_location)
             onaccount_data = onaccount.objects.filter(company = request.user.company, office_location = request.user.office_location)
-        
+
         from_truck_details = truck_details_Form()
         form_truck_owner = truck_owner_Form()
         form_station= station_Form(user = request.user)
@@ -442,7 +470,7 @@ from django.db.models import Sum
 @user_is_active
 def list_transaction(request):
 
-  
+
     if request.user.is_superuser:
 
         queryset_data = builty.objects.filter(deleted = False).order_by('-id')
@@ -475,14 +503,14 @@ def list_transaction(request):
         data = paginator.page(1)
     except EmptyPage:
         data = paginator.page(paginator.num_pages)
-   
-   
 
-    
+
+
+
 
     has_filter = any(field in request.GET for field in set(builty_filters.get_fields()))
 
-    
+
     context = {
         'data' : data,
         'builty_filter' : builty_filters,
@@ -511,7 +539,7 @@ def add_request_edit(request, bulity_id):
 
         messages.error(request, 'Edit request already in pending')
         return redirect('request_list')
-        
+
 
 
     else:
@@ -537,7 +565,7 @@ def admin_list_request_edit(request):
     data = request_edit.objects.all()
 
     filtered_data = request_edit_filter(request.GET, queryset=data)
-    
+
     data = filtered_data.qs
 
     page = request.GET.get('page', 1)
@@ -564,7 +592,7 @@ def list_request_edit(request):
     data = request_edit.objects.filter(builty__user = request.user)
 
     filtered_data = request_edit_filter(request.GET, queryset=data)
-    
+
     data = filtered_data.qs
 
     page = request.GET.get('page', 1)
@@ -647,7 +675,7 @@ def copy_date(request):
 @user_is_active
 def add_subtrip(request):
 
-    builty_instance = builty.objects.get(id = request.POST.get('builty_id')) 
+    builty_instance = builty.objects.get(id = request.POST.get('builty_id'))
 
     updated_request = request.POST.copy()
     updated_request.update({'builty': builty_instance})
@@ -656,7 +684,7 @@ def add_subtrip(request):
 
 
     if form.is_valid():
-        
+
 
         form.save()
 
@@ -667,7 +695,7 @@ def add_subtrip(request):
 
         pass
 
-    
+
 
 
 @user_is_active
@@ -933,7 +961,7 @@ def add_ack(request):
 
 
     if form.is_valid():
-        
+
 
         form.save()
 
@@ -983,7 +1011,7 @@ def mass_approve_request(request):
         request_instance.status = True
         request_instance.save()
 
-        
+
     return JsonResponse({'status' : 'done'})
 
 
@@ -1011,7 +1039,7 @@ def demo(request):
         for similar_district in similar_district_list:
             print(f"- {similar_district.name}")
 
-            
+
 
 
 
@@ -1068,7 +1096,7 @@ def get_district(request):
     data = serializers.serialize('json', [instance])
 
     return JsonResponse({'data' : data})
-        
+
 
 @user_is_active
 def get_owner(request):
@@ -1079,13 +1107,13 @@ def get_owner(request):
 
     instance = truck_instance.truck_owner
 
-    
+
     data = serializers.serialize('json', [instance])
 
-   
+
 
     return JsonResponse({'data' : data})
-        
+
 
 
 @user_is_active
@@ -1099,11 +1127,11 @@ def get_taluka_district(request):
 
     data = serializers.serialize('json', [instance])
 
-    
-   
+
+
 
     return JsonResponse({'data' : data})
-        
+
 
 
 
@@ -1133,12 +1161,12 @@ def render_to_file(path: str, params: dict):
     template = get_template(path)
     html = template.render(params)
     file_path = os.path.join(BASE_DIR) + 'bill.pdf'
-    
+
     with open(file_path, 'wb') as pdf:
         pisa.pisaDocument(BytesIO(html.encode("UTF-8")), pdf)
         return file_path
 
-       
+
 def GeneratePdf(request, builty_id):
 
     data = builty.objects.get(id = builty_id)
@@ -1151,12 +1179,12 @@ def GeneratePdf(request, builty_id):
 
 
 
-    
+
     with open(file, 'rb') as fh:
-        
+
         return HttpResponse(fh, content_type='application/pdf')
 
-       
+
 def GeneratePdf_akola(request, builty_id):
 
     data = builty.objects.get(id = builty_id)
@@ -1169,9 +1197,9 @@ def GeneratePdf_akola(request, builty_id):
 
 
 
-    
+
     with open(file, 'rb') as fh:
-        
+
         return HttpResponse(fh, content_type='application/pdf')
 
 
@@ -1222,7 +1250,7 @@ import csv
 #     bui = request.GET.get("builty_no")
 
 #     builty_filters = builty_filter(request.user, request.GET, queryset=data)
-    
+
 #     data = builty_filters.qs
 
 #     print('------------------')
@@ -1287,14 +1315,14 @@ import csv
 #     total_balance = 0
 
 
-        
+
 #     vals.append([''])
 #     vals.append(['Dispatch REPORT'])
 #     vals.append([''])
 #     vals.append([''])
 
 
-    
+
 #     vals1.append("Sr No")
 #     vals1.append("Builty No")
 #     vals1.append("Builty Date")
@@ -1313,7 +1341,7 @@ import csv
 #     counteer = 1
 
 
-    
+
 #     for i in report_data:
 #         vals1 = []
 #         vals1.append(counteer)
@@ -1344,8 +1372,8 @@ import csv
 
 #     vals.append('')
 #     vals.append(['total', '','','','','','', '',total_mt,'', total_freight,total_advance, total_balance])
-        
-    
+
+
 #     name = "Report.csv"
 #     path = os.path.join(BASE_DIR, 'static', 'csv', name)
 
@@ -1360,7 +1388,7 @@ import csv
 #         response = HttpResponse(f.read(), content_type=mime_type)
 #         response['Content-Disposition'] = 'attachment;filename=' + name
 #         return response
-    
+
 #     voucher_report_url = reverse('voucher_report')
 
 
@@ -1368,7 +1396,7 @@ import csv
 def voucher_report(request):
 
 
-   
+
 
     if request.user.is_superuser:
         data = ack.objects.all().order_by('id')
@@ -1377,14 +1405,14 @@ def voucher_report(request):
 
 
     builty_filters = ack_filter(request.user, request.GET, queryset=data, request=request)
-  
+
 
     builty_filters_data1 = list(builty_filters.qs.values_list('builty__builty_no', 'builty__DC_date', 'builty__truck_details__truck_number', 'builty__truck_owner__owner_name', 'challan_number', 'challan_date', 'builty__station_to__name', 'builty__mt', 'builty__rate', 'builty__freight', 'builty__less_advance', 'builty__balance'))
     builty_filters_data = list(map(list, builty_filters_data1))
-    
+
 
     vals = []
-        
+
     vals1 = []
 
     total_mt = 0
@@ -1393,14 +1421,14 @@ def voucher_report(request):
     total_balance = 0
 
 
-        
+
     vals.append([''])
     vals.append(['VOUCHER REPORT'])
     vals.append([''])
     vals.append([''])
 
 
-    
+
     vals1.append("Sr No")
     vals1.append("Builty No")
     vals1.append("Builty Date")
@@ -1449,8 +1477,8 @@ def voucher_report(request):
 
     vals.append('')
     vals.append(['total', '','','','','','',total_mt,'', total_freight,total_advance, total_balance])
-        
-    
+
+
     name = "Report.csv"
     path = os.path.join(BASE_DIR, 'static', 'csv', name)
 
@@ -1477,18 +1505,18 @@ def voucher_report_list(request):
 
 
     builty_filters = ack_filter(request.user, request.GET, queryset=data, request=request)
-  
+
     data = builty_filters.qs
 
-    
+
     total_freight = 0
     total_advance = 0
     total_balance = 0
     total_mt = 0
 
-   
 
-    
+
+
     total_freight = data.aggregate(total_freight=Sum('builty__freight'))['total_freight'] or 0
     total_advance = data.aggregate(total_advance=Sum('builty__less_advance'))['total_advance'] or 0
     total_mt = data.aggregate(total_mt=Sum('builty__mt'))['total_mt'] or 0
@@ -1504,7 +1532,7 @@ def voucher_report_list(request):
         data = paginator.page(1)
     except EmptyPage:
         data = paginator.page(paginator.num_pages)
-   
+
 
     if total_balance:
         total_balance = round(total_balance, 2)
@@ -1561,10 +1589,10 @@ def truck_report(request):
         'date_from' : date_from,
         'date_to' : date_to
     }
-    
+
     file = render_to_file('transactions/dispatch_report_pdf.html', params)
     with open(file, 'rb') as fh:
-        
+
         return HttpResponse(fh, content_type='application/pdf')
 
 
@@ -1577,7 +1605,7 @@ def truck_report_excel(request):
         data = builty.objects.filter(user = request.user, deleted = False).order_by('id')
 
     builty_filters = builty_filter(request.user, request.GET, queryset=data, request=request)
-    
+
     data = builty_filters.qs
 
     truck_owner_va = request.GET.get("truck_owner")
@@ -1587,19 +1615,19 @@ def truck_report_excel(request):
 
         print(truck_owner_va)
         truck_owner_instance = truck_owner.objects.get(id = truck_owner_va)
-        
+
     date_from_va = request.GET.get("date_from")
     date_to_va = request.GET.get("date_to")
-    
+
     total_mt = data.aggregate(Sum('mt'))['mt__sum']
 
 
     builty_filters_data1 = list(builty_filters.qs.values_list('builty_no', 'DC_date', 'truck_details__truck_number', 'truck_owner__owner_name', 'have_ack__challan_number', 'have_ack__challan_date', 'station_to__name', 'mt', 'rate', 'freight', 'less_advance', 'balance'))
     builty_filters_data = list(map(list, builty_filters_data1))
-    
+
 
     vals = []
-        
+
     vals1 = []
 
     total_mt = 0
@@ -1608,7 +1636,7 @@ def truck_report_excel(request):
     total_balance = 0
 
 
-        
+
     vals1.append("")
     vals1.append("")
     vals1.append("")
@@ -1621,7 +1649,7 @@ def truck_report_excel(request):
 
     vals.append(vals1)
     vals1 = []
-        
+
     vals1.append("")
     vals1.append("")
     vals1.append("")
@@ -1631,7 +1659,7 @@ def truck_report_excel(request):
     vals1.append("**Sahani Goods Transport**")
     vals1.append("")
     vals1.append("")
-        
+
     vals.append(vals1)
     vals1 = []
 
@@ -1650,7 +1678,7 @@ def truck_report_excel(request):
     vals.append(vals1)
     vals1 = []
 
-        
+
     vals1.append("")
     vals1.append("")
     vals1.append("")
@@ -1669,7 +1697,7 @@ def truck_report_excel(request):
 
 
     vals.append(vals1)
-    
+
 
 
     vals1 = []
@@ -1715,7 +1743,7 @@ def truck_report_excel(request):
     vals1.append("")
     vals1.append("")
     vals1.append("")
-    temp = "Date:- " + str("date_to_va") 
+    temp = "Date:- " + str("date_to_va")
     vals1.append(temp)
     vals.append(vals1)
 
@@ -1748,7 +1776,7 @@ def truck_report_excel(request):
 
     vals1 = []
 
-    
+
     vals1.append("Sr No")
     vals1.append("Builty No")
     vals1.append("Builty Date")
@@ -1797,19 +1825,19 @@ def truck_report_excel(request):
 
     vals.append('')
     vals.append(['total', '','','','','','',total_mt,'', total_freight,total_advance, total_balance])
-        
-    
-    
+
+
+
     vals1 = []
 
-    
+
     vals1.append("")
     vals.append(vals1)
     vals.append(vals1)
-    
+
     vals1 = []
 
-    
+
     vals1.append("Payment Mode:- ")
     vals1.append("")
     vals1.append("")
@@ -1827,7 +1855,7 @@ def truck_report_excel(request):
 
     vals1 = []
 
-    
+
     vals1.append("Owner Bank:- ")
     vals1.append("")
     vals1.append("")
@@ -1842,17 +1870,17 @@ def truck_report_excel(request):
     vals1.append("")
     vals1.append("")
     vals.append(vals1)
-    
+
     vals1 = []
 
-    
+
     vals1.append("")
     vals.append(vals1)
     vals.append(vals1)
 
-    
+
     vals1 = []
-    
+
     vals1.append(temp_onwer1)
     vals1.append("")
     vals1.append("")
@@ -1866,12 +1894,12 @@ def truck_report_excel(request):
     vals1.append("")
     vals1.append("")
     vals1.append("For Sahani Goods & Transport, Akola")
-    
+
     vals.append(vals1)
 
 
     vals1 = []
-    
+
     vals1.append("(Signature)")
     vals1.append("")
     vals1.append("")
@@ -1885,7 +1913,7 @@ def truck_report_excel(request):
     vals1.append("")
     vals1.append("")
     vals1.append("(Signature)")
-    
+
     vals.append(vals1)
 
 
@@ -1917,16 +1945,16 @@ def truck_report_list(request):
 
 
     builty_filters = builty_filter(request.user, request.GET, queryset=data, request=request)
-  
+
     data = builty_filters.qs
 
-    
+
     total_freight = 0
     total_advance = 0
     total_balance = 0
     total_mt = 0
 
-   
+
 
     total_freight = data.aggregate(Sum('freight'))['freight__sum']
     total_advance = data.aggregate(Sum('less_advance'))['less_advance__sum']
@@ -1943,7 +1971,7 @@ def truck_report_list(request):
         data = paginator.page(1)
     except EmptyPage:
         data = paginator.page(paginator.num_pages)
-   
+
 
     if total_balance:
         total_balance = round(total_balance, 2)
@@ -1984,18 +2012,18 @@ def diesel_report(request):
     builty_filters = builty_filter(request.user, request.GET, queryset=data, request=request)
     builty_filters_data1 = list(builty_filters.qs.values_list('builty_no', 'DC_date', 'truck_details__truck_number', 'station_from__name', 'station_to__name', 'consignor__name', 'onaccount__name', 'diesel', 'petrol_pump__name'))
     builty_filters_data = list(map(list, builty_filters_data1))
-    
+
 
     vals = []
-        
+
     vals1 = []
 
-    
+
     vals.append([''])
     vals.append(['DIESEL REPORT'])
     vals.append([''])
     vals.append([''])
-    
+
     vals1.append("Sr No")
     vals1.append("Builty No")
     vals1.append("Date")
@@ -2030,7 +2058,7 @@ def diesel_report(request):
     name = "Diesel_Report.csv"
     path = os.path.join(BASE_DIR) + '\static\csv\\' + name
 
-    
+
     with open(path,  'w', newline="") as f:
         writer = csv.writer(f)
         writer.writerows(vals)
@@ -2050,7 +2078,7 @@ def diesel_report(request):
     link = os.path.join(BASE_DIR) + '\static\csv\\' + name
 
 
-    
+
     page = request.GET.get('page', 1)
     paginator = Paginator(data, 20)
 
@@ -2060,7 +2088,7 @@ def diesel_report(request):
         data = paginator.page(1)
     except EmptyPage:
         data = paginator.page(paginator.num_pages)
-   
+
 
 
     context = {
@@ -2083,11 +2111,11 @@ def diesel_report_list(request):
 
 
     builty_filters = builty_filter(request.user, request.GET, queryset=data, request=request)
-    
+
     data = builty_filters.qs
-    
+
     total_diesel = 0
-    
+
     for i in data:
         total_diesel = total_diesel + i.diesel
 
@@ -2102,7 +2130,7 @@ def diesel_report_list(request):
         data = paginator.page(1)
     except EmptyPage:
         data = paginator.page(paginator.num_pages)
-   
+
 
 
     context = {
@@ -2133,10 +2161,10 @@ def porch_report(request):
     builty_filters = builty_filter(request.user, request.GET, queryset=data, request=request)
     builty_filters_data1 = list(builty_filters.qs.values_list('builty_no', 'DC_date', 'have_ack__challan_number', 'have_ack__challan_date', 'truck_details__truck_number', 'station_to__name', 'mt', 'rate', 'freight', 'less_advance', 'balance'))
     builty_filters_data = list(map(list, builty_filters_data1))
-    
+
 
     vals = []
-        
+
     vals1 = []
 
     total_mt = 0
@@ -2145,14 +2173,14 @@ def porch_report(request):
     total_balance = 0
 
 
-        
+
     vals.append([''])
     vals.append(['PORCH REPORT'])
     vals.append([''])
     vals.append([''])
 
 
-    
+
     vals1.append("Sr No")
     vals1.append("Builty No")
     vals1.append("Builty Date")
@@ -2195,8 +2223,8 @@ def porch_report(request):
 
     vals.append('')
     vals.append(['total', '','','','','','',total_mt,'', total_freight,total_advance, total_balance])
-        
-    
+
+
     name = "Report.csv"
     path = os.path.join(BASE_DIR) + '\static\csv\\' + name
     with open(path,  'w', newline="") as f:
@@ -2208,7 +2236,7 @@ def porch_report(request):
 
 
     with open(path,  'r', newline="") as f:
-     
+
         mime_type  = mimetypes.guess_type(link)
 
         response = HttpResponse(f.read(), content_type=mime_type)
@@ -2229,12 +2257,12 @@ def porch_report_list(request):
         data = builty.objects.filter(~Q(have_ack__challan_number = None), user = request.user, deleted = False).order_by('-id')
 
     builty_filters = builty_filter(request.user, request.GET, queryset=data, request=request)
-    
+
     total_diesel = 0
 
     data = builty_filters.qs
 
-    
+
     total_freight = 0
     total_advance = 0
     total_balance = 0

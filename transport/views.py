@@ -26,15 +26,15 @@ from django.db.models import Sum
 @login_required(login_url='login')
 def dashboard(request):
 
-    financial_year = request.session.get('financial_year', '2023-2024')
+    financial_year = request.session.get('financial_year', '2025-2026')
 
     if request.user.is_superuser:
 
         builty_count = builty.objects.all().count()
-    
+
     else:
         builty_count = builty.objects.filter(user = request.user).count()
-    
+
     truck_count = truck_details.objects.all().count()
     user_count = User.objects.all().count()
     builty_data = None
@@ -51,7 +51,7 @@ def dashboard(request):
 
     if request.user.is_superuser:
         builty_data = builty.objects.all().order_by('-id')
-        
+
         # total1_freight = 0
         # total1_advance = 0
         # total1_balance = 0
@@ -75,7 +75,7 @@ def dashboard(request):
 
 
         builty_filters = builty_filter(request.user, request.GET, queryset=builty_data, request=request)
-        
+
         data = builty_filters.qs
 
 
@@ -84,17 +84,17 @@ def dashboard(request):
         total_balance = 0
         total_mt = 0
 
-        
 
-        
+
+
         total_freight = data.aggregate(Sum('freight'))['freight__sum']
         total_advance = data.aggregate(Sum('less_advance'))['less_advance__sum']
         total_mt = data.aggregate(Sum('mt'))['mt__sum']
         total_balance = data.filter(have_ack__isnull = True).aggregate(Sum('balance'))['balance__sum']
 
-        
 
-        
+
+
         page = request.GET.get('page', 1)
         paginator = Paginator(data, 20)
 
@@ -104,7 +104,7 @@ def dashboard(request):
             data = paginator.page(1)
         except EmptyPage:
             data = paginator.page(paginator.num_pages)
-    
+
 
         if total_balance:
             total_balance = round(total_balance, 2)
@@ -124,9 +124,9 @@ def dashboard(request):
         if total_mt:
             total1_mt = round(total_mt, 2)
 
-     
+
     context = {
-        
+
         'data': data,
         'financial_year': financial_year,
         'builty_filter' : builty_filters,

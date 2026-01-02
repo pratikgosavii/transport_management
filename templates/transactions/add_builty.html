@@ -15,7 +15,7 @@
         color: #FCC;
         padding: 3px;
       }
-      
+
       .three-dots:after {
         cursor: pointer;
         color: #444;
@@ -23,22 +23,22 @@
         font-size: 20px;
         padding: 0 5px;
       }
-      
+
       a {
         text-decoration: none;
         color: white;
       }
-      
+
       a div {
         padding: 2px;
       }
-     
-     
+
+
       .logged-in {
         color: orange;
         font-size: 21px;
       }
-      
+
 
 
 
@@ -56,7 +56,7 @@
         height : calc(1.9rem + 2px) !important;
     }
 
-   
+
 
     .cus{
         width:200px !important;
@@ -118,7 +118,7 @@
       .input-wrapper {
         position: relative;
       }
-      
+
       input {
         border: 1px solid gray;
         border-radius: 6px;
@@ -154,7 +154,7 @@
     }
 
 
-    
+
     .select2-container--default .select2-selection--single .select2-selection__rendered {
         color: #444;
         line-height: 52px;
@@ -178,7 +178,7 @@
         padding-left: 14px !important;
         height: 46px !important;
       }
-      
+
       label {
         position: absolute;
         top: 0.2ex;
@@ -186,7 +186,7 @@
         left: 2em;
         background-color: white;
         padding: 0 5px;
-       
+
       }
 
 
@@ -203,14 +203,14 @@
 <div>
 
     {{ form_error }}
-    
+
 
 </div>
 
 <div class="row">
     <div class="col-lg-12">
         <div class="card" style="padding-top:0px;">
-           
+
             <div class="card-body" style="padding-top:0px;">
                 <!-- Credit Card -->
                 <div id="pay-invoice">
@@ -225,7 +225,7 @@
                             {% csrf_token %}
 
                             <div class="col-12">
-                                
+
                                 {% if user.is_superuser %}
 
                             <h3 style="text-align: center;">  Add Builty <span style="color: #05386b;font-weight: 800;"> Admin </span> </h3>
@@ -243,53 +243,53 @@
                             <div class="col-12" style="display:flex;">
 
                                 <div class="col-6" style="border-right : 1px solid black">
-                                
+
                                 <table style="width:100%;">
 
                                     <tr>
 
                                         <td>
-                                            
+
                                                 <div class="input-wrapper" style="display:flex;">
                                                     <label for="first">Builty No</label>
-                                                    {{ form.builty_no }} 
+                                                    {{ form.builty_no }}
                                                   </div>
                                         </td>
-                                        
+
                                         {% if request.user.is_superuser %}
 
                                             <td>
-                                                
+
                                                 <div class="input-wrapper" style="display:flex;">
                                                     <label for="first">User</label>
                                                     {{ form.user }}
                                                 </div>
-                                            
+
                                             </td>
 
                                         {% endif %}
 
                                     </tr>
-                            
+
                                     <tr>
                                         <td>
-                                            
+
                                             <div class="input-wrapper" style="display:flex;">
                                                 <label for="first">Consignor</label>
                                                 <select name="consignor" class="sele" id="consignor" required="">
                                                     <option value="" selected="">---------</option>
-                                                    
+
                                                     {% for i in consignor_data %}
                                                         <option value="{{ i.id }}">{{ i.name }}</option>
                                                     {% endfor %}
 
                                                 </select> <input type="button" data-toggle="modal" data-target="#myModal" style="width: 36px; padding: 1px; margin: 10px 0px;width: 36px;padding: 1px; margin: 10px 0px;background: #05386b;color: white;font-weight: bolder;font-size: 23px;text-align: center;line-height: 3px;" value="+">
                                             </div>
-                                        
+
                                         </td>
-                                        
+
                                         <td>
-                                            
+
                                             <div class="input-wrapper" style="display:flex;">
                                                 <label for="first">Article</label>
                                                 <select name="article"  class="sele" id="article" required="">
@@ -298,20 +298,20 @@
                                                 {% for i in article_data %}
                                                     <option value="{{ i.id }}">{{ i.name }}</option>
                                                 {% endfor %}
-                                                
+
 
                                                 </select> <input type="button" data-toggle="modal" data-target="#myModal_article" style="width: 36px; padding: 1px; margin: 10px 0px;width: 36px;padding: 1px; margin: 10px 0px;background: #05386b;color: white;font-weight: bolder;font-size: 23px;text-align: center;line-height: 3px;" value="+">
                                             </div>
                                         </td>
                                     </tr>
-                                    
-                                   
-                        
-                                
+
+
+
+
                                     <tr>
 
                                         <td>
-                                            
+
                                                 <div class="input-wrapper" style="display:flex;">
                                                     <label for="first">Truck No</label>
                                                     {{ form.truck_details }} <input type="button" data-toggle="modal" data-target="#myModal_truck_details" style="width: 36px; padding: 1px; margin: 10px 0px;width: 36px;padding: 1px; margin: 10px 0px;background: #05386b;color: white;font-weight: bolder;font-size: 23px;text-align: center;line-height: 3px;" value="+">
@@ -319,34 +319,34 @@
                                         </td>
 
                                         <td>
-                                            
+
                                                 <div class="input-wrapper" style="display:flex;">
                                                     <label for="first">Truck Owner</label>
                                                     {{ form.truck_owner }} <input type="button" data-toggle="modal" data-target="#myModal_truck_owner" style="width: 36px; padding: 1px; margin: 10px 0px;width: 36px;padding: 1px; margin: 10px 0px;background: #05386b;color: white;font-weight: bolder;font-size: 23px;text-align: center;line-height: 3px;" value="+">
                                                   </div>
-                                            
+
                                         </td>
 
                                     </tr>
                                     <tr>
 
                                         <td>
-                                            
+
                                                 <div class="input-wrapper" style="display:flex;">
                                                     <label for="first">From Station</label>
                                                     {{ form.station_from }} <input type="button" data-toggle="modal" data-target="#myModal_from_station" style="width: 36px; padding: 1px; margin: 10px 0px;width: 36px;padding: 1px; margin: 10px 0px;background: #05386b;color: white;font-weight: bolder;font-size: 23px;text-align: center;line-height: 3px;" value="+">
                                                   </div>
-                                            
+
                                         </td>
                                         <td>
-                                            
+
                                                 <div class="input-wrapper" style="display:flex;">
                                                     <label for="first">To Desti</label>
-                                                    
+
                                                     {{ form.station_to }} <input type="button" data-toggle="modal" data-target="#myModal_station" style="width: 36px; padding: 1px; margin: 10px 0px;width: 36px;padding: 1px; margin: 10px 0px;background: #05386b;color: white;font-weight: bolder;font-size: 23px;text-align: center;line-height: 3px;" value="+">
 
                                                   </div>
-                                            
+
                                         </td>
 
 
@@ -362,59 +362,59 @@
                                               </div>
                                         </td>
                                         <td>
-                                            
+
                                                 <div class="input-wrapper" style="display:flex;">
                                                     <label for="first">District</label>
                                                     {{ form.district }} <input type="button" data-toggle="modal" data-target="#myModal_district"  style="width: 36px; padding: 1px; margin: 10px 0px;width: 36px;padding: 1px; margin: 10px 0px;background: #05386b;color: white;font-weight: bolder;font-size: 23px;text-align: center;line-height: 3px;" value="+">
                                                   </div>
-                                            
+
                                         </td>
 
 
                                     </tr>
-                                    
-                                    
+
+
 
                                     <tr>
                                         <td>
-                                            
+
                                                 <div class="input-wrapper" style="display:flex;">
                                                     <label for="first">Consignee</label>
                                                     {{ form.consignee }}
                                                   </div>
-                                            
+
                                         </td>
 
                                         <td>
-                                            
-                                           
+
+
                                             <div class="input-wrapper" style="display:flex;">
                                                 <label for="first">Onaccount</label>
                                                 <select name="onaccount" id="onaccount" class="sele" required="">
                                                     <option value="" selected="">---------</option>
 
-                                                    
+
                                                     {% for i in onaccount_data %}
                                                         <option value="{{ i.id }}">{{ i.name }}</option>
                                                     {% endfor %}
                                                 </select> <input type="button" data-toggle="modal" data-target="#myModal_onaccount" style="width: 36px; padding: 1px; margin: 10px 0px;width: 36px;padding: 1px; margin: 10px 0px;background: #05386b;color: white;font-weight: bolder;font-size: 23px;text-align: center;line-height: 3px;" value="+">
                                             </div>
-                                        
+
                                     </td>
                                     </tr>
 
                                     <tr>
-                                        
+
                                         <td>
-                                            
+
                                                 <div class="input-wrapper" style="display:flex;">
                                                     <label for="first">Date</label>
                                                     {{ form.DC_date }}
 
                                                   </div>
-                                            
-                                                
-                                            
+
+
+
                                         </td>
 
                                         <td>
@@ -425,20 +425,20 @@
 
                                               </div>
 
-                                              
+
                                         </td>
 
                                     </tr>
 
-                                  
-                                    
+
+
                                 </table>
 
                             </div>
 
                             <div class="col-6">
 
-                               
+
 
                                     <div class="col-6">
 
@@ -449,49 +449,49 @@
                                                 <label for="first">Qty (bags)</label>
                                                 {{ form.bags }}
                                               </div>
-                                                
+
                                               <div class="input-wrapper" style="display:flex;">
                                                 <label for="first">MT</label>
                                                 {{ form.mt }} {% if request.user.username == "deepak" %} <input type="checkbox" name="gender" style="width: 15px;" onclick="adjust_mt()" id="deepak" value="" /> {% endif %}
                                               </div>
 
                                         </div>
-                                      
+
                                         <div style="display: flex;
                                         column-gap: 7px;margin-bottom: 4px;">
 
-                                             
+
                                             <div class="input-wrapper" style="display:flex;">
                                                 <label for="first">Delivery No</label>
                                                 {{ form.delivery_no }}
                                               </div>
-                                        
+
                                             <div class="input-wrapper" style="display:flex;">
                                                 <label for="first">Note</label>
                                                 {{ form.note }}
                                               </div>
-                                        
+
                                         </div>
-                                        
+
                                         <div style="display: flex;
                                         column-gap: 7px;margin-bottom: 0px;margin-top: 14px;">
 
-                                             
+
                                             <div class="input-wrapper" style="display:flex;">
                                                 <label for="first">EX/For</label>
                                                 {{ form.ex_for }}
                                               </div>
-                                        
-                                        
-                                             
+
+
+
                                             <div class="input-wrapper" style="display:flex;">
                                                 <label for="first">Mode</label>
                                                 {{ form.mode }}
                                               </div>
-                                        
+
                                         </div>
-                                      
-                                
+
+
 
                                         <div>
 
@@ -500,8 +500,8 @@
 
                                                 <div style="display: flex;
                                                 column-gap: 7px;margin-bottom: 4px;">
-            
-                                                    
+
+
 
                                                       <div class="input-wrapper" style="display:flex;">
                                                         <label for="first">Rate</label>
@@ -512,12 +512,12 @@
                                                         <label for="first">Freight</label>
                                                         {{ form.freight }}
                                                       </div>
-                                                
+
                                                 </div>
 
                                                 <div style="display: flex;
                                                 column-gap: 7px;margin-bottom: 4px;">
-                
+
                                                     <div class="input-wrapper" style="display:flex;">
                                                         <label for="first"> Less Advance</label>
                                                         {{ form.less_advance }}
@@ -531,18 +531,18 @@
 
                                                 <div style="display: flex;
                                                 column-gap: 7px;margin-bottom: 4px;">
-        
+
                                                     <div class="input-wrapper" style="display:flex;">
                                                         <label for="first">Balance</label>
                                                         {{ form.balance }}
                                                       </div>
-                                                                
+
                                                     <div class="input-wrapper" style="display:flex;">
                                                         <label for="first">Diesel</label>
                                                         {{ form.diesel }}
                                                       </div>
 
-                                                   
+
                                                 </div>
                                         </fieldset>
 
@@ -554,11 +554,11 @@
                             </div>
 <br>
 
-                            
+
 
                             <div style="display: flex;
                             gap: 75px;justify-content: center;">
-                                
+
                                 <button id="myButton" type="submit" name="myButton" style="height: 44px;
                                 width: 300px;
                                 background: #05386b;
@@ -568,6 +568,12 @@
                                 font-size: 14px;">
                                     <span id="payment-button-amount">Create Builty</span>
                                 </button>
+
+                                <p style="color: black;
+                                font-weight: bold;"> GODOWN MT :- {{ total_godown_mt_today }} </p>
+
+                                <p style="color: black;
+                                font-weight: bold;"> R/H MT :- {{ total_railhead_mt_today }} </p>
 
                                 <p style="color: black;
                                 font-weight: bold;"> Total MT :- {{ total_mt_today }} </p>
@@ -584,7 +590,7 @@
                 <h4 class="box-title">Builty List </h4>
             </div>
 
-      
+
             <div class="card-body--">
                 <div class="table-stats order-table ov-h">
                     <table class="table ">
@@ -603,10 +609,10 @@
                                 <th>MT</th>
 
 
-                           
+
 
                                 <th>#</th>
-                                
+
                             </tr>
                         </thead>
                         <tbody>
@@ -626,8 +632,8 @@
 
                                 <td class="serial" style=""> {{ forloop.counter }}</td>
 
-                  
-                                
+
+
                                 <td>{{ i.builty_no }}</td>
                                 <td>{{ i.truck_details }}</td>
                                 <td>{{ i.station_from }}</td>
@@ -638,27 +644,27 @@
                                 <td>{{ i.article }}</td>
                                 <td>{{ i.less_advance }}</td>
                                 <td>{{ i.mt }}</td>
-                                
 
-                              
-                                
-                                <td style="display: flex; gap: 11px;height: 86px;">  
+
+
+
+                                <td style="display: flex; gap: 11px;height: 86px;">
 
                                   {% if request.user.office_location.name == "AKOLA" %}
-                                  
+
                                     <a href="{% url 'generate_bill_akola' i.id %}"><button style="background-color: #05386b; border: green; padding: 10px;border-radius: 12px;" type="button" class="btn-info ">
                                       <span id="payment-button-amount">Print</span>
                                     </button>  </a>
 
                                   {% else %}
-                                    
+
                                     <a href="{% url 'generate_bill' i.id %}"><button style="background-color: #05386b; border: green; padding: 10px;border-radius: 12px;" type="button" class="btn-info ">
                                         <span id="payment-button-amount">Print</span>
                                     </button>  </a>
 
                                   {% endif %}
 
-                                  
+
                                     <a href="{% url 'update_builty' i.id %}"><button style="background-color: #05386b; border: green; padding: 10px;border-radius: 12px;" type="button" class="btn-info ">
                                         <span id="payment-button-amount">View</span>
                                     </button>  </a>
@@ -666,13 +672,13 @@
                                     <a href="{% url 'delete_transaction' i.id %}"><button style="background-color: red; border: green; padding: 10px;border-radius: 12px;" type="button" class="btn-info ">
                                         <span id="payment-button-amount">Delete</span>
                                     </button>  </a>
-                                    
-                                   
+
+
 
 
                                 </td>
-                               
-                               
+
+
                             </tr>
                             {% endfor %}
                             {% else %}
@@ -693,17 +699,17 @@
                               color: black;;margin-left:30px;border : 1px solid grey;padding : 10px;">  Balance : {{ total_balance }} RS</p>
                             </div>
 
-                            
+
                           <div class="row" style="float: left; width : 100%">
 
 
                           <button style="background-color: #05386b; border: green; padding: 10px;border-radius: 12px;" class="btn-info" onclick="mass_edit_request();" > Submit </button>
-                      
+
                         </div>
                         </div>
                   </footer>
-                          
-    
+
+
 
 
 
@@ -732,27 +738,27 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                
+
                 <div class="modal-body">
 
                     <ul style="padding-left: 18px;color: red;" id="consignor_form_error">
-                        
+
                     </ul>
 
 
                     <form id="consignor_form">
-            
+
                         <input type="hidden" id="builty_id">
 
                         {% if user.is_superuser %}
-            
+
                         <div class="input-wrapper" style="display:flex;">
                             <label for="first"> Company Name</label>
-                        {{ form.company }} 
+                        {{ form.company }}
 
                         {% endif %}
 
-            
+
                         </div>
 
                         <div class="input-wrapper" style="display:flex;">
@@ -764,20 +770,20 @@
                             <label for="first">Consignor Name</label>
                             <input type="text"name="name" id="consignor_name" class="cus" required="">
                         </div>
-                        
+
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </form>
-  
+
                 </div>
             </div>
         </div>
     </div>
 
 <!-- ====================== consignor end ================================= -->
-  
+
 
 
 <!-- ====================== article ================================= -->
@@ -795,37 +801,37 @@
                 <div class="modal-body">
 
                     <ul style="padding-left: 18px;color: red;" id="article_form_error">
-                        
+
                     </ul>
 
 
                     <form id="article_form">
 
-                        
-                        {% if user.is_superuser %}
-            
-                       
 
-            
+                        {% if user.is_superuser %}
+
+
+
+
                         <div class="input-wrapper" style="display:flex;">
                             <label for="first">Company Name</label>
 
                             <select name="company_name" name="company_name" id="article_company" required="">
                                 <option value="" selected="">---------</option>
-                                
+
                                 {% for i in company_data %}
-    
+
                                 <option value="{{ i.id }}"> {{ i.company_name }} </option>
-    
+
                                 {% endfor %}
-                              
-                              
+
+
                               </select>
                         </div>
 
                         {% endif %}
 
-                                            
+
                         {% if user.is_superuser %}
 
                             <div class="input-wrapper" style="display:flex;">
@@ -833,7 +839,7 @@
                                 <select name="consignor" class="sele" id="article_consignor" required="">
                                     <option value="" selected="">---------</option>
                                 </select>
-                                    
+
                             </div>
 
                         {% else %}
@@ -842,7 +848,7 @@
                                 <label for="first">Consignor Name</label>
                                 <select name="consignor" class="sele" id="consignor_Sdsd" required="">
                                     <option value="" selected="">---------</option>
-                                    
+
                                     {% for i in consignor_data %}
                                         <option value="{{ i.id }}">{{ i.name }}</option>
                                     {% endfor %}
@@ -852,20 +858,20 @@
 
                         {% endif %}
 
-                        
+
 
                         <div class="input-wrapper" style="display:flex;">
                             <label for="first">Article Name</label>
                             <input type="text" name="name" id="article_name" class="cus" required="">
                         </div>
-                        
-                        
+
+
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </form>
-  
+
                 </div>
             </div>
         </div>
@@ -890,7 +896,7 @@
             <div class="modal-body">
 
                 <ul style="padding-left: 18px;color: red;" id="truck_details_form_error">
-                        
+
                 </ul>
 
                 <form id="truck_details_form">
@@ -899,7 +905,7 @@
                             <label for="first">Consignor Name</label>
                         {{ form_truck_details.company }}
                     </div>
-                   
+
                     <div class="input-wrapper" style="display:flex;">
                         <label for="first">Truck Number</label>
 
@@ -910,12 +916,12 @@
                         <label for="first">Truck Owner</label>
                         {{ form_truck_details.truck_owner }}
                     </div>
-                   
+
                     <div class="input-wrapper" style="display:flex;">
                         <label for="first">Insurance Number</label>
                         {{ form_truck_details.insurance_number }}
                     </div>
-                   
+
                     <div class="input-wrapper" style="display:flex;">
                         <label for="first">Permit Number</label>
                         {{ form_truck_details.permit_number }}
@@ -962,11 +968,11 @@
             <div class="modal-body">
 
                 <ul style="padding-left: 18px;color: red;" id="truc_owner_Form_error">
-                        
+
                 </ul>
 
                 <form id="truc_owner_Form">
-        
+
 
                     <div class="input-wrapper" style="display:flex;">
                         <label for="first">Owner Name</label>
@@ -1022,13 +1028,13 @@
             <div class="modal-body">
 
                 <ul style="padding-left: 18px;color: red;" id="station_Form_error">
-                        
+
                 </ul>
 
 
                 <form id="station_Form">
-        
-                     
+
+
 
                             <div class="input-wrapper" style="display:flex;">
                                 <label for="first">Taluka</label>
@@ -1041,7 +1047,7 @@
                             </div>
 
 
-                    
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Submit</button>
@@ -1065,14 +1071,14 @@
             <div class="modal-body">
 
                 <ul style="padding-left: 18px;color: red;" id="from_station_Form_error">
-                        
+
                 </ul>
 
 
                 <form id="from_station_Form">
-        
-                        
-                      
+
+
+
 
                             <div class="input-wrapper" style="display:flex;">
                                 <label for="first">Taluka</label>
@@ -1085,7 +1091,7 @@
                             </div>
 
 
-                    
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Submit</button>
@@ -1117,14 +1123,14 @@
 
 
                 <ul style="padding-left: 18px;color: red;" id="taluka_form_error">
-                        
+
                 </ul>
 
 
                 <form id="taluka_form">
-        
-                    
-                        
+
+
+
 
                     <div class="input-wrapper" style="display:flex;">
                         <label for="first"> District Name</label>
@@ -1135,8 +1141,8 @@
                         <label for="first"> Taluka Name </label>
                         {{ form_taluka.name }}
                     </div>
-                    
-                    
+
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Submit</button>
@@ -1169,13 +1175,13 @@
 
 
                 <ul style="padding-left: 18px;color: red;" id="district_form_error">
-                        
+
                 </ul>
 
-                
+
                 <form id="district_form">
-        
-                    
+
+
 
 
                             <div class="input-wrapper" style="display:flex;">
@@ -1183,8 +1189,8 @@
                                 {{ form_district.name }}
                             </div>
 
-                    
-                    
+
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Submit</button>
@@ -1212,13 +1218,13 @@
             <div class="modal-body">
 
                 <ul style="padding-left: 18px;color: red;" id="onaccount_Form_error">
-                        
+
                 </ul>
 
                 <form id="onaccount_Form">
-        
-                    
-                        
+
+
+
                     {% if user.is_superuser %}
 
                     <div class="input-wrapper" style="display:flex;">
@@ -1232,8 +1238,8 @@
                         <label for="first"> Onaccount Name </label>
                         {{ form_onaccount.name }}
                     </div>
-                    
-                    
+
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Submit</button>
@@ -1258,7 +1264,7 @@
 
     $("#article_company").change(function () {
 
-        const comapnyID = $(this).val();  // get the selected subject ID from the HTML dropdown list 
+        const comapnyID = $(this).val();  // get the selected subject ID from the HTML dropdown list
         $.ajax({                       // initialize an AJAX request
             type: "POST",
             url: "{% url 'get_consignor_ajax' %}",
@@ -1269,26 +1275,26 @@
             success: function (data) {   // `data` is from `get_topics_ajax` view function
                 let html_data = '<option value="" selected disabled>------------</option>';
                 data.forEach(function (data) {
-            
-                    html_data += `<option value="${data.id}" >${data.name}</option>` 
+
+                    html_data += `<option value="${data.id}" >${data.name}</option>`
                 });
                 $("#article_consignor").html(html_data); // replace the contents of the topic input with the data that came from the server
             }
         });
     });
 
-    
 
-    
-      
+
+
+
 
     $("#taluka").change(function () {
         talukaid = ($(this).val());
 
-        
 
 
-        $.ajax({   
+
+        $.ajax({
             cache: false,                    // initialize an AJAX request
             type: "POST",
             url: "{% url 'get_district' %}",
@@ -1299,16 +1305,16 @@
                     console.log('------------------------')
                     console.log(data)
 
-                    
+
                     var a = JSON.parse(data.data)
-                    
+
 
                     let_html = '<option value="' + a[0].pk + '" selected>' + a[0].fields.name + '</option>'
 
                     $('#district').html(let_html);
 
-                
-               
+
+
             }
 
         });
@@ -1317,14 +1323,14 @@
     });
 
 
-    
+
     $("#truck_details").change(function () {
         truckid = ($(this).val());
 
         $('#station_from').select2('open');
-            
 
-        $.ajax({   
+
+        $.ajax({
             cache: false,                    // initialize an AJAX request
             type: "POST",
             url: "{% url 'get_owner' %}",
@@ -1335,16 +1341,16 @@
                     console.log('------------------------')
                     console.log(data)
 
-                    
+
                     var a = JSON.parse(data.data)
-                    
+
 
                     let_html = '<option value="' + a[0].pk + '" selected>' + a[0].fields.owner_name + '</option>'
 
                     $('#truck_owner').append(let_html);
 
-                
-            
+
+
             }
 
         });
@@ -1356,7 +1362,7 @@
         stationid = ($(this).val());
 
 
-        $.ajax({   
+        $.ajax({
             cache: false,                    // initialize an AJAX request
             type: "POST",
             url: "{% url 'get_taluka_district' %}",
@@ -1367,9 +1373,9 @@
                     console.log('------------------------')
                     console.log(data)
 
-                    
+
                     var a = JSON.parse(data.data)
-                    
+
 
                     let_html = '<option value="' + a[0].pk + '" selected>' + a[0].fields.name + '</option>'
 
@@ -1381,7 +1387,7 @@
 
                     document.getElementById("consignee").focus();
 
-            
+
             }
 
         });
@@ -1391,14 +1397,14 @@
     });
 
 
-    
+
 
     $("#consignor").change(function () {
         consignorid = ($(this).val());
 
         $('#article').select2('open');
 
-        $.ajax({   
+        $.ajax({
             cache: false,                    // initialize an AJAX request
             type: "POST",
             url: "{% url 'get_buily_code' %}",
@@ -1409,16 +1415,16 @@
                     console.log('------------------------')
                     console.log(data)
 
-                    
+
                     var a = JSON.parse(data)
-                    
+
                     console.log(a)
 
-                 
+
 
                     document.getElementById('builty_no').value = a.builty_code;
 
-            
+
             }
 
         });
@@ -1427,16 +1433,16 @@
     });
 
 
-    
-   
+
+
     document.getElementById('consignor_form').addEventListener('submit', function(evt){
-        
+
         evt.preventDefault();
 
         var data = $('#consignor_form').serialize();
         console.log(data)
 
-        $.ajax({                       
+        $.ajax({
             type: "POST",
             url: "{% url 'add_consignor_ajax' %}",
             data : $(this).serialize(),
@@ -1445,18 +1451,18 @@
 
               if(data.status == 'True'){
                 $('#myModal').modal('hide');
-                
-              
+
+
 
                 let_html = '<option value="' + data.id + '" selected>' + data.value + '</option>'
 
                 $('#consignor').append(let_html);
 
 
-                
-                
+
+
               }
-              
+
               else{
 
 
@@ -1466,33 +1472,33 @@
 
                     $("#consignor_form_error").append( "<li> <strong>" + i + "</strong> &nbsp;&nbsp;" + val[0].message + "</li>"); //append results to element
                     })
-               
+
               }
             }
         });
     })
-   
+
     document.getElementById('article_form').addEventListener('submit', function(evt){
-        
+
         evt.preventDefault();
 
 
         var data = $('#article_form').serialize();
 
-        $.ajax({                       
+        $.ajax({
             type: "POST",
             url: "{% url 'add_article_ajax' %}",
             data : $(this).serialize(),
             success: function (data) {   // `data` is from `get_topics_ajax` view function
-                
+
                 var data = JSON.parse(data)
-                
+
               if(data.status == 'True'){
                 $('#myModal_article').modal('hide');
                 console.log(data)
-                
-              
-                    
+
+
+
                 console.log('----------------')
 
 
@@ -1500,10 +1506,10 @@
 
                 $('#article').append(let_html);
 
-                
-                
+
+
               }
-              
+
               else{
 
 
@@ -1513,19 +1519,19 @@
 
                     $("#article_form_error").append( "<li> <strong>" + i + "</strong> &nbsp;&nbsp;" + val[0].message + "</li>"); //append results to element
                     })
-               
+
               }
             }
         });
     })
 
     document.getElementById('truck_details_form').addEventListener('submit', function(evt){
-        
+
         evt.preventDefault();
 
         var data = $('#truck_details_form').serialize();
 
-        $.ajax({                       
+        $.ajax({
             type: "POST",
             url: "{% url 'add_truck_details_ajax' %}",
             data : $(this).serialize(),
@@ -1550,12 +1556,12 @@
 
 
                     var a = JSON.parse(data.error)
-    
+
                     $.each(a, function(i, val) {
-    
+
                         $("#truck_details_form_error").append( "<li> <strong>" + i + "</strong> &nbsp;&nbsp;" + val[0].message + "</li>"); //append results to element
                         })
-                   
+
                   }
 
                 }
@@ -1563,12 +1569,12 @@
         })
 
     document.getElementById('truc_owner_Form').addEventListener('submit', function(evt){
-        
+
         evt.preventDefault();
 
         var data = $('#truc_owner_Form').serialize();
 
-        $.ajax({                       
+        $.ajax({
             type: "POST",
             url: "{% url 'add_truck_owner_ajax' %}",
             data : $(this).serialize(),
@@ -1583,32 +1589,32 @@
 
                     $('select[name="truck_owner"]').append(let_html);
 
-                    
+
 
                 }
                 else{
 
 
                     var a = JSON.parse(data.error)
-    
+
                     $.each(a, function(i, val) {
-    
+
                         $("#truc_owner_Form_error").append( "<li> <strong>" + i + "</strong> &nbsp;&nbsp;" + val[0].message + "</li>"); //append results to element
                         })
-                   
+
                   }
                 }
             });
         })
 
     document.getElementById('taluka_form').addEventListener('submit', function(evt){
-        
+
         evt.preventDefault();
 
 
         var data = $('#taluka_form').serialize();
 
-        $.ajax({                       
+        $.ajax({
             type: "POST",
             url: "{% url 'add_taluka_ajax' %}",
             data : $(this).serialize(),
@@ -1634,25 +1640,25 @@
                     var a = JSON.parse(data.error)
 
                     console.log(a)
-    
+
                     $.each(a, function(i, val) {
-    
+
                         $("#taluka_form_error").append( "<li> <strong>" + i + "</strong> &nbsp;&nbsp;" + val[0].message + "</li>"); //append results to element
                         })
-                   
+
                   }
                 }
             });
         })
 
     document.getElementById('district_form').addEventListener('submit', function(evt){
-        
+
         evt.preventDefault();
 
 
         var data = $('#district_form').serialize();
 
-        $.ajax({                       
+        $.ajax({
             type: "POST",
             url: "{% url 'add_district_ajax' %}",
             data : $(this).serialize(),
@@ -1668,12 +1674,12 @@
 
 
                     var a = JSON.parse(data.error)
-    
+
                     $.each(a, function(i, val) {
-    
+
                         $("#district_form_error").append( "<li> <strong>" + i + "</strong> &nbsp;&nbsp;" + val[0].message + "</li>"); //append results to element
                         })
-                   
+
                   }
                 }
             });
@@ -1683,13 +1689,13 @@
 
 
     document.getElementById('station_Form').addEventListener('submit', function(evt){
-        
+
         evt.preventDefault();
 
 
         var data = $('#station_Form').serialize();
 
-        $.ajax({                       
+        $.ajax({
             type: "POST",
             url: "{% url 'add_station_ajax' %}",
             data : $(this).serialize(),
@@ -1713,12 +1719,12 @@
 
 
                     var a = JSON.parse(data.error)
-    
+
                     $.each(a, function(i, val) {
-    
+
                         $("#station_Form_error").append( "<li> <strong>" + i + "</strong> &nbsp;&nbsp;" + val[0].message + "</li>"); //append results to element
                         })
-                   
+
                   }
                 }
             });
@@ -1728,13 +1734,13 @@
 
 
     document.getElementById('from_station_Form').addEventListener('submit', function(evt){
-        
+
         evt.preventDefault();
 
 
         var data = $('#from_station_Form').serialize();
 
-        $.ajax({                       
+        $.ajax({
             type: "POST",
             url: "{% url 'add_from_station_ajax' %}",
             data : $(this).serialize(),
@@ -1749,19 +1755,19 @@
 
                     $('#station_from').append(let_html);
 
-                    
+
 
                 }
                 else{
 
 
                     var a = JSON.parse(data.error)
-    
+
                     $.each(a, function(i, val) {
-    
+
                         $("#from_station_Form_error").append( "<li> <strong>" + i + "</strong> &nbsp;&nbsp;" + val[0].message + "</li>"); //append results to element
                         })
-                   
+
                   }
                 }
             });
@@ -1771,13 +1777,13 @@
 
 
     document.getElementById('onaccount_Form').addEventListener('submit', function(evt){
-        
+
         evt.preventDefault();
 
 
         var data = $('#onaccount_Form').serialize();
 
-        $.ajax({                       
+        $.ajax({
             type: "POST",
             url: "{% url 'add_onaccount_ajax' %}",
             data : $(this).serialize(),
@@ -1798,12 +1804,12 @@
 
 
                     var a = JSON.parse(data.error)
-    
+
                     $.each(a, function(i, val) {
-    
+
                         $("#onaccount_Form_error").append( "<li> <strong>" + i + "</strong> &nbsp;&nbsp;" + val[0].message + "</li>"); //append results to element
                         })
-                   
+
                   }
                 }
             });
@@ -1846,7 +1852,7 @@
       const inputEl = document.getElementById("consignee");
 
       inputEl.addEventListener("keyup", manageEnter);
-      
+
       function manageEnter(evt) {
         evt.preventDefault();
         if (evt.keyCode === 13) {
@@ -1855,30 +1861,30 @@
         }
       }
 
-     
+
       $('#onaccount').change(function(){
 
 
-        
+
         document.getElementById("bags").focus();
 
-        
+
       })
-      
-     
+
+
       $('#id_DC_date').change(function(){
 
 
         document.getElementById("bags").focus();
 
-        
+
       })
-   
-      
+
+
       const inputE2 = document.getElementById("id_mobile_no");
 
       inputE2.addEventListener("keyup", manageEnter2);
-      
+
       function manageEnter2(evt) {
         evt.preventDefault();
         if (evt.keyCode === 13) {
@@ -1886,11 +1892,11 @@
 
         }
       }
-      
+
       const inputE3 = document.getElementById("bags");
 
       inputE3.addEventListener("keyup", manageEnter3);
-      
+
       function manageEnter3(evt) {
         evt.preventDefault();
         if (evt.keyCode === 13) {
@@ -1898,11 +1904,11 @@
 
         }
       }
-      
+
       const inputE4 = document.getElementById("delivery_no");
 
       inputE4.addEventListener("keyup", manageEnter4);
-      
+
       function manageEnter4(evt) {
         evt.preventDefault();
         if (evt.keyCode === 13) {
@@ -1910,12 +1916,12 @@
 
         }
       }
-      
+
 
       const inputE5 = document.getElementById("rate");
 
       inputE5.addEventListener("keyup", manageEnter5);
-      
+
       function manageEnter5(evt) {
         evt.preventDefault();
         if (evt.keyCode === 13) {
@@ -1923,11 +1929,11 @@
 
         }
       }
-      
+
       const inputE6 = document.getElementById("less_advance");
 
       inputE6.addEventListener("keyup", manageEnter6);
-      
+
       function manageEnter6(evt) {
         evt.preventDefault();
         if (evt.keyCode === 13) {
@@ -1936,27 +1942,27 @@
 
         }
       }
-      
 
-      
+
+
       $('#petrol_pump').change(function(){
 
 
         document.getElementById('diesel').focus();
- 
- 
+
+
        })
- 
-      
-      
+
+
+
 //-----------------------------------------------------------
-    
-        
+
+
     let global_mt = 0
     let global_freight = 0
 
     bags.addEventListener("input", function (e) {
-        
+
         let bags = this.value;
 
         {% if request.user.username == "deepak" %}
@@ -1971,9 +1977,9 @@
 
         else{
 
-        
 
-        
+
+
 
         global_mt = parseFloat((bags / 20).toFixed(2));
 
@@ -1992,13 +1998,13 @@
 
 
         rate = document.getElementById('rate').value;
-        
+
         global_freight =  parseFloat((global_mt * rate).toFixed(2));
 
         document.getElementById("freight").value = global_freight;
 
 
-      
+
         let less_advance = document.getElementById('less_advance').value;
         let less_freight = document.getElementById('freight').value;
 
@@ -2011,7 +2017,7 @@
 
 
         }else if(rate != 0 && rate != undefined && rate != '' ){
-        
+
             document.getElementById("balance").value = balance;
 
 
@@ -2020,13 +2026,13 @@
             document.getElementById("balance").value = 0.0;
 
         }
-        
+
     });
 
 
     rate.addEventListener("input", function (e) {
 
-        
+
         let rate = this.value;
 
         global_freight =  parseFloat((global_mt * rate).toFixed(2));
@@ -2045,7 +2051,7 @@
 
 
         }else if(rate != 0 && rate != undefined && rate != '' ){
-        
+
             document.getElementById("balance").value = balance;
 
 
@@ -2054,7 +2060,7 @@
             document.getElementById("balance").value = 0.0;
 
         }
-        
+
     });
 
 
@@ -2063,7 +2069,7 @@
 
     less_advance.addEventListener("input", function (e) {
 
-            
+
         let less_advance = document.getElementById('less_advance').value;
         let less_freight = document.getElementById('freight').value;
 
@@ -2077,7 +2083,7 @@
 
 
         }else if(rate != 0 && rate != undefined && rate != '' ){
-        
+
             document.getElementById("balance").value = balance;
 
 
@@ -2087,17 +2093,17 @@
 
         }
     });
-        
 
 
 
-        
+
+
     $('.sele').select2();
 
-    
+
 
     {% if request.user.username == "deepak" %}
-    
+
     function adjust_mt(){
 
 
@@ -2113,7 +2119,7 @@
 
         else{
 
-    
+
 
         global_mt = parseFloat((bags / 20).toFixed(2));
 
@@ -2121,12 +2127,12 @@
 
         }
 
-        
+
     }
 
     {% endif %}
 
-    
+
 </script>
 
 {% endblock js %}
