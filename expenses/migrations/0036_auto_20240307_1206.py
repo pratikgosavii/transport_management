@@ -2,7 +2,7 @@
 
 import datetime
 from django.db import migrations, models
-from django.utils.timezone import utc
+from datetime import timezone as dt_timezone
 
 
 class Migration(migrations.Migration):
@@ -15,36 +15,36 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='builty_expense',
             name='entry_date',
-            field=models.DateTimeField(blank=True, default=datetime.datetime(2024, 3, 7, 6, 36, 7, 373230, tzinfo=utc), null=True),
+            field=models.DateTimeField(blank=True, default=datetime.datetime(2024, 3, 7, 6, 36, 7, 373230, tzinfo=dt_timezone.utc), null=True),
         ),
         migrations.AlterField(
             model_name='diesel_expense',
             name='entry_date',
-            field=models.DateTimeField(default=datetime.datetime(2024, 3, 7, 6, 36, 7, 373230, tzinfo=utc)),
+            field=models.DateTimeField(default=datetime.datetime(2024, 3, 7, 6, 36, 7, 373230, tzinfo=dt_timezone.utc)),
         ),
         migrations.AlterField(
             model_name='fund',
             name='entry_date',
-            field=models.DateTimeField(blank=True, default=datetime.datetime(2024, 3, 7, 6, 36, 7, 373230, tzinfo=utc), null=True),
+            field=models.DateTimeField(blank=True, default=datetime.datetime(2024, 3, 7, 6, 36, 7, 373230, tzinfo=dt_timezone.utc), null=True),
         ),
         migrations.AlterField(
             model_name='other_expense',
             name='entry_date',
-            field=models.DateTimeField(default=datetime.datetime(2024, 3, 7, 6, 36, 7, 373230, tzinfo=utc)),
+            field=models.DateTimeField(default=datetime.datetime(2024, 3, 7, 6, 36, 7, 373230, tzinfo=dt_timezone.utc)),
         ),
         migrations.AlterField(
             model_name='salary',
             name='entry_date',
-            field=models.DateTimeField(default=datetime.datetime(2024, 3, 7, 6, 36, 7, 373230, tzinfo=utc)),
+            field=models.DateTimeField(default=datetime.datetime(2024, 3, 7, 6, 36, 7, 373230, tzinfo=dt_timezone.utc)),
         ),
         migrations.AlterField(
             model_name='transfer_fund',
             name='entry_date',
-            field=models.DateTimeField(default=datetime.datetime(2024, 3, 7, 6, 36, 7, 373230, tzinfo=utc)),
+            field=models.DateTimeField(default=datetime.datetime(2024, 3, 7, 6, 36, 7, 373230, tzinfo=dt_timezone.utc)),
         ),
         migrations.AlterField(
             model_name='truck_expense',
             name='entry_date',
-            field=models.DateTimeField(default=datetime.datetime(2024, 3, 7, 6, 36, 7, 373230, tzinfo=utc)),
+            field=models.DateTimeField(default=datetime.datetime(2024, 3, 7, 6, 36, 7, 373230, tzinfo=dt_timezone.utc)),
         ),
     ]

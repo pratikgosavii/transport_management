@@ -663,9 +663,9 @@
                                         <span id="payment-button-amount">View</span>
                                     </button>  </a>
 
-                                    <a href="{% url 'delete_transaction' i.id %}"><button style="background-color: red; border: green; padding: 10px;border-radius: 12px;" type="button" class="btn-info ">
+                                    <button onclick="if(confirm('Are you sure you want to delete this transaction?')) { window.location.href='{% url 'delete_transaction' i.id %}'; } return false;" style="background-color: red; border: green; padding: 10px;border-radius: 12px;" type="button" class="btn-info ">
                                         <span id="payment-button-amount">Delete</span>
-                                    </button>  </a>
+                                    </button>
                                     
                                    
 
@@ -1963,9 +1963,10 @@
 
         if(document.getElementById('deepak').checked) {
 
-            global_mt = parseFloat((bags / 25).toFixed(2));
+            global_mt = parseFloat(bags) / 25;
+            global_mt = Math.round(global_mt * 100) / 100;
 
-            document.getElementById("mt").value = global_mt;
+            document.getElementById("mt").value = global_mt.toFixed(2);
 
         }
 
@@ -1975,17 +1976,19 @@
 
         
 
-        global_mt = parseFloat((bags / 20).toFixed(2));
+        global_mt = parseFloat(bags) / 20;
+        global_mt = Math.round(global_mt * 100) / 100;
 
-        document.getElementById("mt").value = global_mt;
+        document.getElementById("mt").value = global_mt.toFixed(2);
 
         }
 
         {% else %}
 
-        global_mt = parseFloat((bags / 20).toFixed(2));
+        global_mt = parseFloat(bags) / 20;
+        global_mt = Math.round(global_mt * 100) / 100;
 
-        document.getElementById("mt").value = global_mt;
+        document.getElementById("mt").value = global_mt.toFixed(2);
 
         {% endif %}
 
@@ -2105,9 +2108,10 @@
 
         if(document.getElementById('deepak').checked) {
 
-            global_mt = parseFloat((bags / 25).toFixed(2));
+            global_mt = parseFloat(bags) / 25;
+            global_mt = Math.round(global_mt * 100) / 100;
 
-            document.getElementById("mt").value = global_mt;
+            document.getElementById("mt").value = global_mt.toFixed(2);
 
         }
 
@@ -2115,9 +2119,10 @@
 
     
 
-        global_mt = parseFloat((bags / 20).toFixed(2));
+        global_mt = parseFloat(bags) / 20;
+        global_mt = Math.round(global_mt * 100) / 100;
 
-        document.getElementById("mt").value = global_mt;
+        document.getElementById("mt").value = global_mt.toFixed(2);
 
         }
 

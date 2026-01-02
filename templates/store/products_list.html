@@ -61,11 +61,9 @@
                                             <span id="payment-button-amount">Edit Product</span>
                                         </button>
                                     </a>
-                                    <a href="{% url 'delete-product' i.id %}">
-                                        <button id="payment-button" style="background-color: red; border: red; padding: 10px;border-radius: 12px;" type="submit" class="btn-info">
+                                    <button onclick="if(confirm('Are you sure you want to delete this product?')) { window.location.href='{% url 'delete-product' i.id %}'; } return false;" id="payment-button" style="background-color: red; border: red; padding: 10px;border-radius: 12px;" type="button" class="btn-info">
                                         <span id="payment-button-amount">Delete Product</span>
-                                        </button>
-                                    </a>
+                                    </button>
                                 </td>
                                
                                

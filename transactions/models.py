@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils import timezone
+from django.utils import timezone as dj_timezone
 from users.models import User
 from datetime import datetime
 from store.models import *
@@ -91,7 +91,7 @@ class ack_history(models.Model):
     builty = models.ForeignKey(builty, on_delete=models.CASCADE, related_name='have_ack3434', db_index=True)
     challan_number_before = models.CharField(max_length=50, db_index=True)
     challan_date_before = models.DateField(blank=True, null=True, db_index=True)
-    update_date = models.DateField(default=timezone.now, blank=True, null=True, db_index=True)
+    update_date = models.DateField(default=dj_timezone.now, blank=True, null=True, db_index=True)
 
     class Meta:
         indexes = [
