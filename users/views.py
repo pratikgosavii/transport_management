@@ -107,7 +107,7 @@ def delete_user(request, user_id):
 
 def list_user(request):
 
-    data = User.objects.all()
+    data = User.objects.all().order_by('-id')
     
     return render(request, 'users/list_user.html', {'data' : data})
 

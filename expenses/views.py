@@ -138,11 +138,11 @@ def list_builty_expense(request):
     
     if request.user.is_superuser:
 
-        data = builty_expense.objects.all()
+        data = builty_expense.objects.all().order_by('-id')
 
     else:
 
-        data = builty_expense.objects.filter(user = request.user)
+        data = builty_expense.objects.filter(user = request.user).order_by('-id')
 
     builty_expense_filters = builty_expense_filter(request.GET, queryset=data)
 
@@ -227,7 +227,7 @@ def update_expense_category(request, expense_category_id):
 
 def list_expense_category(request):
     
-    data = expense_category.objects.all()
+    data = expense_category.objects.all().order_by('-id')
 
     page = request.GET.get('page', 1)
     paginator = Paginator(data, 20)
@@ -366,11 +366,11 @@ def list_truck_expense(request):
     
     if request.user.is_superuser:
 
-        data = truck_expense.objects.all()
+        data = truck_expense.objects.all().order_by('-id')
 
     else:
 
-        data = truck_expense.objects.filter(user = request.user)
+        data = truck_expense.objects.filter(user = request.user).order_by('-id')
 
     truck_expense_filters = truck_expense_filter(request.GET, queryset=data)
 
@@ -420,7 +420,7 @@ def list_delete(request):
     
 def check_balance(request):
 
-    data = User.objects.all()
+    data = User.objects.all().order_by('-id')
 
     total_amount = User.objects.aggregate(total_balance=Sum('balance'))['total_balance'] or 0
 
@@ -604,11 +604,11 @@ def list_transfer_fund(request):
     
     if request.user.is_superuser:
 
-            data = transfer_fund.objects.all()
+            data = transfer_fund.objects.all().order_by('-id')
 
     else:
 
-        data = transfer_fund.objects.filter(user = request.user)
+        data = transfer_fund.objects.filter(user = request.user).order_by('-id')
 
     transfer_fund_filters = transfer_fund_filter(request.GET, queryset=data)
 
@@ -733,11 +733,11 @@ def list_diesel_expense(request):
     
     if request.user.is_superuser:
 
-        data = diesel_expense.objects.all()
+        data = diesel_expense.objects.all().order_by('-id')
 
     else:
 
-        data = diesel_expense.objects.filter(user = request.user)
+        data = diesel_expense.objects.filter(user = request.user).order_by('-id')
 
     rate = diesel_rate.objects.get(id=2)
     
@@ -857,11 +857,11 @@ def list_truck_diesel_expense(request):
 
     if request.user.is_superuser:
 
-            data = truck_diesel_expense.objects.all()
+            data = truck_diesel_expense.objects.all().order_by('-id')
 
     else:
 
-        data = truck_diesel_expense.objects.filter(user = request.user)
+        data = truck_diesel_expense.objects.filter(user = request.user).order_by('-id')
 
     truck_diesel_expense_filters = truck_diesel_expense_filter(request.GET, queryset=data)
 
@@ -970,7 +970,7 @@ def delete_employee(request, employee_id):
     
 def list_employee(request):
     
-    data = employee.objects.all()
+    data = employee.objects.all().order_by('-id')
 
 
 
@@ -1106,11 +1106,11 @@ def list_salary(request):
 
     if request.user.is_superuser:
 
-            data = salary.objects.all()
+            data = salary.objects.all().order_by('-id')
 
     else:
 
-        data = salary.objects.filter(user = request.user)
+        data = salary.objects.filter(user = request.user).order_by('-id')
 
     salary_filters = salary_filter(request.GET, queryset=data)
 
@@ -1325,16 +1325,16 @@ def delete_other_expense(request, other_expense_id):
     
 def list_other_expense(request):
     
-    data = other_expense.objects.all()
+    data = other_expense.objects.all().order_by('-id')
 
 
     if request.user.is_superuser:
 
-        data = other_expense.objects.all()
+        data = other_expense.objects.all().order_by('-id')
 
     else:
 
-        data = other_expense.objects.filter(user = request.user)
+        data = other_expense.objects.filter(user = request.user).order_by('-id')
 
     
     
@@ -1493,16 +1493,16 @@ def delete_fund(request, fund_id):
 def list_fund(request):
     
 
-    data = fund.objects.all()
+    data = fund.objects.all().order_by('-id')
 
 
     if request.user.is_superuser:
 
-                data = fund.objects.all()
+                data = fund.objects.all().order_by('-id')
 
     else:
 
-        data = fund.objects.filter(user = request.user)
+        data = fund.objects.filter(user = request.user).order_by('-id')
 
     
     
@@ -2380,11 +2380,11 @@ def list_close_balance(request):
 
     if request.user.is_superuser:
 
-        data = closing_balance.objects.all()
+        data = closing_balance.objects.all().order_by('-id')
 
     else:
 
-        data = closing_balance.objects.filter(user = request.user)
+        data = closing_balance.objects.filter(user = request.user).order_by('-id')
 
 
     filter_data = closing_balance_filter(request.GET, queryset=data)

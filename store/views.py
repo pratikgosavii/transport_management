@@ -140,7 +140,7 @@ def delete_company(request, company_id):
 @user_is_active
 def list_company(request):
 
-    data = company.objects.all()
+    data = company.objects.all().order_by('-id')
 
     context = {
         'data': data
@@ -223,7 +223,7 @@ def delete_office_location(request, office_location_id):
 @user_is_active
 def list_office_location(request):
 
-    data = office_location.objects.all()
+    data = office_location.objects.all().order_by('-id')
 
     context = {
         'data': data
@@ -364,11 +364,11 @@ def list_consignor(request):
 
     if request.user.is_superuser:
 
-        data =  consignor.objects.all()
+        data =  consignor.objects.all().order_by('-id')
 
     else:
     
-        data = consignor.objects.filter(office_location = request.user.office_location).order_by('company__company_name')
+        data = consignor.objects.filter(office_location = request.user.office_location).order_by('-id')
 
     context = {
             'data': data
@@ -551,11 +551,11 @@ def list_article(request):
 
     if request.user.is_superuser:
 
-        data = article.objects.all()
+        data = article.objects.all().order_by('-id')
 
     else:
 
-        data = article.objects.filter(office_location = request.user.office_location).order_by('company_name__company_name')
+        data = article.objects.filter(office_location = request.user.office_location).order_by('-id')
 
     context = {
             'data': data
@@ -681,7 +681,7 @@ def delete_truck_details(request, truck_details_id):
 @user_is_active
 def list_truck_details(request):
     
-    data = truck_details.objects.all()
+    data = truck_details.objects.all().order_by('-id')
 
     context = {
             'data': data
@@ -796,7 +796,7 @@ def delete_truck_owner(request, truck_owner_id):
 @user_is_active
 def list_truck_owner(request):
     
-    data = truck_owner.objects.all()
+    data = truck_owner.objects.all().order_by('-id')
 
     context = {
             'data': data
@@ -913,7 +913,7 @@ def delete_rate(request, rate_id):
 @user_is_active
 def list_rate(request):
     
-    data = rate.objects.all()
+    data = rate.objects.all().order_by('-id')
 
     context = {
             'data': data
@@ -1047,11 +1047,11 @@ def list_station(request):
 
     if request.user.is_superuser:
 
-        data = station.objects.all()
+        data = station.objects.all().order_by('-id')
     
     else:
     
-        data = station.objects.all()
+        data = station.objects.all().order_by('-id')
 
     context = {
             'data': data
@@ -1184,11 +1184,11 @@ def list_from_station(request):
 
     if request.user.is_superuser:
 
-        data = from_station.objects.all()
+        data = from_station.objects.all().order_by('-id')
     
     else:
     
-        data = from_station.objects.all()
+        data = from_station.objects.all().order_by('-id')
 
     context = {
             'data': data
@@ -1316,7 +1316,7 @@ def delete_district(request, district_id):
 @user_is_active
 def list_district(request):
     
-    data = district.objects.all()
+    data = district.objects.all().order_by('-id')
 
     context = {
             'data': data
@@ -1442,11 +1442,11 @@ def list_taluka(request):
 
     if request.user.is_superuser:
 
-        data = taluka.objects.all()
+        data = taluka.objects.all().order_by('-id')
     
     else:
 
-        data = taluka.objects.all()
+        data = taluka.objects.all().order_by('-id')
 
     context = {
             'data': data
@@ -1597,11 +1597,11 @@ def list_onaccount(request):
 
     if request.user.is_superuser:
 
-        data = onaccount.objects.all()
+        data = onaccount.objects.all().order_by('-id')
 
     else:
     
-        data = onaccount.objects.filter(office_location = request.user.office_location)
+        data = onaccount.objects.filter(office_location = request.user.office_location).order_by('-id')
 
     context = {
             'data': data
@@ -1685,7 +1685,7 @@ def delete_driver(request, driver_id):
 @user_is_active
 def list_driver(request):
     
-    data = driver.objects.all()
+    data = driver.objects.all().order_by('-id')
 
     context = {
             'data': data
@@ -1807,7 +1807,7 @@ def delete_petrol_pump(request, petrol_pump_id):
 @user_is_active
 def list_petrol_pump(request):
     
-    data = petrol_pump.objects.all()
+    data = petrol_pump.objects.all().order_by('-id')
 
     context = {
             'data': data
@@ -1826,20 +1826,7 @@ def list_petrol_pump(request):
 @user_is_active
 def list_company_delete(request):
 
-    data = company.objects.all()
-
-    context = {
-        'data': data
-    }
-
-    return render(request, 'delete/list_company_delete.html', context)
-
-
-@login_required(login_url='login')
-@user_is_active
-def list_company_delete(request):
-
-    data = company.objects.all()
+    data = company.objects.all().order_by('-id')
 
     context = {
         'data': data
@@ -1884,7 +1871,7 @@ def list_goods_company_delete(request):
 @user_is_active
 def list_agent_delete(request):
     
-    data = agent.objects.all()
+    data = agent.objects.all().order_by('-id')
 
     context = {
             'data': data
