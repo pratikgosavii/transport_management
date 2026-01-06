@@ -1958,6 +1958,12 @@
     bags.addEventListener("input", function (e) {
         
         let bags = this.value;
+        
+        // Limit bags to whole numbers only
+        if (bags && bags.includes('.')) {
+            this.value = Math.floor(parseFloat(bags));
+            bags = this.value;
+        }
 
         {% if request.user.username == "deepak" %}
 
@@ -1996,31 +2002,31 @@
 
         rate = document.getElementById('rate').value;
         
-        global_freight =  parseFloat((global_mt * rate).toFixed(2));
+        global_freight = parseFloat((global_mt * parseFloat(rate || 0)).toFixed(2));
 
-        document.getElementById("freight").value = global_freight;
+        document.getElementById("freight").value = global_freight.toFixed(2);
 
 
       
-        let less_advance = document.getElementById('less_advance').value;
-        let less_freight = document.getElementById('freight').value;
+        let less_advance = parseFloat(document.getElementById('less_advance').value || 0);
+        let less_freight = parseFloat(document.getElementById('freight').value || 0);
 
 
         let balance = parseFloat((global_freight - less_advance).toFixed(2));
 
         if (balance >= 0){
 
-            document.getElementById("balance").value = balance;
+            document.getElementById("balance").value = balance.toFixed(2);
 
 
         }else if(rate != 0 && rate != undefined && rate != '' ){
         
-            document.getElementById("balance").value = balance;
+            document.getElementById("balance").value = balance.toFixed(2);
 
 
         }
         else{
-            document.getElementById("balance").value = 0.0;
+            document.getElementById("balance").value = (0.0).toFixed(2);
 
         }
         
@@ -2031,30 +2037,39 @@
 
         
         let rate = this.value;
+        
+        // Limit to 2 decimal places on input
+        if (rate && rate.includes('.')) {
+            let parts = rate.split('.');
+            if (parts[1] && parts[1].length > 2) {
+                this.value = parseFloat(rate).toFixed(2);
+                rate = this.value;
+            }
+        }
 
-        global_freight =  parseFloat((global_mt * rate).toFixed(2));
+        global_freight = parseFloat((global_mt * parseFloat(rate || 0)).toFixed(2));
 
-        document.getElementById("freight").value = global_freight;
+        document.getElementById("freight").value = global_freight.toFixed(2);
 
 
-        let less_advance = document.getElementById('less_advance').value;
-        let less_freight = document.getElementById('freight').value;
+        let less_advance = parseFloat(document.getElementById('less_advance').value || 0);
+        let less_freight = parseFloat(document.getElementById('freight').value || 0);
 
         let balance = parseFloat((global_freight - less_advance).toFixed(2));
 
         if (balance >= 0){
 
-            document.getElementById("balance").value = balance;
+            document.getElementById("balance").value = balance.toFixed(2);
 
 
         }else if(rate != 0 && rate != undefined && rate != '' ){
         
-            document.getElementById("balance").value = balance;
+            document.getElementById("balance").value = balance.toFixed(2);
 
 
         }
         else{
-            document.getElementById("balance").value = 0.0;
+            document.getElementById("balance").value = (0.0).toFixed(2);
 
         }
         
@@ -2066,9 +2081,18 @@
 
     less_advance.addEventListener("input", function (e) {
 
+        // Limit to 2 decimal places on input
+        let less_advance_val = this.value;
+        if (less_advance_val && less_advance_val.includes('.')) {
+            let parts = less_advance_val.split('.');
+            if (parts[1] && parts[1].length > 2) {
+                this.value = parseFloat(less_advance_val).toFixed(2);
+                less_advance_val = this.value;
+            }
+        }
             
-        let less_advance = document.getElementById('less_advance').value;
-        let less_freight = document.getElementById('freight').value;
+        let less_advance = parseFloat(less_advance_val || 0);
+        let less_freight = parseFloat(document.getElementById('freight').value || 0);
 
         let rate = document.getElementById('rate').value;
 
@@ -2076,17 +2100,17 @@
 
         if (balance >= 0){
 
-            document.getElementById("balance").value = balance;
+            document.getElementById("balance").value = balance.toFixed(2);
 
 
         }else if(rate != 0 && rate != undefined && rate != '' ){
         
-            document.getElementById("balance").value = balance;
+            document.getElementById("balance").value = balance.toFixed(2);
 
 
         }
         else{
-            document.getElementById("balance").value = 0.0;
+            document.getElementById("balance").value = (0.0).toFixed(2);
 
         }
     });
@@ -2097,7 +2121,96 @@
         
     $('.sele').select2();
 
-    
+    // Limit MT input to 2 decimal places
+    const mtInput = document.getElementById("mt");
+    if (mtInput) {
+        mtInput.addEventListener("input", function(e) {
+            let value = this.value;
+            if (value && value.includes('.')) {
+                let parts = value.split('.');
+                if (parts[1] && parts[1].length > 2) {
+                    this.value = parseFloat(value).toFixed(2);
+                }
+            }
+        });
+        
+        mtInput.addEventListener("blur", function(e) {
+            if (this.value) {
+                this.value = parseFloat(this.value || 0).toFixed(2);
+            }
+        });
+    }
+
+    // Limit Freight input to 2 decimal places
+    const freightInput = document.getElementById("freight");
+    if (freightInput) {
+        freightInput.addEventListener("input", function(e) {
+            let value = this.value;
+            if (value && value.includes('.')) {
+                let parts = value.split('.');
+                if (parts[1] && parts[1].length > 2) {
+                    this.value = parseFloat(value).toFixed(2);
+                }
+            }
+        });
+        
+        freightInput.addEventListener("blur", function(e) {
+            if (this.value) {
+                this.value = parseFloat(this.value || 0).toFixed(2);
+                global_freight = parseFloat(this.value);
+            }
+        });
+    }
+
+    // Limit Rate input to 2 decimal places
+    const rateInput = document.getElementById("rate");
+    if (rateInput) {
+        rateInput.addEventListener("input", function(e) {
+            let value = this.value;
+            if (value && value.includes('.')) {
+                let parts = value.split('.');
+                if (parts[1] && parts[1].length > 2) {
+                    this.value = parseFloat(value).toFixed(2);
+                }
+            }
+        });
+        
+        rateInput.addEventListener("blur", function(e) {
+            if (this.value) {
+                this.value = parseFloat(this.value || 0).toFixed(2);
+            }
+        });
+    }
+
+    // Limit Less Advance input to 2 decimal places
+    const lessAdvanceInput = document.getElementById("less_advance");
+    if (lessAdvanceInput) {
+        lessAdvanceInput.addEventListener("input", function(e) {
+            let value = this.value;
+            if (value && value.includes('.')) {
+                let parts = value.split('.');
+                if (parts[1] && parts[1].length > 2) {
+                    this.value = parseFloat(value).toFixed(2);
+                }
+            }
+        });
+        
+        lessAdvanceInput.addEventListener("blur", function(e) {
+            if (this.value) {
+                this.value = parseFloat(this.value || 0).toFixed(2);
+            }
+        });
+    }
+
+    // Limit Balance input to 2 decimal places (readonly but ensure display)
+    const balanceInput = document.getElementById("balance");
+    if (balanceInput) {
+        balanceInput.addEventListener("blur", function(e) {
+            if (this.value) {
+                this.value = parseFloat(this.value || 0).toFixed(2);
+            }
+        });
+    }
 
     {% if request.user.username == "deepak" %}
     
@@ -2126,6 +2239,21 @@
 
         }
 
+        // Recalculate freight and balance when MT changes
+        let rate = parseFloat(document.getElementById('rate').value || 0);
+        global_freight = parseFloat((global_mt * rate).toFixed(2));
+        document.getElementById("freight").value = global_freight.toFixed(2);
+
+        let less_advance = parseFloat(document.getElementById('less_advance').value || 0);
+        let balance = parseFloat((global_freight - less_advance).toFixed(2));
+        
+        if (balance >= 0) {
+            document.getElementById("balance").value = balance.toFixed(2);
+        } else if (rate != 0 && rate != undefined && rate != '') {
+            document.getElementById("balance").value = balance.toFixed(2);
+        } else {
+            document.getElementById("balance").value = (0.0).toFixed(2);
+        }
         
     }
 
