@@ -562,7 +562,7 @@ def save_financial_year(request):
 @user_passes_test(lambda u: u.is_superuser)
 def admin_list_request_edit(request):
 
-    data = request_edit.objects.all()
+    data = request_edit.objects.all().order_by('-id')
 
     filtered_data = request_edit_filter(request.GET, queryset=data)
 
@@ -589,7 +589,7 @@ def admin_list_request_edit(request):
 
 def list_request_edit(request):
 
-    data = request_edit.objects.filter(builty__user = request.user)
+    data = request_edit.objects.filter(builty__user = request.user).order_by('-id')
 
     filtered_data = request_edit_filter(request.GET, queryset=data)
 
