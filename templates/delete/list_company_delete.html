@@ -57,9 +57,9 @@
                                    <a href="{% url 'update_company' i.id %}"> <button  style="background-color: #05386b; border: green; padding: 10px;border-radius: 12px;" type="submit" class="btn-info ">
                                         <span id="payment-button-amount">View</span>
                                     </button>  </a>
-                                    <a href="{% url 'delete_company' i.id %}">  <button id="delete_compnay-button" style="background-color: red; border: red; padding: 10px;border-radius: 12px;" type="submit" class="btn-info">
+                                    <button onclick="if(confirm('Are you sure you want to delete this company?')) { window.location.href='{% url 'delete_company' i.id %}'; } return false;" id="delete_compnay-button" style="background-color: red; border: red; padding: 10px;border-radius: 12px;" type="button" class="btn-info">
                                         <span id="payment-button-amount">Delete</span>
-                                    </button>  </a>
+                                    </button>
                                 </td>
                                
                                
