@@ -233,10 +233,15 @@
         document.getElementById('asdas').addEventListener('submit', function(evt){
 
           evt.preventDefault();
-          alert('Form submission intercepted'); // Debugging alert
+          
+          var submitButton = $('#payment-button');
+          if (submitButton.prop('disabled')) {
+              return false;
+          }
+          submitButton.prop('disabled', true);
+          $('#payment-button-amount').text('Submitting...');
   
           var formData = $(this).serialize();
-          alert('Serialized form data: ' + formData); // Debugging alert
   
           $.ajax({
               type: 'POST',
@@ -249,14 +254,18 @@
 
                 if (data.status == "done"){
                   window.location.reload();
-              }
-              else{
-                alert('Wrong contact pratik')
-              }
+                }
+                else{
+                  alert('Wrong contact pratik')
+                  submitButton.prop('disabled', false);
+                  $('#payment-button-amount').text('Submit');
+                }
                   // Handle success response
               },
               error: function(error) {
                   alert('Error submitting form.');
+                  submitButton.prop('disabled', false);
+                  $('#payment-button-amount').text('Submit');
                   // Handle error response
               }
           });
