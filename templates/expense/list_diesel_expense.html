@@ -233,7 +233,7 @@
             <div class="card-body">
                 <h4 class="box-title"> List Diesel Expense</h4>
 
-                <form action="{% url 'add_diesel_rate' %}" method="post">
+                <form action="{% url 'add_diesel_rate' %}" method="post" id="diesel_rate_form">
 
                     {% csrf_token %}
                     
@@ -252,6 +252,19 @@
                     </div>
 
                 </form>
+                
+                <script>
+                    // Prevent duplicate submissions
+                    $('#diesel_rate_form').on('submit', function(e) {
+                        var submitButton = $('#payment-button');
+                        if (submitButton.prop('disabled')) {
+                            e.preventDefault();
+                            return false;
+                        }
+                        submitButton.prop('disabled', true);
+                        $('#payment-button-amount').text('Submitting...');
+                    });
+                </script>
                 
             </div>
             <div class="card-body--">

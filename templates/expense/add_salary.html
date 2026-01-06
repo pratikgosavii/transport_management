@@ -69,6 +69,17 @@
             var result = textone * texttwo;
             $('#total_pck').val(result.toFixed(2));
         });
+
+        // Prevent duplicate submissions
+        $('#expense_form').on('submit', function(e) {
+            var submitButton = $('#payment-button');
+            if (submitButton.prop('disabled')) {
+                e.preventDefault();
+                return false;
+            }
+            submitButton.prop('disabled', true);
+            $('#payment-button-amount').text('Submitting...');
+        });
         </script>
 
     {% endblock js %}
