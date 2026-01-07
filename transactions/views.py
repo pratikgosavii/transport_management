@@ -79,10 +79,19 @@ def add_transaction(request):
         consignor_builty_count = builty.objects.filter(
             consignor=consignor_instance, 
             DC_date__gte=start_date, 
-            DC_date__lte=end_date
+            DC_date__lte=end_date,
+            deleted=False
         ).count()
 
         builty_code = builty_code + '-' + str(consignor_builty_count + 1)
+        
+        print("=" * 50)
+        print("BACKEND: Generating Builty Number")
+        print(f"Consignor: {consignor_instance.name} (ID: {consignor_instance.id})")
+        print(f"Financial Year: {financial_year}")
+        print(f"Existing Builty Count: {consignor_builty_count}")
+        print(f"Generated Builty Code: {builty_code}")
+        print("=" * 50)
 
         if request.user.is_superuser:
 
