@@ -69,7 +69,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='builty',
             name='builty_no',
-            field=models.CharField(db_index=True, max_length=50, unique=True),
+            field=models.CharField(db_index=True, max_length=50),
         ),
         migrations.AlterField(
             model_name='builty',
