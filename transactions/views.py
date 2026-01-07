@@ -77,9 +77,16 @@ def add_transaction(request):
         end_date = datetime(int(year_2), 3, 31)     # March 31st of year_2
 
         consignor_builty_count = builty.objects.filter(
+<<<<<<< HEAD
             consignor=consignor_instance,
             DC_date__gte=start_date,
             DC_date__lte=end_date
+=======
+            consignor=consignor_instance, 
+            DC_date__gte=start_date, 
+            DC_date__lte=end_date,
+            deleted=False
+>>>>>>> f46de8f59afa4a69b3dbea35b90a9cb772f930a7
         ).count()
 
         builty_code = builty_code + '-' + str(consignor_builty_count + 1)
