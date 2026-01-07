@@ -80,7 +80,6 @@ def add_transaction(request):
             consignor=consignor_instance,
             DC_date__gte=start_date,
             DC_date__lte=end_date
-
         ).count()
 
         builty_code = builty_code + '-' + str(consignor_builty_count + 1)
