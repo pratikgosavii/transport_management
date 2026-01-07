@@ -491,11 +491,17 @@ def get_buily_code(request):
     consignor_builty_count = builty.objects.filter(
         consignor=consignor_instance, 
         DC_date__gte=start_date, 
-        DC_date__lte=end_date,
-        deleted=False
+        DC_date__lte=end_date
     ).count()
 
     builty_code = builty_code + '-' + str(consignor_builty_count + 1)
+    print('--------------------')
+    print('--------------------')
+    print('--------------------')
+    print(builty_code)
+    print('--------------------')
+    print('--------------------')
+    print('--------------------')
 
     return JsonResponse(json.dumps({'builty_code' : builty_code}), safe=False, content_type="application/json") 
 
