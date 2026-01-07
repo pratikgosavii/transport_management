@@ -84,9 +84,13 @@ def add_transaction(request):
 =======
             consignor=consignor_instance, 
             DC_date__gte=start_date, 
+<<<<<<< HEAD
             DC_date__lte=end_date,
             deleted=False
 >>>>>>> f46de8f59afa4a69b3dbea35b90a9cb772f930a7
+=======
+            DC_date__lte=end_date
+>>>>>>> d1ba1858bc6045e868d2cc8e3d2ead12c3a55ee5
         ).count()
 
         builty_code = builty_code + '-' + str(consignor_builty_count + 1)
