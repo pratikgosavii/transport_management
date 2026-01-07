@@ -10,6 +10,12 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        # Remove the unique index first (SQLite specific)
+        migrations.RunSQL(
+            sql="DROP INDEX IF EXISTS transaction_builty__896504_idx;",
+            reverse_sql=migrations.RunSQL.noop,
+        ),
+        # Then alter the field
         migrations.AlterField(
             model_name='builty',
             name='builty_no',
