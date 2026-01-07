@@ -192,14 +192,17 @@
         });
 
         // Prevent duplicate submissions
-        $('#expense_form').on('submit', function(e) {
-            var submitButton = $('#payment-button');
+        $('#payment-button').on('click', function(e) {
+            var submitButton = $(this);
             if (submitButton.prop('disabled')) {
                 e.preventDefault();
                 return false;
             }
-            submitButton.prop('disabled', true);
-            $('#payment-button-amount').text('Submitting...');
+            // Disable button after a small delay to allow form submission to proceed
+            setTimeout(function() {
+                submitButton.prop('disabled', true);
+                $('#payment-button-amount').text('Submitting...');
+            }, 10);
         });
         </script>
 
