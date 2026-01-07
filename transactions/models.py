@@ -22,7 +22,7 @@ mode1 = (
 
 class builty(models.Model):
     company = models.ForeignKey(company, on_delete=models.CASCADE, related_name='sdwe', db_index=True)
-    builty_no = models.CharField(max_length=50, db_index=True, unique=True)
+    builty_no = models.CharField(max_length=50, db_index=True)
     DC_date = models.DateField(default=datetime.now, db_index=True)
     truck_details = models.ForeignKey(truck_details, on_delete=models.CASCADE, related_name='sdsdsc', db_index=True)
     truck_owner = models.ForeignKey(truck_owner, on_delete=models.CASCADE, related_name='cxcdfdfvd', db_index=True)

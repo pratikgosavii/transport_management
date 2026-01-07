@@ -84,12 +84,25 @@ def add_transaction(request):
 
         builty_code = builty_code + '-' + str(consignor_builty_count + 1)
         
+        # Check if this builty number already exists (including deleted records, since unique constraint checks all)
+        # If it exists, keep incrementing until we find an available one
+        original_count = consignor_builty_count
+        attempt = 0
+        while builty.objects.filter(builty_no=builty_code).exists():
+            attempt += 1
+            consignor_builty_count += 1
+            # Reconstruct builty_code with new count
+            builty_code = consignor_instance.builty_code + '-' + str(consignor_builty_count + 1)
+            print(f"WARNING: Builty number already exists. Incrementing to: {builty_code}")
+        
         print("=" * 50)
         print("BACKEND: Generating Builty Number")
         print(f"Consignor: {consignor_instance.name} (ID: {consignor_instance.id})")
         print(f"Financial Year: {financial_year}")
-        print(f"Existing Builty Count: {consignor_builty_count}")
-        print(f"Generated Builty Code: {builty_code}")
+        print(f"Existing Builty Count: {original_count}")
+        print(f"Final Generated Builty Code: {builty_code}")
+        if attempt > 0:
+            print(f"Increment attempts: {attempt}")
         print("=" * 50)
 
         if request.user.is_superuser:
