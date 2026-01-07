@@ -495,9 +495,14 @@ def get_buily_code(request):
     ).count()
 
     builty_code = builty_code + '-' + str(consignor_builty_count + 1)
-    print('--------------------')
-    print('--------------------')
-    print('--------------------')
+    
+    print("=" * 50)
+    print("FRONTEND AJAX: Generating Builty Number")
+    print(f"Consignor: {consignor_instance.name} (ID: {consignor_instance.id})")
+    print(f"Financial Year: {financial_year}")
+    print(f"Existing Builty Count: {consignor_builty_count}")
+    print(f"Generated Builty Code: {builty_code}")
+    print("=" * 50)
     print(builty_code)
     print('--------------------')
     print('--------------------')
