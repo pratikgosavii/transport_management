@@ -7,7 +7,7 @@ from .forms import *
 from django.core.paginator import Paginator, EmptyPage
 
 
-from datetime import datetime
+from datetime import datetime, date
 
 from django.http import FileResponse, HttpResponse, JsonResponse
 
@@ -87,13 +87,6 @@ def add_transaction(request):
 
         builty_code = builty_code + '-' + str(consignor_builty_count + 1)
         
-        print("=" * 50)
-        print("BACKEND: Generating Builty Number")
-        print(f"Consignor: {consignor_instance.name} (ID: {consignor_instance.id})")
-        print(f"Financial Year: {financial_year}")
-        print(f"Existing Builty Count: {consignor_builty_count}")
-        print(f"Generated Builty Code: {builty_code}")
-        print("=" * 50)
 
         if request.user.is_superuser:
 
@@ -193,11 +186,17 @@ def add_transaction(request):
 
 
     else:
-
+        t0 = time.time()
         forms = builty_Form(user=request.user)
+        t1 = time.time()
+        print(f"  GET: Form init: {(t1-t0)*1000:.1f}ms")
 
+        t0 = time.time()
         company_data = company.objects.all()
+        t1 = time.time()
+        print(f"  GET: company_data query: {(t1-t0)*1000:.1f}ms")
 
+        t0 = time.time()
         from_truck_details = truck_details_Form()
         form_truck_owner = truck_owner_Form()
         from_form_station = from_station_Form(user=request.user)
@@ -206,8 +205,11 @@ def add_transaction(request):
         form_district = district_Form()
         form_onaccount = onaccount_Form()
         form_article = article_Form(user=request.user)
+        t1 = time.time()
+        print(f"  GET: All forms init: {(t1-t0)*1000:.1f}ms")
 
         # Optimized queryset: prefetch related objects used in the template to avoid N+1 queries
+        t0 = time.time()
         data = (
             builty.objects
             .filter(user=request.user, deleted=False, DC_date=date.today())
@@ -223,14 +225,19 @@ def add_transaction(request):
             )
             .order_by('-id')
         )
+        t1 = time.time()
+        print(f"  GET: Data queryset created: {(t1-t0)*1000:.1f}ms")
 
         # Compute overall totals using DB aggregation (fast even for many rows)
+        t0 = time.time()
         totals = data.aggregate(
             total_mt_today=Sum('mt'),
             total_freight=Sum('freight'),
             total_advance=Sum('less_advance'),
             total_balance=Sum('balance'),
         )
+        t1 = time.time()
+        print(f"  GET: Aggregation query: {(t1-t0)*1000:.1f}ms")
 
         total_mt_today = totals['total_mt_today'] or 0
         total_freight = totals['total_freight'] or 0
@@ -238,12 +245,16 @@ def add_transaction(request):
         total_balance = totals['total_balance'] or 0
 
         # Compute railhead / godown MT split in Python (no extra queries thanks to select_related)
+        t0 = time.time()
         total_godown_mt_today = 0
         total_railhead_mt_today = 0
 
         office_location_id = getattr(request.user.office_location, 'id', None)
 
-        for i in data:
+        # Force queryset evaluation by converting to list
+        data_list = list(data)
+
+        for i in data_list:
             station_from_id = i.station_from_id
 
             if office_location_id == 1:
@@ -256,7 +267,10 @@ def add_transaction(request):
                     total_railhead_mt_today += i.mt
                 elif station_from_id == 55:
                     total_godown_mt_today += i.mt
+        t1 = time.time()
+        print(f"  GET: Loop + queryset eval: {(t1-t0)*1000:.1f}ms")
 
+        t0 = time.time()
         if request.user.is_superuser:
 
             article_data = article.objects.all()
@@ -277,6 +291,8 @@ def add_transaction(request):
                 company=request.user.company,
                 office_location=request.user.office_location
             )
+        t1 = time.time()
+        print(f"  GET: Dropdown data queries: {(t1-t0)*1000:.1f}ms")
 
         context = {
             'form': forms,
@@ -298,12 +314,20 @@ def add_transaction(request):
             'total_balance': total_balance,
             'total_advance': total_advance,
             'total_freight': total_freight,
-            'data': data,
+            'data': data_list,  # Use evaluated list
         }
 
-        elapsed = time.time() - start_time
-        print(f"ADD_TRANSACTION GET TIME: {elapsed:.3f} seconds")
-        return render(request, 'transactions/add_builty.html', context)
+        elapsed_before_render = time.time() - start_time
+        print(f"  GET: Total before render: {elapsed_before_render:.3f}s")
+        
+        t0 = time.time()
+        response = render(request, 'transactions/add_builty.html', context)
+        t1 = time.time()
+        print(f"  GET: Template render: {(t1-t0)*1000:.1f}ms")
+        
+        elapsed_total = time.time() - start_time
+        print(f"ADD_TRANSACTION GET TIME: {elapsed_total:.3f} seconds (view: {elapsed_before_render:.3f}s, template: {(t1-t0):.3f}s)")
+        return response
 
 
 
