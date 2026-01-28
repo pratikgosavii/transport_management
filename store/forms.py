@@ -289,4 +289,50 @@ class driver_Form(forms.ModelForm):
             'driving_licence_expiry_date': DateTimeInput(attrs={'type': 'date', 'class' : 'form-control date_css'}, format = '%Y-%m-%d'),
 
         }
-           
+
+
+class vendor_Form(forms.ModelForm):
+    class Meta:
+        model = vendor
+        fields = '__all__'
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control', 'id': 'vendor_name'
+            }),
+            'address': forms.TextInput(attrs={
+                'class': 'form-control', 'id': 'vendor_address'
+            }),
+            'mobile_number': forms.TextInput(attrs={
+                'class': 'form-control', 'id': 'vendor_mobile'
+            }),
+            'gst_number': forms.TextInput(attrs={
+                'class': 'form-control', 'id': 'vendor_gst'
+            }),
+        }
+
+
+class tyre_Form(forms.ModelForm):
+    class Meta:
+        model = tyre
+        fields = '__all__'
+        widgets = {
+            'tyre_no': forms.TextInput(attrs={
+                'class': 'form-control', 'id': 'tyre_no'
+            }),
+            'pattern': forms.Select(attrs={
+                'class': 'form-control sele', 'id': 'tyre_pattern'
+            }),
+            'type': forms.Select(attrs={
+                'class': 'form-control sele', 'id': 'tyre_type'
+            }),
+            'company': forms.TextInput(attrs={
+                'class': 'form-control', 'id': 'tyre_company'
+            }),
+            'driver': forms.Select(attrs={
+                'class': 'form-control sele', 'id': 'tyre_driver'
+            }),
+            'vendor': forms.Select(attrs={
+                'class': 'form-control sele', 'id': 'tyre_vendor'
+            }),
+        }
+            

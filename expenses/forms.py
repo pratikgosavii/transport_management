@@ -86,16 +86,63 @@ class truck_expense_Form(forms.ModelForm):
         model = truck_expense
         fields = '__all__'
         widgets = {
+            'expense_type': forms.Select(attrs={
+                'class': 'form-control sele', 'id': 'expense_type'
+            }),
             'note': forms.TextInput(attrs={
-                'class': 'form-control', 'id': 'note'
+                'class': 'form-control', 'id': 'note',
+                'placeholder': 'Enter note (optional)...'
             }),
             'amount': forms.NumberInput(attrs={
-                'class': 'form-control', 'id': 'amount'
+                'class': 'form-control', 'id': 'amount',
+                'step': '0.01', 'min': '0'
             }),
             'truck': forms.Select(attrs={
                 'class': 'form-control sele', 'id': 'truck'
             }),
-
+            # Tyre expense fields
+            'tyre_no': forms.TextInput(attrs={
+                'class': 'form-control', 'id': 'tyre_no',
+                'placeholder': 'Enter tyre number...'
+            }),
+            'pattern': forms.Select(attrs={
+                'class': 'form-control sele', 'id': 'pattern'
+            }),
+            'type': forms.Select(attrs={
+                'class': 'form-control sele', 'id': 'type'
+            }),
+            'company': forms.TextInput(attrs={
+                'class': 'form-control', 'id': 'company',
+                'placeholder': 'Enter company name...'
+            }),
+            'driver': forms.Select(attrs={
+                'class': 'form-control sele', 'id': 'driver'
+            }),
+            # Mechanic/Spare part expense fields
+            'mechanic_name': forms.TextInput(attrs={
+                'class': 'form-control', 'id': 'mechanic_name',
+                'placeholder': 'Enter mechanic name...'
+            }),
+            'spare_part_name': forms.TextInput(attrs={
+                'class': 'form-control', 'id': 'spare_part_name',
+                'placeholder': 'Enter spare part name...'
+            }),
+            'labour_cost': forms.NumberInput(attrs={
+                'class': 'form-control', 'id': 'labour_cost',
+                'step': '0.01', 'min': '0', 'placeholder': '0.00'
+            }),
+            'cost': forms.NumberInput(attrs={
+                'class': 'form-control', 'id': 'cost',
+                'step': '0.01', 'min': '0', 'placeholder': '0.00'
+            }),
+            'work_description': forms.Textarea(attrs={
+                'class': 'form-control', 'id': 'work_description',
+                'rows': 3, 'placeholder': 'Enter work description...'
+            }),
+            # Common fields
+            'vendor': forms.Select(attrs={
+                'class': 'form-control sele', 'id': 'vendor'
+            }),
             'entry_date': DateTimeInput(attrs={'type': 'datetime-local', 'class' : 'form-control date_css'}),
             
         }
@@ -104,6 +151,22 @@ class truck_expense_Form(forms.ModelForm):
         super(truck_expense_Form, self).__init__(*args, **kwargs)
         self.fields['user'].required = False
         self.fields['entry_date'].required = False
+        self.fields['expense_type'].required = True
+        # Tyre fields
+        self.fields['tyre_no'].required = False
+        self.fields['pattern'].required = False
+        self.fields['type'].required = False
+        self.fields['company'].required = False
+        self.fields['driver'].required = False
+        # Mechanic fields
+        self.fields['mechanic_name'].required = False
+        self.fields['spare_part_name'].required = False
+        self.fields['labour_cost'].required = False
+        self.fields['cost'].required = False
+        self.fields['work_description'].required = False
+        # Common fields
+        self.fields['vendor'].required = False
+        self.fields['note'].required = False
 
 class diesel_expense_Form(forms.ModelForm):
     class Meta:

@@ -115,8 +115,11 @@
        font-size: 21px;
      }
 
-
-     
+     /* Hide expense type specific fields by default */
+     .tyre-expense-fields,
+     .mechanic-expense-fields {
+       display: none;
+     }
 
 </style>
 
@@ -137,16 +140,89 @@
                       <form id="expense_form" action="#" method="post" >
                             {% csrf_token %}
 
-                           
-                       
+                            <!-- Common Fields -->
                             <div class="form-group">
-                                <label for="name" class="control-label mb-1">Truck</label>
-                                {{ form.truck }}
+                                <label for="name" class="control-label mb-1">Expense Type <span style="color: red;">*</span></label>
+                                {{ form.expense_type }}
                             </div>
 
                             <div class="form-group">
-                                <label for="name" class="control-label mb-1">Amount</label>
+                                <label for="name" class="control-label mb-1">Truck <span style="color: red;">*</span></label>
+                                {{ form.truck }}
+                            </div>
+
+                            <!-- Tyre Expense Fields -->
+                            <div class="tyre-expense-fields">
+                                <h5 style="margin-top: 20px; margin-bottom: 15px; color: #05386b;">Tyre Details</h5>
+                                
+                                <div class="form-group">
+                                    <label for="name" class="control-label mb-1">Tyre Number</label>
+                                    {{ form.tyre_no }}
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="name" class="control-label mb-1">Pattern</label>
+                                    {{ form.pattern }}
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="name" class="control-label mb-1">Type</label>
+                                    {{ form.type }}
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="name" class="control-label mb-1">Company</label>
+                                    {{ form.company }}
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="name" class="control-label mb-1">Driver</label>
+                                    {{ form.driver }}
+                                </div>
+                            </div>
+
+                            <!-- Mechanic/Spare Part Expense Fields -->
+                            <div class="mechanic-expense-fields">
+                                <h5 style="margin-top: 20px; margin-bottom: 15px; color: #05386b;">Mechanic & Spare Part Details</h5>
+                                
+                                <div class="form-group">
+                                    <label for="name" class="control-label mb-1">Mechanic Name</label>
+                                    {{ form.mechanic_name }}
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="name" class="control-label mb-1">Spare Part Name</label>
+                                    {{ form.spare_part_name }}
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="name" class="control-label mb-1">Labour Cost</label>
+                                    {{ form.labour_cost }}
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="name" class="control-label mb-1">Spare Part Cost</label>
+                                    {{ form.cost }}
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="name" class="control-label mb-1">Work Description</label>
+                                    {{ form.work_description }}
+                                </div>
+                            </div>
+
+                            <!-- Common Fields for All Types -->
+                            <div class="form-group">
+                                <label for="name" class="control-label mb-1">Vendor</label>
+                                {{ form.vendor }}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="name" class="control-label mb-1">Total Amount <span style="color: red;">*</span></label>
                                 {{ form.amount }}
+                                <small class="form-text text-muted" id="amount-hint-mechanic" style="display: none;">
+                                    (Labour Cost + Spare Part Cost will be calculated automatically)
+                                </small>
                             </div>
 
                             <div class="form-group">
@@ -154,7 +230,10 @@
                                 {{ form.note }}
                             </div>
 
-
+                            <div class="form-group">
+                                <label for="name" class="control-label mb-1">Entry Date</label>
+                                {{ form.entry_date }}
+                            </div>
 
                             <div>
                                 <button id="payment-button" type="submit" class="btn btn-lg btn-info btn-block">
@@ -176,34 +255,59 @@
     {% block js %}
 
         <script>
-
             
-  $('.sele').select2();
+            $('.sele').select2();
 
-
-
-            $('.cal').keyup(function(){
-                var textone;
-                var texttwo;
-            textone = parseFloat($('#bag_size').val());
-            texttwo = parseFloat($('#total_bag').val());
-            var result = textone * texttwo;
-            $('#total_pck').val(result.toFixed(2));
-        });
-
-        // Prevent duplicate submissions
-        $('#payment-button').on('click', function(e) {
-            var submitButton = $(this);
-            if (submitButton.prop('disabled')) {
-                e.preventDefault();
-                return false;
+            // Function to toggle fields based on expense type
+            function toggleExpenseFields() {
+                var expenseType = $('#expense_type').val();
+                
+                // Hide all expense-specific fields first
+                $('.tyre-expense-fields, .mechanic-expense-fields').hide();
+                $('#amount-hint-mechanic').hide();
+                
+                // Show relevant fields based on expense type
+                if (expenseType === 'tyre') {
+                    $('.tyre-expense-fields').show();
+                } else if (expenseType === 'mechanic') {
+                    $('.mechanic-expense-fields').show();
+                    $('#amount-hint-mechanic').show();
+                }
             }
-            // Disable button after a small delay to allow form submission to proceed
-            setTimeout(function() {
-                submitButton.prop('disabled', true);
-                $('#payment-button-amount').text('Submitting...');
-            }, 10);
-        });
+
+            // Initialize on page load
+            $(document).ready(function() {
+                toggleExpenseFields();
+                
+                // Toggle fields when expense type changes
+                $('#expense_type').on('change', function() {
+                    toggleExpenseFields();
+                });
+
+                // Auto-calculate total amount for mechanic expenses
+                $('#labour_cost, #cost').on('input', function() {
+                    if ($('#expense_type').val() === 'mechanic') {
+                        var labourCost = parseFloat($('#labour_cost').val()) || 0;
+                        var sparePartCost = parseFloat($('#cost').val()) || 0;
+                        var total = labourCost + sparePartCost;
+                        $('#amount').val(total.toFixed(2));
+                    }
+                });
+            });
+
+            // Prevent duplicate submissions
+            $('#payment-button').on('click', function(e) {
+                var submitButton = $(this);
+                if (submitButton.prop('disabled')) {
+                    e.preventDefault();
+                    return false;
+                }
+                // Disable button after a small delay to allow form submission to proceed
+                setTimeout(function() {
+                    submitButton.prop('disabled', true);
+                    $('#payment-button-amount').text('Submitting...');
+                }, 10);
+            });
         </script>
 
     {% endblock js %}

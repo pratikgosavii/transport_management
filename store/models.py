@@ -176,4 +176,56 @@ class rate(models.Model):
         return self.from_station.name
  
 
+class vendor(models.Model):
+    """Vendor master table for tyre purchases"""
+    name = models.CharField(max_length=120, unique=True)
+    address = models.CharField(max_length=255, null=True, blank=True)
+    mobile_number = models.CharField(max_length=20, null=True, blank=True)
+    gst_number = models.CharField(max_length=50, null=True, blank=True)
+    
+    def __str__(self):
+        return self.name
+
+
+# Tyre pattern choices
+TYRE_PATTERN_CHOICES = (
+    ('radial', 'Radial'),
+    ('bias', 'Bias'),
+    ('tubeless', 'Tubeless'),
+    ('tube_type', 'Tube Type'),
+)
+
+# Tyre type choices
+TYRE_TYPE_CHOICES = (
+    ('front', 'Front'),
+    ('rear', 'Rear'),
+    ('spare', 'Spare'),
+    ('all_position', 'All Position'),
+)
+
+class tyre(models.Model):
+    """Tyre master table for truck expenses"""
+    tyre_no = models.CharField(max_length=50, unique=True, db_index=True)
+    pattern = models.CharField(max_length=50, choices=TYRE_PATTERN_CHOICES, db_index=True)
+    type = models.CharField(max_length=50, choices=TYRE_TYPE_CHOICES, db_index=True)
+    company = models.CharField(max_length=120, db_index=True)
+    driver = models.ForeignKey(driver, on_delete=models.SET_NULL, null=True, blank=True, related_name='tyres', db_index=True)
+    vendor = models.ForeignKey(vendor, on_delete=models.SET_NULL, null=True, blank=True, related_name='tyres', db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name_plural = "Tyres"
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['tyre_no']),
+            models.Index(fields=['pattern']),
+            models.Index(fields=['type']),
+            models.Index(fields=['company']),
+        ]
+    
+    def __str__(self):
+        return f"{self.tyre_no} - {self.company}"
+ 
+
  

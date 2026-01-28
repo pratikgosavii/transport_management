@@ -55,11 +55,52 @@ class builty_expense(models.Model):
     
 
 
+# Expense type choices
+EXPENSE_TYPE_CHOICES = (
+    ('tyre', 'Tyre Expense'),
+    ('mechanic', 'Mechanic/Spare Part Expense'),
+    ('other', 'Other Truck Expense'),
+)
+
+# Tyre pattern choices
+TYRE_PATTERN_CHOICES = (
+    ('radial', 'Radial'),
+    ('bias', 'Bias'),
+    ('tubeless', 'Tubeless'),
+    ('tube_type', 'Tube Type'),
+)
+
+# Tyre type choices
+TYRE_TYPE_CHOICES = (
+    ('front', 'Front'),
+    ('rear', 'Rear'),
+    ('spare', 'Spare'),
+    ('all_position', 'All Position'),
+)
+
 class truck_expense(models.Model):
 
     truck = models.ForeignKey(truck_details, on_delete=models.CASCADE)
-    amount = models.FloatField()
-    note = models.CharField(max_length=500)
+    expense_type = models.CharField(max_length=20, choices=EXPENSE_TYPE_CHOICES, default='other', db_index=True)
+    
+    # Tyre expense fields
+    tyre_no = models.CharField(max_length=50, null=True, blank=True, db_index=True)
+    pattern = models.CharField(max_length=50, choices=TYRE_PATTERN_CHOICES, null=True, blank=True, db_index=True)
+    type = models.CharField(max_length=50, choices=TYRE_TYPE_CHOICES, null=True, blank=True, db_index=True)
+    company = models.CharField(max_length=120, null=True, blank=True, db_index=True)
+    driver = models.ForeignKey(driver, on_delete=models.SET_NULL, null=True, blank=True, db_index=True)
+    
+    # Mechanic/Spare part expense fields
+    mechanic_name = models.CharField(max_length=120, null=True, blank=True, db_index=True)
+    spare_part_name = models.CharField(max_length=120, null=True, blank=True, db_index=True)
+    labour_cost = models.FloatField(null=True, blank=True)
+    cost = models.FloatField(null=True, blank=True)  # Spare part cost
+    work_description = models.TextField(null=True, blank=True)
+    
+    # Common fields
+    vendor = models.ForeignKey(vendor, on_delete=models.SET_NULL, null=True, blank=True, db_index=True)
+    amount = models.FloatField()  # Total amount (for tyre: amount, for mechanic: labour_cost + cost)
+    note = models.CharField(max_length=500, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     entry_date = models.DateField(default=timezone.now)
 
