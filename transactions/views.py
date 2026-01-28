@@ -223,6 +223,7 @@ def add_transaction(request):
                 'onaccount',
                 'article',
             )
+            .prefetch_related('have_ack')  # CRITICAL: Prefetch ack to avoid N+1 queries in template
             .order_by('-id')
         )
         t1 = time.time()
@@ -531,14 +532,46 @@ from django.db.models import Sum
 
 @user_is_active
 def list_transaction(request):
-
+    start_time = time.time()
 
     if request.user.is_superuser:
 
-        queryset_data = builty.objects.filter(deleted = False).order_by('-id')
+        queryset_data = (
+            builty.objects
+            .filter(deleted = False)
+            .select_related(
+                'truck_details',
+                'truck_owner',
+                'station_from',
+                'station_to',
+                'taluka',
+                'district',
+                'consignor',
+                'onaccount',
+                'article',
+            )
+            .prefetch_related('have_ack', 'has_request')  # CRITICAL: Prefetch to avoid N+1 queries in template
+            .order_by('-id')
+        )
     else:
 
-        queryset_data = builty.objects.filter(user = request.user, deleted = False).order_by('-id')
+        queryset_data = (
+            builty.objects
+            .filter(user = request.user, deleted = False)
+            .select_related(
+                'truck_details',
+                'truck_owner',
+                'station_from',
+                'station_to',
+                'taluka',
+                'district',
+                'consignor',
+                'onaccount',
+                'article',
+            )
+            .prefetch_related('have_ack', 'has_request')  # CRITICAL: Prefetch to avoid N+1 queries in template
+            .order_by('-id')
+        )
 
     builty_filters = builty_filter(request.user, request.GET, queryset=queryset_data, request=request)
 
@@ -573,6 +606,7 @@ def list_transaction(request):
     has_filter = any(field in request.GET for field in set(builty_filters.get_fields()))
 
 
+    t0 = time.time()
     context = {
         'data' : data,
         'builty_filter' : builty_filters,
@@ -583,9 +617,16 @@ def list_transaction(request):
         'total_mt' : total_mt,
         'has_filter' : has_filter,
     }
+    t1 = time.time()
+    print(f"  LIST_TRANSACTION: Context prep: {(t1-t0)*1000:.1f}ms")
 
-
-    return render(request, 'transactions/list_builty.html', context)
+    t0 = time.time()
+    response = render(request, 'transactions/list_builty.html', context)
+    t1 = time.time()
+    elapsed = time.time() - start_time
+    print(f"  LIST_TRANSACTION: Template render: {(t1-t0)*1000:.1f}ms")
+    print(f"LIST_TRANSACTION TOTAL TIME: {elapsed:.3f} seconds (view: {t0-start_time:.3f}s, template: {t1-t0:.3f}s)")
+    return response
 
 
 
