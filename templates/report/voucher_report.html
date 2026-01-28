@@ -234,16 +234,7 @@
                 
           <label for="name" class="control-label mb-1" style="margin-left : 0px;">Truck No</label>
   
-          <select class="sele" name="truck_details" id="truck_details" multiple="multiple">
-            {% for id, name in form.truck_details.field.choices %}
-  
-            {% if name != '---------' %}
-              <option value="{{ id }}"> {{ name }} </option>
-              {% endif %}
-  
-              {% endfor %}
-            
-          </select><input id="select_all_truck_details" type="checkbox" >
+          {{ builty_filter.form.builty__truck_details }}
                                   
         </div>
   
@@ -251,30 +242,10 @@
         <div class="form-group" style="display: flex;gap: 14px;">
   
           <label for="name" class="control-label mb-1" style="margin-left : 0px;">Consignor</label>
-          <select class="sele" name="consignor" id="consignor" multiple="multiple">
-              
-            {% for id, name in form.consignor.field.choices %}
-  
-            {% if name != '---------' %}
-            <option value="{{ id }}"> {{ name }} </option>
-            {% endif %}
-            
-              {% endfor %}
-        
-          </select><input id="select_all_consignor" type="checkbox" >
+          {{ builty_filter.form.builty__consignor }}
           
           <label for="name" class="control-label mb-1" style="margin-left : 0px;">Truck Owner</label>
-          <select class="sele" name="truck_owner" id="truck_owner" multiple="multiple">
-            
-            {% for id, name in form.truck_owner.field.choices %}
-  
-            {% if name != '---------' %}
-            <option value="{{ id }}"> {{ name }} </option>
-            {% endif %}
-                
-            {% endfor %}
-            
-          </select><input id="select_all_truck_owner" type="checkbox" >
+          {{ builty_filter.form.builty__truck_owner }}
         
           <label for="name" class="control-label mb-1 la">Article</label>
           {{ builty_filter.form.builty__article }}

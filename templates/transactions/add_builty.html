@@ -569,11 +569,11 @@
                                     <span id="payment-button-amount">Create Builty</span>
                                 </button>
                                 <p style="color: black;
-                                font-weight: bold;">Railhead MT : {{ total_railhead_mt_today }} </p>
+                                font-weight: bold;">Railhead MT : {{ total_railhead_mt_today|floatformat:2 }} </p>
                                 <p style="color: black;
-                                font-weight: bold;">  Godown MT : {{ total_godown_mt_today }} </p>
+                                font-weight: bold;">  Godown MT : {{ total_godown_mt_today|floatformat:2 }} </p>
                                 <p style="color: black;
-                                font-weight: bold;"> Total MT :- {{ total_mt_today }} </p>
+                                font-weight: bold;"> Total MT :- {{ total_mt_today|floatformat:2 }} </p>
                             </div>
                         </form>
                     </div>
@@ -687,13 +687,13 @@
                       <div class="footer-inner bg-white" style="float: right;">
                           <div class="row" style="float: right;">
                               <p style="font-weight: 700;
-                              color: black;;margin-left:30px;border : 1px solid grey;padding : 10px;"> Total MT : {{ total_mt_today }}</p>
+                              color: black;;margin-left:30px;border : 1px solid grey;padding : 10px;"> Total MT : {{ total_mt_today|floatformat:2 }}</p>
                               <p style="font-weight: 700;
-                              color: black;;margin-left:30px;border : 1px solid grey;padding : 10px;"> Total Freight : {{ total_freight }} </p>
+                              color: black;;margin-left:30px;border : 1px solid grey;padding : 10px;"> Total Freight : {{ total_freight|floatformat:2 }} </p>
                               <p style="font-weight: 700;
-                              color: black;margin-left:30px;border : 1px solid grey;padding : 10px;">  Advance : {{ total_advance }} RS</p><br>
+                              color: black;margin-left:30px;border : 1px solid grey;padding : 10px;">  Advance : {{ total_advance|floatformat:2 }} RS</p><br>
                               <p style="font-weight: 700;
-                              color: black;;margin-left:30px;border : 1px solid grey;padding : 10px;">  Balance : {{ total_balance }} RS</p>
+                              color: black;;margin-left:30px;border : 1px solid grey;padding : 10px;">  Balance : {{ total_balance|floatformat:2 }} RS</p>
                             </div>
 
                             

@@ -186,57 +186,68 @@ def add_transaction(request):
 
     else:
 
-        forms = builty_Form(user = request.user)
+        forms = builty_Form(user=request.user)
 
         company_data = company.objects.all()
 
         from_truck_details = truck_details_Form()
         form_truck_owner = truck_owner_Form()
-        from_form_station= from_station_Form(user = request.user)
-        form_station= station_Form(user = request.user)
-        form_taluka = taluka_Form(user = request.user)
+        from_form_station = from_station_Form(user=request.user)
+        form_station = station_Form(user=request.user)
+        form_taluka = taluka_Form(user=request.user)
         form_district = district_Form()
         form_onaccount = onaccount_Form()
-        form_article = article_Form(user = request.user)
+        form_article = article_Form(user=request.user)
 
-        total_mt_today = 0
+        # Optimized queryset: prefetch related objects used in the template to avoid N+1 queries
+        data = (
+            builty.objects
+            .filter(user=request.user, deleted=False, DC_date=date.today())
+            .select_related(
+                'station_from',
+                'station_to',
+                'truck_details',
+                'truck_owner',
+                'taluka',
+                'district',
+                'onaccount',
+                'article',
+            )
+            .order_by('-id')
+        )
+
+        # Compute overall totals using DB aggregation (fast even for many rows)
+        totals = data.aggregate(
+            total_mt_today=Sum('mt'),
+            total_freight=Sum('freight'),
+            total_advance=Sum('less_advance'),
+            total_balance=Sum('balance'),
+        )
+
+        total_mt_today = totals['total_mt_today'] or 0
+        total_freight = totals['total_freight'] or 0
+        total_advance = totals['total_advance'] or 0
+        total_balance = totals['total_balance'] or 0
+
+        # Compute railhead / godown MT split in Python (no extra queries thanks to select_related)
         total_godown_mt_today = 0
         total_railhead_mt_today = 0
-        total_mt_today = 0
-        total_freight = 0
-        total_advance = 0
-        total_balance = 0
 
-        data = builty.objects.filter(user = request.user, deleted = False, DC_date = date.today()).order_by('-id')
+        office_location_id = getattr(request.user.office_location, 'id', None)
 
         for i in data:
+            station_from_id = i.station_from_id
 
-            if request.user.office_location.id == 1:
-
-                if i.station_from.id == 1:
-
-                    total_railhead_mt_today  = total_railhead_mt_today + i.mt
-
-                elif i.station_from.id == 20:
-
-                     total_godown_mt_today = total_godown_mt_today + i.mt
-
-            elif request.user.office_location.id == 2:
-
-                if i.station_from.id == 48:
-
-                    total_railhead_mt_today  = total_railhead_mt_today + i.mt
-
-                elif i.station_from.id == 55:
-
-                     total_godown_mt_today = total_godown_mt_today + i.mt
-
-
-
-            total_mt_today = total_mt_today + i.mt
-            total_freight = total_freight + i.freight
-            total_advance = total_advance + i.less_advance
-            total_balance = total_balance + i.balance
+            if office_location_id == 1:
+                if station_from_id == 1:
+                    total_railhead_mt_today += i.mt
+                elif station_from_id == 20:
+                    total_godown_mt_today += i.mt
+            elif office_location_id == 2:
+                if station_from_id == 48:
+                    total_railhead_mt_today += i.mt
+                elif station_from_id == 55:
+                    total_godown_mt_today += i.mt
 
         if request.user.is_superuser:
 
@@ -246,32 +257,40 @@ def add_transaction(request):
 
         else:
 
-            article_data = article.objects.filter(company_name = request.user.company, office_location = request.user.office_location)
-            consignor_data = consignor.objects.filter(company = request.user.company, office_location= request.user.office_location)
-            onaccount_data = onaccount.objects.filter(company = request.user.company, office_location= request.user.office_location)
-
+            article_data = article.objects.filter(
+                company_name=request.user.company,
+                office_location=request.user.office_location
+            )
+            consignor_data = consignor.objects.filter(
+                company=request.user.company,
+                office_location=request.user.office_location
+            )
+            onaccount_data = onaccount.objects.filter(
+                company=request.user.company,
+                office_location=request.user.office_location
+            )
 
         context = {
             'form': forms,
-            'company_data' : company_data,
-            'form_truck_details' : from_truck_details,
-            'form_truck_owner' : form_truck_owner,
-            'from_form_station' : from_form_station,
-            'station_Form' : form_station,
-            'form_onaccount' : form_onaccount,
-            'form_taluka' : form_taluka,
-            'form_district' : form_district,
-            'form_article' : form_article,
-            'article_data' : article_data,
-            'consignor_data' : consignor_data,
-            'onaccount_data' : onaccount_data,
-            'total_mt_today' : total_mt_today,
-            'total_railhead_mt_today' : total_railhead_mt_today,
-            'total_godown_mt_today' : total_godown_mt_today,
-            'total_balance' : total_balance,
-            'total_advance' : total_advance,
-            'total_freight' : total_freight,
-            'data' : data,
+            'company_data': company_data,
+            'form_truck_details': from_truck_details,
+            'form_truck_owner': form_truck_owner,
+            'from_form_station': from_form_station,
+            'station_Form': form_station,
+            'form_onaccount': form_onaccount,
+            'form_taluka': form_taluka,
+            'form_district': form_district,
+            'form_article': form_article,
+            'article_data': article_data,
+            'consignor_data': consignor_data,
+            'onaccount_data': onaccount_data,
+            'total_mt_today': total_mt_today,
+            'total_railhead_mt_today': total_railhead_mt_today,
+            'total_godown_mt_today': total_godown_mt_today,
+            'total_balance': total_balance,
+            'total_advance': total_advance,
+            'total_freight': total_freight,
+            'data': data,
         }
         return render(request, 'transactions/add_builty.html', context)
 
