@@ -573,14 +573,40 @@ def list_transaction(request):
             .order_by('-id')
         )
 
+    t0 = time.time()
     builty_filters = builty_filter(request.user, request.GET, queryset=queryset_data, request=request)
+    t1 = time.time()
+    print(f"  LIST_TRANSACTION: Filter applied: {(t1-t0)*1000:.1f}ms")
 
     filter_data = builty_filters.qs
+    
+    # CRITICAL: Reapply optimizations after filter (filter may create new queryset)
+    t0 = time.time()
+    filter_data = (
+        filter_data
+        .select_related(
+            'truck_details',
+            'truck_owner',
+            'station_from',
+            'station_to',
+            'taluka',
+            'district',
+            'consignor',
+            'onaccount',
+            'article',
+        )
+        .prefetch_related('have_ack', 'has_request')
+    )
+    t1 = time.time()
+    print(f"  LIST_TRANSACTION: Optimizations reapplied: {(t1-t0)*1000:.1f}ms")
 
+    t0 = time.time()
     total_freight = filter_data.aggregate(Sum('freight'))['freight__sum']
     total_advance = filter_data.aggregate(Sum('less_advance'))['less_advance__sum']
     total_mt = filter_data.aggregate(Sum('mt'))['mt__sum']
     total_balance = filter_data.filter(have_ack__isnull = True).aggregate(Sum('balance'))['balance__sum']
+    t1 = time.time()
+    print(f"  LIST_TRANSACTION: Aggregations: {(t1-t0)*1000:.1f}ms")
 
     if total_balance:
         total_balance = round(total_balance, 2)
@@ -589,6 +615,7 @@ def list_transaction(request):
     if total_advance:
         total_advance = round(total_advance, 2)
 
+    t0 = time.time()
     page = request.GET.get('page', 1)
     paginator = Paginator(filter_data, 20)
 
@@ -603,8 +630,13 @@ def list_transaction(request):
 
 
 
-    has_filter = any(field in request.GET for field in set(builty_filters.get_fields()))
+    # Force evaluation of the page to trigger prefetch before template rendering
+    t0 = time.time()
+    _ = list(data.object_list)
+    t1 = time.time()
+    print(f"  LIST_TRANSACTION: Page queryset evaluation (triggers prefetch): {(t1-t0)*1000:.1f}ms")
 
+    has_filter = any(field in request.GET for field in set(builty_filters.get_fields()))
 
     t0 = time.time()
     context = {

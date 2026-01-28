@@ -122,12 +122,14 @@ class builty_filter2(django_filters.FilterSet):
                 'id' : 'petrol_pump'
             })
     )
-    builty_no = django_filters.ModelChoiceFilter(
-        queryset=builty.objects.all(),
-        widget=forms.Select(
+    builty_no = CharFilter(
+        field_name='builty_no',
+        lookup_expr='icontains',  # Case-insensitive partial match
+        widget=forms.TextInput(
             attrs={
-                'class' : 'form-control date_css sele',
-                'id' : 'builty_no'
+                'class' : 'form-control date_css',
+                'id' : 'builty_no',
+                'placeholder': 'Enter builty number...'
             })
     )
 
@@ -184,7 +186,6 @@ class builty_filter2(django_filters.FilterSet):
             self.filters['onaccount'].queryset = onaccount.objects.filter(office_location = request.office_location)
             self.filters['consignor'].queryset = consignor.objects.filter(office_location = request.office_location)
             self.filters['article'].queryset = article.objects.filter(office_location = request.office_location)
-            self.filters['builty_no'].queryset = builty.objects.filter(user = request).exclude(have_ack__isnull=True)
 
 
 import logging
@@ -304,12 +305,14 @@ class builty_filter(django_filters.FilterSet):
                 'id' : 'petrol_pump'
             })
     )
-    builty_no = django_filters.ModelChoiceFilter(
-        queryset=builty.objects.all(),
-        widget=forms.Select(
+    builty_no = CharFilter(
+        field_name='builty_no',
+        lookup_expr='icontains',  # Case-insensitive partial match
+        widget=forms.TextInput(
             attrs={
-                'class' : 'form-control date_css sele',
-                'id' : 'builty_no'
+                'class' : 'form-control date_css',
+                'id' : 'builty_no',
+                'placeholder': 'Enter builty number...'
             })
     )
 
@@ -375,26 +378,6 @@ class builty_filter(django_filters.FilterSet):
             self.filters['onaccount'].queryset = onaccount.objects.filter(office_location = user_intance.office_location)
             self.filters['consignor'].queryset = consignor.objects.filter(office_location = user_intance.office_location)
             self.filters['article'].queryset = article.objects.filter(office_location = user_intance.office_location)
-            self.filters['builty_no'].queryset = builty.objects.filter(user = user_intance).exclude(have_ack__isnull=True)
-
-            financial_year = self.request.session.get('financial_year')
-            if financial_year:
-                year_1, year_2 = financial_year.split('-')
-                start_date = datetime(int(year_1), 4, 1)
-                end_date = datetime(int(year_2), 3, 31)
-            else:
-                # Set default values if financial year is not in session
-                start_date = datetime.min
-                end_date = datetime.max
-
-            # Filter Builty objects based on user, date range, and excluding those with related Ack objects
-            queryset = builty.objects.filter(
-                user=self.request.user,
-                DC_date__gte=start_date,
-                DC_date__lte=end_date
-            )
-
-            self.filters['builty_no'].queryset = queryset
 
        
     def filter_select_all_except_one(self, queryset, name, value):
@@ -501,12 +484,14 @@ class ack_filter(django_filters.FilterSet):
             })
     )
 
-    builty__builty_no = django_filters.ModelChoiceFilter(
-        queryset=builty.objects.all(),
-        widget=forms.Select(
+    builty__builty_no = CharFilter(
+        field_name='builty__builty_no',
+        lookup_expr='icontains',  # Case-insensitive partial match
+        widget=forms.TextInput(
             attrs={
-                'class' : 'form-control date_css sele',
-                'id' : 'builty_no'
+                'class' : 'form-control date_css',
+                'id' : 'builty_no',
+                'placeholder': 'Enter builty number...'
             })
     )
 
@@ -581,14 +566,7 @@ class ack_filter(django_filters.FilterSet):
             start_date = datetime.min
             end_date = datetime.max
 
-        # Filter Builty objects based on user, date range, and excluding those with related Ack objects
-        queryset = builty.objects.filter(
-            user=self.request.user,
-            DC_date__gte=start_date,
-            DC_date__lte=end_date
-        )
-
-        self.filters['builty__builty_no'].queryset = queryset
+        # Note: builty__builty_no is now a CharFilter, so no queryset assignment needed
 
 
    
