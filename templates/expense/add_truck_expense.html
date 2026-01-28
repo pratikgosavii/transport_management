@@ -121,6 +121,113 @@
        display: none;
      }
 
+     /* Form styling improvements */
+     .expense-section {
+       background-color: #f8f9fa;
+       border: 1px solid #e0e0e0;
+       border-radius: 8px;
+       padding: 20px;
+       margin-bottom: 20px;
+       transition: all 0.3s ease;
+     }
+
+     .expense-section:hover {
+       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+     }
+
+     .section-title {
+       color: #05386b;
+       font-weight: 600;
+       font-size: 16px;
+       margin-bottom: 20px;
+       padding-bottom: 10px;
+       border-bottom: 2px solid #05386b;
+       display: flex;
+       align-items: center;
+     }
+
+     .section-title:before {
+       content: "▸";
+       margin-right: 10px;
+       font-size: 18px;
+     }
+
+     .form-row-custom {
+       display: grid;
+       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+       gap: 20px;
+       margin-bottom: 15px;
+     }
+
+     .form-group {
+       margin-bottom: 20px;
+     }
+
+     .form-group label {
+       font-weight: 500;
+       color: #333;
+       margin-bottom: 8px;
+       display: block;
+     }
+
+     .required-field {
+       color: #dc3545;
+       margin-left: 3px;
+     }
+
+     .form-control, .sele {
+       border-radius: 6px;
+       border: 1px solid #ced4da;
+       transition: all 0.3s ease;
+     }
+
+     .form-control:focus, .sele:focus {
+       border-color: #05386b;
+       box-shadow: 0 0 0 0.2rem rgba(5, 56, 107, 0.25);
+     }
+
+     .help-text {
+       font-size: 12px;
+       color: #6c757d;
+       margin-top: 5px;
+       font-style: italic;
+     }
+
+     #payment-button {
+       background-color: #05386b;
+       border: none;
+       padding: 12px 30px;
+       font-weight: 500;
+       transition: all 0.3s ease;
+       margin-top: 20px;
+     }
+
+     #payment-button:hover {
+       background-color: #042a52;
+       transform: translateY(-2px);
+       box-shadow: 0 4px 8px rgba(5, 56, 107, 0.3);
+     }
+
+     #payment-button:disabled {
+       opacity: 0.6;
+       cursor: not-allowed;
+       transform: none;
+     }
+
+     .card-header {
+       background-color: #05386b;
+       color: white;
+       border-radius: 8px 8px 0 0;
+       padding: 15px 20px;
+     }
+
+     .card-header .card-title {
+       color: white;
+       margin: 0;
+       font-size: 18px;
+       font-weight: 600;
+     }
+
 </style>
 
 
@@ -140,104 +247,128 @@
                       <form id="expense_form" action="#" method="post" >
                             {% csrf_token %}
 
-                            <!-- Common Fields -->
-                            <div class="form-group">
-                                <label for="name" class="control-label mb-1">Expense Type <span style="color: red;">*</span></label>
-                                {{ form.expense_type }}
-                            </div>
+                            <!-- Basic Information Section -->
+                            <div class="expense-section">
+                                <div class="section-title">Basic Information</div>
+                                <div class="form-row-custom">
+                                    <div class="form-group">
+                                        <label for="expense_type" class="control-label mb-1">
+                                            Expense Type <span class="required-field">*</span>
+                                        </label>
+                                        {{ form.expense_type }}
+                                    </div>
 
-                            <div class="form-group">
-                                <label for="name" class="control-label mb-1">Truck <span style="color: red;">*</span></label>
-                                {{ form.truck }}
+                                    <div class="form-group">
+                                        <label for="truck" class="control-label mb-1">
+                                            Truck <span class="required-field">*</span>
+                                        </label>
+                                        {{ form.truck }}
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Tyre Expense Fields -->
-                            <div class="tyre-expense-fields">
-                                <h5 style="margin-top: 20px; margin-bottom: 15px; color: #05386b;">Tyre Details</h5>
-                                
-                                <div class="form-group">
-                                    <label for="name" class="control-label mb-1">Tyre Number</label>
-                                    {{ form.tyre_no }}
+                            <div class="tyre-expense-fields expense-section">
+                                <div class="section-title">Tyre Details</div>
+                                <div class="form-row-custom">
+                                    <div class="form-group">
+                                        <label for="tyre_no" class="control-label mb-1">Tyre Number</label>
+                                        {{ form.tyre_no }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="pattern" class="control-label mb-1">Pattern</label>
+                                        {{ form.pattern }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="type" class="control-label mb-1">Type</label>
+                                        {{ form.type }}
+                                    </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="name" class="control-label mb-1">Pattern</label>
-                                    {{ form.pattern }}
-                                </div>
+                                <div class="form-row-custom">
+                                    <div class="form-group">
+                                        <label for="company" class="control-label mb-1">Company</label>
+                                        {{ form.company }}
+                                    </div>
 
-                                <div class="form-group">
-                                    <label for="name" class="control-label mb-1">Type</label>
-                                    {{ form.type }}
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="name" class="control-label mb-1">Company</label>
-                                    {{ form.company }}
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="name" class="control-label mb-1">Driver</label>
-                                    {{ form.driver }}
+                                    <div class="form-group">
+                                        <label for="driver" class="control-label mb-1">Driver</label>
+                                        {{ form.driver }}
+                                    </div>
                                 </div>
                             </div>
 
                             <!-- Mechanic/Spare Part Expense Fields -->
-                            <div class="mechanic-expense-fields">
-                                <h5 style="margin-top: 20px; margin-bottom: 15px; color: #05386b;">Mechanic & Spare Part Details</h5>
-                                
-                                <div class="form-group">
-                                    <label for="name" class="control-label mb-1">Mechanic Name</label>
-                                    {{ form.mechanic_name }}
+                            <div class="mechanic-expense-fields expense-section">
+                                <div class="section-title">Mechanic & Spare Part Details</div>
+                                <div class="form-row-custom">
+                                    <div class="form-group">
+                                        <label for="mechanic_name" class="control-label mb-1">Mechanic Name</label>
+                                        {{ form.mechanic_name }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="spare_part_name" class="control-label mb-1">Spare Part Name</label>
+                                        {{ form.spare_part_name }}
+                                    </div>
+                                </div>
+
+                                <div class="form-row-custom">
+                                    <div class="form-group">
+                                        <label for="labour_cost" class="control-label mb-1">Labour Cost</label>
+                                        {{ form.labour_cost }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="cost" class="control-label mb-1">Spare Part Cost</label>
+                                        {{ form.cost }}
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="name" class="control-label mb-1">Spare Part Name</label>
-                                    {{ form.spare_part_name }}
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="name" class="control-label mb-1">Labour Cost</label>
-                                    {{ form.labour_cost }}
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="name" class="control-label mb-1">Spare Part Cost</label>
-                                    {{ form.cost }}
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="name" class="control-label mb-1">Work Description</label>
+                                    <label for="work_description" class="control-label mb-1">Work Description</label>
                                     {{ form.work_description }}
                                 </div>
                             </div>
 
-                            <!-- Common Fields for All Types -->
-                            <div class="form-group">
-                                <label for="name" class="control-label mb-1">Vendor</label>
-                                {{ form.vendor }}
+                            <!-- Payment & Additional Information Section -->
+                            <div class="expense-section">
+                                <div class="section-title">Payment & Additional Information</div>
+                                <div class="form-row-custom">
+                                    <div class="form-group">
+                                        <label for="vendor" class="control-label mb-1">Vendor</label>
+                                        {{ form.vendor }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="amount" class="control-label mb-1">
+                                            Total Amount <span class="required-field">*</span>
+                                        </label>
+                                        {{ form.amount }}
+                                        <small class="help-text" id="amount-hint-mechanic" style="display: none;">
+                                            (Labour Cost + Spare Part Cost will be calculated automatically)
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <div class="form-row-custom">
+                                    <div class="form-group">
+                                        <label for="entry_date" class="control-label mb-1">Entry Date</label>
+                                        {{ form.entry_date }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="note" class="control-label mb-1">Note</label>
+                                        {{ form.note }}
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="name" class="control-label mb-1">Total Amount <span style="color: red;">*</span></label>
-                                {{ form.amount }}
-                                <small class="form-text text-muted" id="amount-hint-mechanic" style="display: none;">
-                                    (Labour Cost + Spare Part Cost will be calculated automatically)
-                                </small>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="name" class="control-label mb-1">Note</label>
-                                {{ form.note }}
-                            </div>
-
-                            <div class="form-group">
-                                <label for="name" class="control-label mb-1">Entry Date</label>
-                                {{ form.entry_date }}
-                            </div>
-
-                            <div>
-                                <button id="payment-button" type="submit" class="btn btn-lg btn-info btn-block">
-                                    <span id="payment-button-amount">Submit</span>
+                            <div style="text-align: center; margin-top: 30px;">
+                                <button id="payment-button" type="submit" class="btn btn-lg btn-info">
+                                    <span id="payment-button-amount">Submit Expense</span>
                                 </button>
                             </div>
                         </form>
