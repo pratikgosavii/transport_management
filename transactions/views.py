@@ -14,6 +14,7 @@ from django.http import FileResponse, HttpResponse, JsonResponse
 
 
 import pytz
+import time
 
 IST = pytz.timezone('Asia/Kolkata')
 
@@ -48,6 +49,8 @@ from expenses.models import *
 def add_transaction(request):
 
 
+
+    start_time = time.time()
 
     if request.method == 'POST':
 
@@ -124,6 +127,8 @@ def add_transaction(request):
             user_instance.save()
 
 
+            elapsed = time.time() - start_time
+            print(f"ADD_TRANSACTION POST TIME: {elapsed:.3f} seconds")
             return redirect('add_transaction')
 
         else:
@@ -179,6 +184,9 @@ def add_transaction(request):
                 'total_mt_today' : total_mt_today,
                 'data' : data,
             }
+
+            elapsed = time.time() - start_time
+            print(f"ADD_TRANSACTION POST_INVALID TIME: {elapsed:.3f} seconds")
             return render(request, 'transactions/add_builty.html', context)
 
 
@@ -292,6 +300,9 @@ def add_transaction(request):
             'total_freight': total_freight,
             'data': data,
         }
+
+        elapsed = time.time() - start_time
+        print(f"ADD_TRANSACTION GET TIME: {elapsed:.3f} seconds")
         return render(request, 'transactions/add_builty.html', context)
 
 
