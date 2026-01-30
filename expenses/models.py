@@ -66,6 +66,8 @@ EXPENSE_TYPE_CHOICES = (
 TYRE_PATTERN_CHOICES = (
     ('radial', 'Radial'),
     ('nylon', 'Nylon'),
+    ('remoulded', 'Remoulded'),
+    ('reused', 'Reused'),
     
 )
 
