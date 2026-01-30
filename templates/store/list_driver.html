@@ -58,10 +58,8 @@
                                 <td>{{ i.driving_licence_expiry_date }}</td>
                                 <td>{{ i.mobile_no }}</td>
                                 <td>  
-                                   <a href="{% url 'update_driver' i.id %}"> <button  style="background-color: #05386b; border: green; padding: 10px;border-radius: 12px;" type="submit" class="btn-info ">
-                                        <span id="payment-button-amount">View</span>
-                                    </button>  </a>
-                                    
+                                   <a href="{% url 'update_driver' i.id %}"><button style="background-color: #05386b; border: green; padding: 10px; border-radius: 12px;" type="button" class="btn-info">View</button></a>
+                                   <a href="{% url 'delete_driver' i.id %}"><button style="background-color: #dc3545; border: none; padding: 10px; border-radius: 12px;" type="button" class="btn-danger">Delete</button></a>
                                 </td>
                                
                                

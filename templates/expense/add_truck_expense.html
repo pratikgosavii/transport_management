@@ -332,6 +332,7 @@
             
             $('.sele').select2();
 
+            // Field order (3 per row): Type | Tyre No | Pattern | Tyre Type | Company | Driver | Spare Part | Spare Part Cost | Vendor | Mechanic | Labour Cost | Work | Amount | Note | Entry Date
             function buildRowHtml() {
                 return `
                     <div class="expense-row">
@@ -346,12 +347,12 @@
                             <div class="field-cell tyre-fields"><label>Tyre Type</label><div class="col-tyre-type"></div></div>
                             <div class="field-cell tyre-fields"><label>Company</label><input name="company[]" class="form-control company" placeholder="Company"></div>
                             <div class="field-cell tyre-fields"><label>Driver</label><div class="col-driver"></div></div>
-                            <div class="field-cell mechanic-fields"><label>Mechanic</label><div class="col-mechanic-wrap"><span class="col-mechanic"></span><button type="button" class="btn btn-sm btn-outline-secondary add-mechanic-btn" title="Add new mechanic">+ Add</button></div></div>
                             <div class="field-cell mechanic-fields"><label>Spare Part</label><input name="spare_part_name[]" class="form-control spare_part_name" placeholder="Spare part"></div>
-                            <div class="field-cell mechanic-fields"><label>Labour</label><input name="labour_cost[]" class="form-control labour_cost" type="number" step="0.01" min="0" placeholder="0.00"></div>
-                            <div class="field-cell mechanic-fields"><label>Cost</label><input name="cost[]" class="form-control cost" type="number" step="0.01" min="0" placeholder="0.00"></div>
-                            <div class="field-cell mechanic-fields"><label>Work</label><input name="work_description[]" class="form-control work_description" placeholder="Work desc"></div>
+                            <div class="field-cell mechanic-fields"><label>Spare Part Cost</label><input name="cost[]" class="form-control cost" type="number" step="0.01" min="0" placeholder="0.00"></div>
                             <div class="field-cell"><label>Vendor</label><div class="col-vendor-wrap"><span class="col-vendor"></span><button type="button" class="btn btn-sm btn-outline-secondary add-vendor-btn" title="Add new vendor">+ Add</button></div></div>
+                            <div class="field-cell mechanic-fields"><label>Mechanic</label><div class="col-mechanic-wrap"><span class="col-mechanic"></span><button type="button" class="btn btn-sm btn-outline-secondary add-mechanic-btn" title="Add new mechanic">+ Add</button></div></div>
+                            <div class="field-cell mechanic-fields"><label>Labour Cost</label><input name="labour_cost[]" class="form-control labour_cost" type="number" step="0.01" min="0" placeholder="0.00"></div>
+                            <div class="field-cell mechanic-fields"><label>Work</label><input name="work_description[]" class="form-control work_description" placeholder="Work desc"></div>
                             <div class="field-cell"><label>Amount *</label><input name="amount[]" class="form-control amount" type="number" step="0.01" min="0" placeholder="0.00" required></div>
                             <div class="field-cell"><label>Note</label><input name="note[]" class="form-control note" placeholder="Note"></div>
                             <div class="field-cell"><label>Entry Date</label><input name="entry_date[]" class="form-control entry_date" type="date"></div>
@@ -421,19 +422,47 @@
                     updateGrandTotal();
                 });
 
-                // Add mechanic button: open modal and remember block for selecting new mechanic after add
-                $row.on('click', '.add-mechanic-btn', function () {
-                    var $rowForMechanic = $(this).closest('.expense-row');
-                    $('#addMechanicModal').data('targetRow', $rowForMechanic).modal('show');
-                });
-
-                // Add vendor button: open modal and remember block for selecting new vendor after add
-                $row.on('click', '.add-vendor-btn', function () {
-                    var $rowForVendor = $(this).closest('.expense-row');
-                    $('#addVendorModal').data('targetRow', $rowForVendor).modal('show');
-                });
-
                 toggleRow($row);
+            }
+
+            // Add new vendor via AJAX and refresh dropdowns (defined early so modal submit can use it)
+            function addVendorAndRefresh(name, address, mobile_number, gst_number, $targetRow) {
+                var csrf = $('input[name="csrfmiddlewaretoken"]').val();
+                var payload = { name: name, address: address || '', mobile_number: mobile_number || '', gst_number: gst_number || '', csrfmiddlewaretoken: csrf };
+                $.ajax({
+                    url: "{% url 'add_vendor_ajax' %}",
+                    type: 'POST',
+                    data: payload,
+                    dataType: 'json',
+                    success: function (data) {
+                        var res = typeof data === 'string' ? JSON.parse(data) : data;
+                        if (res.status === 'True' && res.id && res.value) {
+                            $('#expense-rows-body select.vendor').each(function () {
+                                var $sel = $(this);
+                                if ($sel.find('option[value="' + res.id + '"]').length === 0) {
+                                    $sel.append(new Option(res.value, res.id, false, false));
+                                }
+                            });
+                            if ($targetRow && $targetRow.length) {
+                                var $vendorSelect = $targetRow.find('select.vendor');
+                                if ($vendorSelect.find('option[value="' + res.id + '"]').length === 0) {
+                                    $vendorSelect.append(new Option(res.value, res.id, true, true));
+                                }
+                                $vendorSelect.val(res.id).trigger('change');
+                            }
+                            $('#addVendorModal').modal('hide');
+                            $('#new_vendor_name, #new_vendor_address, #new_vendor_mobile, #new_vendor_gst').val('');
+                        }
+                    },
+                    error: function (xhr) {
+                        var err = 'Failed to add vendor.';
+                        try {
+                            var j = typeof xhr.responseJSON !== 'undefined' ? xhr.responseJSON : JSON.parse(xhr.responseText);
+                            if (j.error) err = typeof j.error === 'string' ? j.error : JSON.stringify(j.error);
+                        } catch (e) {}
+                        alert(err);
+                    }
+                });
             }
 
             // Add new mechanic via AJAX and refresh dropdowns
@@ -501,46 +530,6 @@
                 });
             });
 
-            // Add new vendor via AJAX and refresh dropdowns
-            function addVendorAndRefresh(name, address, mobile_number, gst_number, $targetRow) {
-                var csrf = $('input[name="csrfmiddlewaretoken"]').val();
-                var payload = { name: name, address: address || '', mobile_number: mobile_number || '', gst_number: gst_number || '', csrfmiddlewaretoken: csrf };
-                $.ajax({
-                    url: "{% url 'add_vendor_ajax' %}",
-                    type: 'POST',
-                    data: payload,
-                    dataType: 'json',
-                    success: function (data) {
-                        var res = typeof data === 'string' ? JSON.parse(data) : data;
-                        if (res.status === 'True' && res.id && res.value) {
-                            $('#expense-rows-body select.vendor').each(function () {
-                                var $sel = $(this);
-                                if ($sel.find('option[value="' + res.id + '"]').length === 0) {
-                                    $sel.append(new Option(res.value, res.id, false, false));
-                                }
-                            });
-                            if ($targetRow && $targetRow.length) {
-                                var $vendorSelect = $targetRow.find('select.vendor');
-                                if ($vendorSelect.find('option[value="' + res.id + '"]').length === 0) {
-                                    $vendorSelect.append(new Option(res.value, res.id, true, true));
-                                }
-                                $vendorSelect.val(res.id).trigger('change');
-                            }
-                            $('#addVendorModal').modal('hide');
-                            $('#new_vendor_name, #new_vendor_address, #new_vendor_mobile, #new_vendor_gst').val('');
-                        }
-                    },
-                    error: function (xhr) {
-                        var err = 'Failed to add vendor.';
-                        try {
-                            var j = typeof xhr.responseJSON !== 'undefined' ? xhr.responseJSON : JSON.parse(xhr.responseText);
-                            if (j.error) err = typeof j.error === 'string' ? j.error : JSON.stringify(j.error);
-                        } catch (e) {}
-                        alert(err);
-                    }
-                });
-            }
-
             function updateRowNumbers() {
                 $('#expense-rows-body .expense-row').each(function (i) {
                     $(this).find('.expense-block-num').text('Expense #' + (i + 1));
@@ -565,7 +554,6 @@
             }
 
             $(document).ready(function() {
-                // Start with 1 row
                 addRow();
 
                 $('#add-expense-row').on('click', function () {
@@ -576,6 +564,18 @@
                     $(this).closest('.expense-row').remove();
                     updateRowNumbers();
                     updateGrandTotal();
+                });
+
+                $('#expense-rows-body').on('click', '.add-vendor-btn', function (e) {
+                    e.preventDefault();
+                    var $row = $(this).closest('.expense-row');
+                    $('#addVendorModal').data('targetRow', $row).modal('show');
+                });
+
+                $('#expense-rows-body').on('click', '.add-mechanic-btn', function (e) {
+                    e.preventDefault();
+                    var $row = $(this).closest('.expense-row');
+                    $('#addMechanicModal').data('targetRow', $row).modal('show');
                 });
             });
 
