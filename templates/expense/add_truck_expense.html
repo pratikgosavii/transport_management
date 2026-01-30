@@ -227,6 +227,8 @@
                                     {{ form.truck }}
                                 </div>
                                 <button type="button" id="add-expense-row" class="btn btn-primary" style="background-color:#05386b; border:none;">+ Add Row</button>
+                                <button type="button" id="toolbar-add-mechanic" class="btn btn-outline-secondary btn-sm" title="Add new mechanic">+ Add Mechanic</button>
+                                <button type="button" id="toolbar-add-vendor" class="btn btn-outline-secondary btn-sm" title="Add new vendor">+ Add Vendor</button>
                                 <small class="text-muted mb-0">Add multiple expenses — one block = one expense. 3 fields per row so it fits on one screen.</small>
                             </div>
 
@@ -345,7 +347,7 @@
                             <div class="field-cell mechanic-fields"><label>Spare Part</label><input name="spare_part_name[]" class="form-control spare_part_name" placeholder="Spare part"></div>
                             <div class="field-cell mechanic-fields"><label>Spare Part Cost</label><input name="cost[]" class="form-control cost" type="number" step="0.01" min="0" placeholder="0.00"></div>
                             <div class="field-cell"><label>Vendor</label><div class="col-vendor-wrap"><span class="col-vendor"></span><button type="button" class="btn btn-sm btn-outline-secondary add-vendor-btn" title="Add new vendor">+ Add</button></div></div>
-                            <div class="field-cell mechanic-fields"><label>Mechanic</label><div class="col-mechanic-wrap"><span class="col-mechanic"></span><button type="button" class="btn btn-sm btn-outline-secondary add-mechanic-btn" title="Add new mechanic">+ Add</button></div></div>
+                            <div class="field-cell"><label>Mechanic</label><div class="col-mechanic-wrap"><span class="col-mechanic"></span><button type="button" class="btn btn-sm btn-outline-secondary add-mechanic-btn" title="Add new mechanic">+ Add</button></div></div>
                             <div class="field-cell mechanic-fields"><label>Labour Cost</label><input name="labour_cost[]" class="form-control labour_cost" type="number" step="0.01" min="0" placeholder="0.00"></div>
                             <div class="field-cell mechanic-fields"><label>Work</label><input name="work_description[]" class="form-control work_description" placeholder="Work desc"></div>
                             <div class="field-cell"><label>Amount *</label><input name="amount[]" class="form-control amount" type="number" step="0.01" min="0" placeholder="0.00" required></div>
@@ -571,6 +573,18 @@
                     e.preventDefault();
                     var $row = $(this).closest('.expense-row');
                     $('#addMechanicModal').data('targetRow', $row).modal('show');
+                });
+
+                $('#toolbar-add-mechanic').on('click', function (e) {
+                    e.preventDefault();
+                    var $firstRow = $('#expense-rows-body .expense-row').first();
+                    $('#addMechanicModal').data('targetRow', $firstRow.length ? $firstRow : null).modal('show');
+                });
+
+                $('#toolbar-add-vendor').on('click', function (e) {
+                    e.preventDefault();
+                    var $firstRow = $('#expense-rows-body .expense-row').first();
+                    $('#addVendorModal').data('targetRow', $firstRow.length ? $firstRow : null).modal('show');
                 });
             });
 
