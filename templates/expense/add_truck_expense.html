@@ -133,68 +133,66 @@
      .col-mechanic-wrap .col-mechanic .select2-container { min-width: 120px !important; }
      .col-mechanic-wrap .add-mechanic-btn { flex-shrink: 0; }
 
-     /* Excel-like horizontal form */
+     /* Compact 3-per-row layout — fits on one screen */
      .expense-toolbar {
        display: flex;
        flex-wrap: wrap;
        align-items: center;
        gap: 12px;
-       margin-bottom: 12px;
+       margin-bottom: 14px;
        padding: 10px 0;
        border-bottom: 1px solid #dee2e6;
      }
      .expense-toolbar .truck-wrap { display: flex; align-items: center; gap: 8px; }
      .expense-toolbar .truck-wrap label { margin: 0; white-space: nowrap; }
-     .expense-toolbar .truck-wrap .select2-container { min-width: 180px !important; }
-     #add-expense-row {
-       padding: 8px 20px;
-       font-weight: 600;
-       border-radius: 6px;
-     }
-     .expense-sheet-wrap {
-       overflow-x: auto;
-       margin-bottom: 16px;
-       border: 1px solid #c6c8ca;
-       border-radius: 4px;
-       background: #fff;
-     }
-     #expense-rows-table {
-       margin: 0;
-       table-layout: auto;
-       border-collapse: collapse;
-     }
-     #expense-rows-table thead th {
-       background: #05386b;
-       color: #fff;
-       font-weight: 600;
-       font-size: 12px;
-       padding: 10px 8px;
-       border: 1px solid #03294a;
-       white-space: nowrap;
-       position: sticky;
-       top: 0;
-       z-index: 2;
-     }
-     #expense-rows-table tbody td {
-       padding: 4px 6px;
+     .expense-toolbar .truck-wrap .select2-container { min-width: 160px !important; }
+     #add-expense-row { padding: 8px 18px; font-weight: 600; border-radius: 6px; }
+     .expense-rows-wrap { margin-bottom: 16px; }
+     .expense-row {
+       background: #f8f9fa;
        border: 1px solid #dee2e6;
-       vertical-align: middle;
+       border-radius: 8px;
+       padding: 12px 14px;
+       margin-bottom: 12px;
      }
-     #expense-rows-table tbody tr.expense-row:nth-child(even) { background: #f8f9fa; }
-     #expense-rows-table tbody tr.expense-row:hover { background: #e9ecef; }
-     #expense-rows-table .form-control {
-       height: 34px;
-       padding: 4px 8px;
+     .expense-row:nth-child(even) { background: #fff; }
+     .expense-row-header {
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+       margin-bottom: 10px;
+       padding-bottom: 8px;
+       border-bottom: 1px solid #dee2e6;
+     }
+     .expense-block-num { font-weight: 600; color: #05386b; font-size: 14px; }
+     .expense-row-fields {
+       display: grid;
+       grid-template-columns: 1fr 1fr 1fr;
+       gap: 12px 16px;
+     }
+     .expense-row-fields .field-cell {
+       min-width: 0;
+     }
+     .expense-row-fields .field-cell label {
+       display: block;
+       font-size: 11px;
+       color: #6c757d;
+       margin-bottom: 2px;
+       font-weight: 500;
+     }
+     .expense-row-fields .form-control {
+       height: 36px;
+       padding: 6px 10px;
        font-size: 13px;
-       border-radius: 4px;
+       width: 100%;
      }
-     #expense-rows-table .select2-container .select2-selection--single { height: 34px !important; }
-     #expense-rows-table .select2-container .select2-selection__rendered { line-height: 32px !important; }
-     #expense-rows-table .select2-container .select2-selection__arrow { height: 32px !important; }
-     #expense-rows-table .form-control:focus { border-color: #05386b; box-shadow: 0 0 0 2px rgba(5,56,107,0.2); }
-     #expense-rows-table th.col-row-no { width: 40px; text-align: center; }
-     #expense-rows-table td.col-row-no { text-align: center; font-weight: 600; color: #6c757d; }
-     #expense-rows-table .remove-row { padding: 4px 10px; font-size: 12px; }
+     .expense-row-fields .select2-container { width: 100% !important; min-width: 0 !important; }
+     .expense-row-fields .select2-container .select2-selection--single { height: 36px !important; }
+     .expense-row-fields .select2-container .select2-selection__rendered { line-height: 34px !important; }
+     .col-mechanic-wrap { display: flex; gap: 6px; align-items: center; }
+     .col-mechanic-wrap .col-mechanic { flex: 1; min-width: 0; }
+     .col-mechanic-wrap .add-mechanic-btn { flex-shrink: 0; padding: 6px 10px; font-size: 12px; }
+     .remove-row { padding: 6px 12px; font-size: 12px; }
      .expense-footer {
        display: flex;
        flex-wrap: wrap;
@@ -205,7 +203,7 @@
        border-top: 2px solid #05386b;
      }
      .expense-footer .grand-total-wrap { display: flex; align-items: center; gap: 10px; }
-     .expense-footer #grand_total { font-weight: 700; font-size: 1.1rem; }
+     .expense-footer #grand_total { font-weight: 700; font-size: 1.1rem; width: 130px; }
 
 </style>
 
@@ -231,36 +229,11 @@
                                     {{ form.truck }}
                                 </div>
                                 <button type="button" id="add-expense-row" class="btn btn-primary" style="background-color:#05386b; border:none;">+ Add Row</button>
-                                <small class="text-muted mb-0">Add multiple expenses at once — one row = one expense. Scroll horizontally to see all columns.</small>
+                                <small class="text-muted mb-0">Add multiple expenses — one block = one expense. 3 fields per row so it fits on one screen.</small>
                             </div>
 
-                            <div class="expense-sheet-wrap">
-                                <table class="table table-bordered" id="expense-rows-table">
-                                    <thead>
-                                        <tr>
-                                            <th class="col-row-no">#</th>
-                                            <th style="min-width:100px;">Type</th>
-                                            <th style="min-width:90px;">Tyre No</th>
-                                            <th style="min-width:90px;">Pattern</th>
-                                            <th style="min-width:90px;">Tyre Type</th>
-                                            <th style="min-width:100px;">Company</th>
-                                            <th style="min-width:120px;">Driver</th>
-                                            <th style="min-width:130px;">Mechanic</th>
-                                            <th style="min-width:100px;">Spare Part</th>
-                                            <th style="min-width:80px;">Labour</th>
-                                            <th style="min-width:80px;">Cost</th>
-                                            <th style="min-width:140px;">Work</th>
-                                            <th style="min-width:120px;">Vendor</th>
-                                            <th style="min-width:90px;">Amount *</th>
-                                            <th style="min-width:140px;">Note</th>
-                                            <th style="min-width:110px;">Entry Date</th>
-                                            <th style="min-width:50px;"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="expense-rows-body">
-                                        <!-- rows inserted by JS -->
-                                    </tbody>
-                                </table>
+                            <div class="expense-rows-wrap" id="expense-rows-body">
+                                <!-- expense blocks inserted by JS -->
                             </div>
 
                             <div class="expense-footer">
@@ -320,29 +293,30 @@
             $('.sele').select2();
 
             function buildRowHtml() {
-                // Use the same choice sets as the Django form fields
-                const expenseTypeOptions = `{{ form.expense_type|safe }}`; // not used directly
-                // We'll reconstruct selects from the form field HTML by cloning in DOM (below).
                 return `
-                    <tr class="expense-row">
-                        <td class="col-row-no"></td>
-                        <td class="col-expense-type"></td>
-                        <td><input name="tyre_no[]" class="form-control tyre_no" placeholder="Tyre no"></td>
-                        <td class="col-pattern"></td>
-                        <td class="col-tyre-type"></td>
-                        <td><input name="company[]" class="form-control company" placeholder="Company"></td>
-                        <td class="col-driver"></td>
-                        <td class="col-mechanic-wrap"><span class="col-mechanic"></span><button type="button" class="btn btn-sm btn-outline-secondary add-mechanic-btn" title="Add new mechanic">+ Add</button></td>
-                        <td><input name="spare_part_name[]" class="form-control spare_part_name" placeholder="Spare part"></td>
-                        <td><input name="labour_cost[]" class="form-control labour_cost" type="number" step="0.01" min="0" placeholder="0.00"></td>
-                        <td><input name="cost[]" class="form-control cost" type="number" step="0.01" min="0" placeholder="0.00"></td>
-                        <td><input name="work_description[]" class="form-control work_description" placeholder="Work desc"></td>
-                        <td class="col-vendor"></td>
-                        <td><input name="amount[]" class="form-control amount" type="number" step="0.01" min="0" placeholder="0.00" required></td>
-                        <td><input name="note[]" class="form-control note" placeholder="Note"></td>
-                        <td><input name="entry_date[]" class="form-control entry_date" type="date"></td>
-                        <td><button type="button" class="btn btn-sm btn-danger remove-row">X</button></td>
-                    </tr>
+                    <div class="expense-row">
+                        <div class="expense-row-header">
+                            <span class="expense-block-num">Expense #1</span>
+                            <button type="button" class="btn btn-sm btn-danger remove-row">Remove</button>
+                        </div>
+                        <div class="expense-row-fields">
+                            <div class="field-cell"><label>Type</label><div class="col-expense-type"></div></div>
+                            <div class="field-cell tyre-fields"><label>Tyre No</label><input name="tyre_no[]" class="form-control tyre_no" placeholder="Tyre no"></div>
+                            <div class="field-cell tyre-fields"><label>Pattern</label><div class="col-pattern"></div></div>
+                            <div class="field-cell tyre-fields"><label>Tyre Type</label><div class="col-tyre-type"></div></div>
+                            <div class="field-cell tyre-fields"><label>Company</label><input name="company[]" class="form-control company" placeholder="Company"></div>
+                            <div class="field-cell tyre-fields"><label>Driver</label><div class="col-driver"></div></div>
+                            <div class="field-cell mechanic-fields"><label>Mechanic</label><div class="col-mechanic-wrap"><span class="col-mechanic"></span><button type="button" class="btn btn-sm btn-outline-secondary add-mechanic-btn" title="Add new mechanic">+ Add</button></div></div>
+                            <div class="field-cell mechanic-fields"><label>Spare Part</label><input name="spare_part_name[]" class="form-control spare_part_name" placeholder="Spare part"></div>
+                            <div class="field-cell mechanic-fields"><label>Labour</label><input name="labour_cost[]" class="form-control labour_cost" type="number" step="0.01" min="0" placeholder="0.00"></div>
+                            <div class="field-cell mechanic-fields"><label>Cost</label><input name="cost[]" class="form-control cost" type="number" step="0.01" min="0" placeholder="0.00"></div>
+                            <div class="field-cell mechanic-fields"><label>Work</label><input name="work_description[]" class="form-control work_description" placeholder="Work desc"></div>
+                            <div class="field-cell"><label>Vendor</label><div class="col-vendor"></div></div>
+                            <div class="field-cell"><label>Amount *</label><input name="amount[]" class="form-control amount" type="number" step="0.01" min="0" placeholder="0.00" required></div>
+                            <div class="field-cell"><label>Note</label><input name="note[]" class="form-control note" placeholder="Note"></div>
+                            <div class="field-cell"><label>Entry Date</label><input name="entry_date[]" class="form-control entry_date" type="date"></div>
+                        </div>
+                    </div>
                 `;
             }
 
@@ -378,27 +352,13 @@
                 // Init select2 for selects inside this row
                 $row.find('.sele').select2();
 
-                // Default hide type-specific columns depending on expense type
+                // Show/hide type-specific fields (tyre vs mechanic vs other)
                 function toggleRow($r) {
                     const t = $r.find('select.expense_type').val();
                     const isTyre = (t === 'tyre');
                     const isMech = (t === 'mechanic');
-
-                    // tyre inputs
-                    $r.find('.tyre_no, .company').closest('td').toggle(isTyre);
-                    $r.find('select.pattern, select.type, select.driver').closest('td').toggle(isTyre);
-
-                    // mechanic inputs (mechanic dropdown + add btn, spare part, labour, cost, work)
-                    $r.find('.col-mechanic-wrap').closest('td').toggle(isMech);
-                    $r.find('.spare_part_name, .labour_cost, .cost, .work_description').closest('td').toggle(isMech);
-
-                    // for other: hide both tyre and mechanic specifics
-                    if (!isTyre && !isMech) {
-                        $r.find('.tyre_no, .company').closest('td').hide();
-                        $r.find('select.pattern, select.type, select.driver').closest('td').hide();
-                        $r.find('.col-mechanic-wrap').closest('td').hide();
-                        $r.find('.spare_part_name, .labour_cost, .cost, .work_description').closest('td').hide();
-                    }
+                    $r.find('.field-cell.tyre-fields').toggle(isTyre);
+                    $r.find('.field-cell.mechanic-fields').toggle(isMech);
                 }
 
                 $row.on('change', 'select.expense_type', function () {
@@ -421,9 +381,9 @@
                     updateGrandTotal();
                 });
 
-                // Add mechanic button: open modal and remember row for selecting new mechanic after add
+                // Add mechanic button: open modal and remember block for selecting new mechanic after add
                 $row.on('click', '.add-mechanic-btn', function () {
-                    var $rowForMechanic = $(this).closest('tr');
+                    var $rowForMechanic = $(this).closest('.expense-row');
                     $('#addMechanicModal').data('targetRow', $rowForMechanic).modal('show');
                 });
 
@@ -484,8 +444,8 @@
             });
 
             function updateRowNumbers() {
-                $('#expense-rows-body tr.expense-row').each(function (i) {
-                    $(this).find('td.col-row-no').first().text(i + 1);
+                $('#expense-rows-body .expense-row').each(function (i) {
+                    $(this).find('.expense-block-num').text('Expense #' + (i + 1));
                 });
             }
 
@@ -515,7 +475,7 @@
                 });
 
                 $('#expense-rows-body').on('click', '.remove-row', function () {
-                    $(this).closest('tr').remove();
+                    $(this).closest('.expense-row').remove();
                     updateRowNumbers();
                     updateGrandTotal();
                 });
