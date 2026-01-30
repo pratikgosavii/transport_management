@@ -65,9 +65,8 @@ EXPENSE_TYPE_CHOICES = (
 # Tyre pattern choices
 TYRE_PATTERN_CHOICES = (
     ('radial', 'Radial'),
-    ('bias', 'Bias'),
-    ('tubeless', 'Tubeless'),
-    ('tube_type', 'Tube Type'),
+    ('nylon', 'Nylon'),
+    
 )
 
 # Tyre type choices
@@ -91,7 +90,7 @@ class truck_expense(models.Model):
     driver = models.ForeignKey(driver, on_delete=models.SET_NULL, null=True, blank=True, db_index=True)
     
     # Mechanic/Spare part expense fields
-    mechanic_name = models.CharField(max_length=120, null=True, blank=True, db_index=True)
+    mechanic = models.ForeignKey('store.mechanic', on_delete=models.SET_NULL, null=True, blank=True, db_index=True, related_name='truck_expenses')
     spare_part_name = models.CharField(max_length=120, null=True, blank=True, db_index=True)
     labour_cost = models.FloatField(null=True, blank=True)
     cost = models.FloatField(null=True, blank=True)  # Spare part cost

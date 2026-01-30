@@ -187,6 +187,19 @@ class vendor(models.Model):
         return self.name
 
 
+class mechanic(models.Model):
+    """Mechanic master table for truck mechanic/spare part expenses"""
+    name = models.CharField(max_length=120)
+    mobile_number = models.CharField(max_length=20, null=True, blank=True)
+    office_location = models.ForeignKey(office_location, on_delete=models.CASCADE, blank=True, null=True, related_name='mechanics')
+    
+    class Meta:
+        unique_together = [['office_location', 'name']]
+    
+    def __str__(self):
+        return self.name
+
+
 # Tyre pattern choices
 TYRE_PATTERN_CHOICES = (
     ('radial', 'Radial'),

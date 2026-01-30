@@ -257,7 +257,7 @@ def add_truck_expense(request):
         # Bulk submit: one truck, multiple expense rows
         from django.db import transaction
 
-        forms = truck_expense_Form(request.POST)  # used only to re-render selects consistently on error
+        forms = truck_expense_Form(request.POST, request=request)  # used only to re-render selects consistently on error
 
         truck_id = request.POST.get('truck')
         if not truck_id:
@@ -271,6 +271,7 @@ def add_truck_expense(request):
         types = request.POST.getlist('type[]')
         companies = request.POST.getlist('company[]')
         driver_ids = request.POST.getlist('driver[]')
+        mechanic_ids = request.POST.getlist('mechanic[]')
         mechanic_names = request.POST.getlist('mechanic_name[]')
         spare_part_names = request.POST.getlist('spare_part_name[]')
         labour_costs = request.POST.getlist('labour_cost[]')
@@ -319,6 +320,7 @@ def add_truck_expense(request):
 
                 vendor_id = (_get(vendor_ids, i) or '').strip()
                 driver_id = (_get(driver_ids, i) or '').strip()
+                mechanic_id = (_get(mechanic_ids, i) or '').strip()
 
                 te = truck_expense(
                     truck=truck_obj,
@@ -327,7 +329,6 @@ def add_truck_expense(request):
                     pattern=(_get(patterns, i) or '').strip() or None,
                     type=(_get(types, i) or '').strip() or None,
                     company=(_get(companies, i) or '').strip() or None,
-                    mechanic_name=(_get(mechanic_names, i) or '').strip() or None,
                     spare_part_name=(_get(spare_part_names, i) or '').strip() or None,
                     work_description=(_get(work_descriptions, i) or '').strip() or None,
                     note=(_get(notes, i) or '').strip() or None,
@@ -358,6 +359,11 @@ def add_truck_expense(request):
                         te.driver_id = int(driver_id)
                     except Exception:
                         pass
+                if mechanic_id:
+                    try:
+                        te.mechanic_id = int(mechanic_id)
+                    except Exception:
+                        pass
 
                 # Optional entry_date (date input in template)
                 ed = (_get(entry_dates, i) or '').strip()
@@ -373,6 +379,7 @@ def add_truck_expense(request):
 
             if created == 0:
                 messages.error(request, 'Please add at least one expense row with amount.')
+                forms = truck_expense_Form(request.POST, request=request)
                 return render(request, 'expense/add_truck_expense.html', {'form': forms})
 
             # Update balance once for total
@@ -384,7 +391,7 @@ def add_truck_expense(request):
 
     else:
 
-        forms = truck_expense_Form()
+        forms = truck_expense_Form(request=request)
 
         context = {
             'form': forms
@@ -408,7 +415,7 @@ def update_truck_expense(request, truck_expense_id):
       
 
         
-        forms = truck_expense_Form(request.POST, instance = instance)
+        forms = truck_expense_Form(request.POST, instance=instance, request=request)
 
         if forms.is_valid():
 
@@ -444,7 +451,7 @@ def update_truck_expense(request, truck_expense_id):
 
     else:
 
-        forms = truck_expense_Form(instance = instance)
+        forms = truck_expense_Form(instance=instance, request=request)
 
 
         context = {
@@ -509,21 +516,23 @@ def list_truck_expense(request):
 
 def list_delete(request):
 
-    builty_expense.objects.all().delete()
-    truck_expense.objects.all().delete()
-    transfer_fund.objects.all().delete()
-    diesel_expense.objects.all().delete()
-    truck_diesel_expense.objects.all().delete()
-    other_expense.objects.all().delete()
-    salary.objects.all().delete()
-    fund.objects.all().delete()
+    # builty_expense.objects.all().delete()
+    # truck_expense.objects.all().delete()
+    # transfer_fund.objects.all().delete()
+    # diesel_expense.objects.all().delete()
+    # truck_diesel_expense.objects.all().delete()
+    # other_expense.objects.all().delete()
+    # salary.objects.all().delete()
+    # fund.objects.all().delete()
 
-    a = User.objects.all()
+    # a = User.objects.all()
 
-    for i in a:
+    # for i in a:
 
-        i.balance = 0.0
-        i.save()
+    #     i.balance = 0.0
+    #     i.save()
+
+    pass
 
     
 def check_balance(request):

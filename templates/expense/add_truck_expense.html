@@ -121,6 +121,92 @@
        display: none;
      }
 
+     .col-mechanic-wrap {
+       display: flex;
+       align-items: center;
+       gap: 6px;
+     }
+     .col-mechanic-wrap .col-mechanic {
+       flex: 1;
+       min-width: 0;
+     }
+     .col-mechanic-wrap .col-mechanic .select2-container { min-width: 120px !important; }
+     .col-mechanic-wrap .add-mechanic-btn { flex-shrink: 0; }
+
+     /* Excel-like horizontal form */
+     .expense-toolbar {
+       display: flex;
+       flex-wrap: wrap;
+       align-items: center;
+       gap: 12px;
+       margin-bottom: 12px;
+       padding: 10px 0;
+       border-bottom: 1px solid #dee2e6;
+     }
+     .expense-toolbar .truck-wrap { display: flex; align-items: center; gap: 8px; }
+     .expense-toolbar .truck-wrap label { margin: 0; white-space: nowrap; }
+     .expense-toolbar .truck-wrap .select2-container { min-width: 180px !important; }
+     #add-expense-row {
+       padding: 8px 20px;
+       font-weight: 600;
+       border-radius: 6px;
+     }
+     .expense-sheet-wrap {
+       overflow-x: auto;
+       margin-bottom: 16px;
+       border: 1px solid #c6c8ca;
+       border-radius: 4px;
+       background: #fff;
+     }
+     #expense-rows-table {
+       margin: 0;
+       table-layout: auto;
+       border-collapse: collapse;
+     }
+     #expense-rows-table thead th {
+       background: #05386b;
+       color: #fff;
+       font-weight: 600;
+       font-size: 12px;
+       padding: 10px 8px;
+       border: 1px solid #03294a;
+       white-space: nowrap;
+       position: sticky;
+       top: 0;
+       z-index: 2;
+     }
+     #expense-rows-table tbody td {
+       padding: 4px 6px;
+       border: 1px solid #dee2e6;
+       vertical-align: middle;
+     }
+     #expense-rows-table tbody tr.expense-row:nth-child(even) { background: #f8f9fa; }
+     #expense-rows-table tbody tr.expense-row:hover { background: #e9ecef; }
+     #expense-rows-table .form-control {
+       height: 34px;
+       padding: 4px 8px;
+       font-size: 13px;
+       border-radius: 4px;
+     }
+     #expense-rows-table .select2-container .select2-selection--single { height: 34px !important; }
+     #expense-rows-table .select2-container .select2-selection__rendered { line-height: 32px !important; }
+     #expense-rows-table .select2-container .select2-selection__arrow { height: 32px !important; }
+     #expense-rows-table .form-control:focus { border-color: #05386b; box-shadow: 0 0 0 2px rgba(5,56,107,0.2); }
+     #expense-rows-table th.col-row-no { width: 40px; text-align: center; }
+     #expense-rows-table td.col-row-no { text-align: center; font-weight: 600; color: #6c757d; }
+     #expense-rows-table .remove-row { padding: 4px 10px; font-size: 12px; }
+     .expense-footer {
+       display: flex;
+       flex-wrap: wrap;
+       align-items: center;
+       justify-content: space-between;
+       gap: 16px;
+       padding: 12px 0;
+       border-top: 2px solid #05386b;
+     }
+     .expense-footer .grand-total-wrap { display: flex; align-items: center; gap: 10px; }
+     .expense-footer #grand_total { font-weight: 700; font-size: 1.1rem; }
+
 </style>
 
 
@@ -139,36 +225,36 @@
                     <div class="card-body">
                       <form id="expense_form" action="#" method="post" >
                             {% csrf_token %}
-                            <div class="form-group">
-                                <label for="name" class="control-label mb-1">Truck <span style="color: red;">*</span></label>
-                                {{ form.truck }}
+                            <div class="expense-toolbar">
+                                <div class="truck-wrap">
+                                    <label class="control-label mb-0">Truck <span style="color: red;">*</span></label>
+                                    {{ form.truck }}
+                                </div>
+                                <button type="button" id="add-expense-row" class="btn btn-primary" style="background-color:#05386b; border:none;">+ Add Row</button>
+                                <small class="text-muted mb-0">Add multiple expenses at once — one row = one expense. Scroll horizontally to see all columns.</small>
                             </div>
 
-                            <div style="display:flex; gap:10px; align-items:center; margin-bottom: 10px;">
-                                <button type="button" id="add-expense-row" class="btn btn-sm btn-primary" style="background-color:#05386b; border:none;">+ Add Row</button>
-                                <small class="text-muted">Truck will remain same; add multiple expense rows below.</small>
-                            </div>
-
-                            <div class="table-responsive">
+                            <div class="expense-sheet-wrap">
                                 <table class="table table-bordered" id="expense-rows-table">
                                     <thead>
                                         <tr>
-                                            <th style="min-width:140px;">Type</th>
-                                            <th style="min-width:140px;">Tyre No</th>
-                                            <th style="min-width:140px;">Pattern</th>
-                                            <th style="min-width:140px;">Tyre Type</th>
-                                            <th style="min-width:140px;">Company</th>
-                                            <th style="min-width:160px;">Driver</th>
-                                            <th style="min-width:160px;">Mechanic</th>
-                                            <th style="min-width:160px;">Spare Part</th>
-                                            <th style="min-width:120px;">Labour</th>
-                                            <th style="min-width:120px;">Cost</th>
-                                            <th style="min-width:180px;">Work</th>
-                                            <th style="min-width:160px;">Vendor</th>
-                                            <th style="min-width:120px;">Amount *</th>
-                                            <th style="min-width:180px;">Note</th>
-                                            <th style="min-width:140px;">Entry Date</th>
-                                            <th style="min-width:80px;">#</th>
+                                            <th class="col-row-no">#</th>
+                                            <th style="min-width:100px;">Type</th>
+                                            <th style="min-width:90px;">Tyre No</th>
+                                            <th style="min-width:90px;">Pattern</th>
+                                            <th style="min-width:90px;">Tyre Type</th>
+                                            <th style="min-width:100px;">Company</th>
+                                            <th style="min-width:120px;">Driver</th>
+                                            <th style="min-width:130px;">Mechanic</th>
+                                            <th style="min-width:100px;">Spare Part</th>
+                                            <th style="min-width:80px;">Labour</th>
+                                            <th style="min-width:80px;">Cost</th>
+                                            <th style="min-width:140px;">Work</th>
+                                            <th style="min-width:120px;">Vendor</th>
+                                            <th style="min-width:90px;">Amount *</th>
+                                            <th style="min-width:140px;">Note</th>
+                                            <th style="min-width:110px;">Entry Date</th>
+                                            <th style="min-width:50px;"></th>
                                         </tr>
                                     </thead>
                                     <tbody id="expense-rows-body">
@@ -177,14 +263,13 @@
                                 </table>
                             </div>
 
-                            <div class="form-group" style="display:flex; justify-content:flex-end; gap:15px; align-items:center;">
-                                <strong>Total:</strong>
-                                <input type="text" id="grand_total" class="form-control" style="width:200px;" readonly value="0.00">
-                            </div>
-
-                            <div>
-                                <button id="payment-button" type="submit" class="btn btn-lg btn-info btn-block">
-                                    <span id="payment-button-amount">Submit</span>
+                            <div class="expense-footer">
+                                <div class="grand-total-wrap">
+                                    <strong>Total:</strong>
+                                    <input type="text" id="grand_total" class="form-control" style="width:140px;" readonly value="0.00">
+                                </div>
+                                <button id="payment-button" type="submit" class="btn btn-lg btn-info" style="background-color:#05386b; border:none;">
+                                    <span id="payment-button-amount">Submit all expenses</span>
                                 </button>
                             </div>
                         </form>
@@ -195,6 +280,35 @@
         </div> <!-- .card -->
 
     </div><!--/.col-->
+</div>
+
+<!-- Modal: Add new mechanic -->
+<div class="modal fade" id="addMechanicModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Mechanic</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="add-mechanic-form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="new_mechanic_name">Name <span style="color:red;">*</span></label>
+                        <input type="text" id="new_mechanic_name" class="form-control" name="name" required placeholder="Mechanic name">
+                    </div>
+                    <div class="form-group">
+                        <label for="new_mechanic_mobile">Mobile (optional)</label>
+                        <input type="text" id="new_mechanic_mobile" class="form-control" name="mobile_number" placeholder="Mobile number">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="add-mechanic-submit">Add Mechanic</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock content %}
@@ -211,13 +325,14 @@
                 // We'll reconstruct selects from the form field HTML by cloning in DOM (below).
                 return `
                     <tr class="expense-row">
+                        <td class="col-row-no"></td>
                         <td class="col-expense-type"></td>
                         <td><input name="tyre_no[]" class="form-control tyre_no" placeholder="Tyre no"></td>
                         <td class="col-pattern"></td>
                         <td class="col-tyre-type"></td>
                         <td><input name="company[]" class="form-control company" placeholder="Company"></td>
                         <td class="col-driver"></td>
-                        <td><input name="mechanic_name[]" class="form-control mechanic_name" placeholder="Mechanic"></td>
+                        <td class="col-mechanic-wrap"><span class="col-mechanic"></span><button type="button" class="btn btn-sm btn-outline-secondary add-mechanic-btn" title="Add new mechanic">+ Add</button></td>
                         <td><input name="spare_part_name[]" class="form-control spare_part_name" placeholder="Spare part"></td>
                         <td><input name="labour_cost[]" class="form-control labour_cost" type="number" step="0.01" min="0" placeholder="0.00"></td>
                         <td><input name="cost[]" class="form-control cost" type="number" step="0.01" min="0" placeholder="0.00"></td>
@@ -247,6 +362,7 @@
                 pattern: `{{ form.pattern|safe }}`,
                 tyre_type: `{{ form.type|safe }}`,
                 driver: `{{ form.driver|safe }}`,
+                mechanic: `{{ form.mechanic|safe }}`,
                 vendor: `{{ form.vendor|safe }}`,
             };
 
@@ -256,6 +372,7 @@
                 $row.find('.col-pattern').append(makeSelectFromField(fieldHtml.pattern, 'pattern[]', 'pattern'));
                 $row.find('.col-tyre-type').append(makeSelectFromField(fieldHtml.tyre_type, 'type[]', 'type'));
                 $row.find('.col-driver').append(makeSelectFromField(fieldHtml.driver, 'driver[]', 'driver'));
+                $row.find('.col-mechanic').append(makeSelectFromField(fieldHtml.mechanic, 'mechanic[]', 'mechanic'));
                 $row.find('.col-vendor').append(makeSelectFromField(fieldHtml.vendor, 'vendor[]', 'vendor'));
 
                 // Init select2 for selects inside this row
@@ -271,14 +388,16 @@
                     $r.find('.tyre_no, .company').closest('td').toggle(isTyre);
                     $r.find('select.pattern, select.type, select.driver').closest('td').toggle(isTyre);
 
-                    // mechanic inputs
-                    $r.find('.mechanic_name, .spare_part_name, .labour_cost, .cost, .work_description').closest('td').toggle(isMech);
+                    // mechanic inputs (mechanic dropdown + add btn, spare part, labour, cost, work)
+                    $r.find('.col-mechanic-wrap').closest('td').toggle(isMech);
+                    $r.find('.spare_part_name, .labour_cost, .cost, .work_description').closest('td').toggle(isMech);
 
                     // for other: hide both tyre and mechanic specifics
                     if (!isTyre && !isMech) {
                         $r.find('.tyre_no, .company').closest('td').hide();
                         $r.find('select.pattern, select.type, select.driver').closest('td').hide();
-                        $r.find('.mechanic_name, .spare_part_name, .labour_cost, .cost, .work_description').closest('td').hide();
+                        $r.find('.col-mechanic-wrap').closest('td').hide();
+                        $r.find('.spare_part_name, .labour_cost, .cost, .work_description').closest('td').hide();
                     }
                 }
 
@@ -302,13 +421,79 @@
                     updateGrandTotal();
                 });
 
+                // Add mechanic button: open modal and remember row for selecting new mechanic after add
+                $row.on('click', '.add-mechanic-btn', function () {
+                    var $rowForMechanic = $(this).closest('tr');
+                    $('#addMechanicModal').data('targetRow', $rowForMechanic).modal('show');
+                });
+
                 toggleRow($row);
+            }
+
+            // Add new mechanic via AJAX and refresh dropdowns
+            function addMechanicAndRefresh(name, mobile_number, $targetRow) {
+                var csrf = $('input[name="csrfmiddlewaretoken"]').val();
+                var payload = { name: name, mobile_number: mobile_number || '', csrfmiddlewaretoken: csrf };
+                $.ajax({
+                    url: "{% url 'add_mechanic_ajax' %}",
+                    type: 'POST',
+                    data: payload,
+                    dataType: 'json',
+                    success: function (data) {
+                        var res = typeof data === 'string' ? JSON.parse(data) : data;
+                        if (res.status === 'True' && res.id && res.value) {
+                            $('#expense-rows-body select.mechanic').each(function () {
+                                var $sel = $(this);
+                                if ($sel.find('option[value="' + res.id + '"]').length === 0) {
+                                    $sel.append(new Option(res.value, res.id, false, false));
+                                }
+                            });
+                            if ($targetRow && $targetRow.length) {
+                                var $mechSelect = $targetRow.find('select.mechanic');
+                                if ($mechSelect.find('option[value="' + res.id + '"]').length === 0) {
+                                    $mechSelect.append(new Option(res.value, res.id, true, true));
+                                }
+                                $mechSelect.val(res.id).trigger('change');
+                            }
+                            $('#addMechanicModal').modal('hide');
+                            $('#new_mechanic_name, #new_mechanic_mobile').val('');
+                        }
+                    },
+                    error: function (xhr) {
+                        var err = 'Failed to add mechanic.';
+                        try {
+                            var j = typeof xhr.responseJSON !== 'undefined' ? xhr.responseJSON : JSON.parse(xhr.responseText);
+                            if (j.error) err = typeof j.error === 'string' ? j.error : JSON.stringify(j.error);
+                        } catch (e) {}
+                        alert(err);
+                    }
+                });
+            }
+
+            $(document).ready(function() {
+                $('#add-mechanic-submit').on('click', function () {
+                    var name = $('#new_mechanic_name').val().trim();
+                    if (!name) {
+                        alert('Please enter mechanic name.');
+                        return;
+                    }
+                    var mobile = $('#new_mechanic_mobile').val().trim();
+                    var $targetRow = $('#addMechanicModal').data('targetRow');
+                    addMechanicAndRefresh(name, mobile, $targetRow);
+                });
+            });
+
+            function updateRowNumbers() {
+                $('#expense-rows-body tr.expense-row').each(function (i) {
+                    $(this).find('td.col-row-no').first().text(i + 1);
+                });
             }
 
             function addRow() {
                 const $row = $(buildRowHtml());
                 $('#expense-rows-body').append($row);
                 applyRowControls($row);
+                updateRowNumbers();
                 updateGrandTotal();
             }
 
@@ -331,6 +516,7 @@
 
                 $('#expense-rows-body').on('click', '.remove-row', function () {
                     $(this).closest('tr').remove();
+                    updateRowNumbers();
                     updateGrandTotal();
                 });
             });

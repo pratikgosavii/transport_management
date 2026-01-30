@@ -60,6 +60,13 @@ urlpatterns = [
     
     path('add-petrol_pump/', add_petrol_pump, name='add_petrol_pump'),
     path('add-petrol_pump-ajax/', add_petrol_pump_ajax, name='add_petrol_pump_ajax'),
+
+    path('add-mechanic/', add_mechanic, name='add_mechanic'),
+    path('add-mechanic-ajax/', add_mechanic_ajax, name='add_mechanic_ajax'),
+    path('update-mechanic/<mechanic_id>', update_mechanic, name='update_mechanic'),
+    path('delete-mechanic/<mechanic_id>', delete_mechanic, name='delete_mechanic'),
+    path('list-mechanic/', list_mechanic, name='list_mechanic'),
+    
     path('update-petrol_pump/<petrol_pump_id>', update_petrol_pump, name='update_petrol_pump'),
     path('delete-petrol_pump/<petrol_pump_id>', delete_petrol_pump, name='delete_petrol_pump'),
     path('list-petrol_pump/', list_petrol_pump, name='list_petrol_pump'),

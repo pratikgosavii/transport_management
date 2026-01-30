@@ -311,6 +311,22 @@ class vendor_Form(forms.ModelForm):
         }
 
 
+class mechanic_Form(forms.ModelForm):
+    class Meta:
+        model = mechanic
+        fields = ['name', 'mobile_number']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control', 'id': 'mechanic_name',
+                'placeholder': 'Mechanic name'
+            }),
+            'mobile_number': forms.TextInput(attrs={
+                'class': 'form-control', 'id': 'mechanic_mobile',
+                'placeholder': 'Mobile (optional)'
+            }),
+        }
+
+
 class tyre_Form(forms.ModelForm):
     class Meta:
         model = tyre

@@ -1,6 +1,7 @@
 from django import forms
 
 from .models import *
+from store.models import mechanic
 from django.contrib.admin.widgets import  AdminDateWidget, AdminTimeWidget, AdminSplitDateTime
 from django.forms.widgets import DateTimeInput
 
@@ -119,6 +120,10 @@ class truck_expense_Form(forms.ModelForm):
                 'class': 'form-control sele', 'id': 'driver'
             }),
             # Mechanic/Spare part expense fields
+            'mechanic': forms.Select(attrs={
+                'class': 'form-control sele', 'id': 'mechanic',
+                'placeholder': 'Select mechanic...'
+            }),
             'mechanic_name': forms.TextInput(attrs={
                 'class': 'form-control', 'id': 'mechanic_name',
                 'placeholder': 'Enter mechanic name...'
@@ -148,6 +153,7 @@ class truck_expense_Form(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        request = kwargs.pop('request', None)
         super(truck_expense_Form, self).__init__(*args, **kwargs)
         self.fields['user'].required = False
         self.fields['entry_date'].required = False
@@ -158,8 +164,11 @@ class truck_expense_Form(forms.ModelForm):
         self.fields['type'].required = False
         self.fields['company'].required = False
         self.fields['driver'].required = False
+        # Mechanic: filter by current user's office_location
+        if request and getattr(request.user, 'office_location', None):
+            self.fields['mechanic'].queryset = mechanic.objects.filter(office_location=request.user.office_location).order_by('name')
         # Mechanic fields
-        self.fields['mechanic_name'].required = False
+        self.fields['mechanic'].required = False
         self.fields['spare_part_name'].required = False
         self.fields['labour_cost'].required = False
         self.fields['cost'].required = False
