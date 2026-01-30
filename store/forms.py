@@ -294,19 +294,23 @@ class driver_Form(forms.ModelForm):
 class vendor_Form(forms.ModelForm):
     class Meta:
         model = vendor
-        fields = '__all__'
+        fields = ['name', 'address', 'mobile_number', 'gst_number']
         widgets = {
             'name': forms.TextInput(attrs={
-                'class': 'form-control', 'id': 'vendor_name'
+                'class': 'form-control', 'id': 'vendor_name',
+                'placeholder': 'Vendor name'
             }),
             'address': forms.TextInput(attrs={
-                'class': 'form-control', 'id': 'vendor_address'
+                'class': 'form-control', 'id': 'vendor_address',
+                'placeholder': 'Address (optional)'
             }),
             'mobile_number': forms.TextInput(attrs={
-                'class': 'form-control', 'id': 'vendor_mobile'
+                'class': 'form-control', 'id': 'vendor_mobile',
+                'placeholder': 'Mobile (optional)'
             }),
             'gst_number': forms.TextInput(attrs={
-                'class': 'form-control', 'id': 'vendor_gst'
+                'class': 'form-control', 'id': 'vendor_gst',
+                'placeholder': 'GST number (optional)'
             }),
         }
 

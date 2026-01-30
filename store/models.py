@@ -177,11 +177,15 @@ class rate(models.Model):
  
 
 class vendor(models.Model):
-    """Vendor master table for tyre purchases"""
-    name = models.CharField(max_length=120, unique=True)
+    """Vendor master table for tyre purchases and truck expenses"""
+    name = models.CharField(max_length=120)
     address = models.CharField(max_length=255, null=True, blank=True)
     mobile_number = models.CharField(max_length=20, null=True, blank=True)
     gst_number = models.CharField(max_length=50, null=True, blank=True)
+    office_location = models.ForeignKey(office_location, on_delete=models.CASCADE, blank=True, null=True, related_name='vendors')
+    
+    class Meta:
+        unique_together = [['office_location', 'name']]
     
     def __str__(self):
         return self.name

@@ -1,0 +1,61 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Vendor List{% endblock title %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0"></div>
+    </div>
+</div>
+{% endblock breadcrumbs %}
+
+{% block content %}
+<div class="row">
+    <div class="col-xl-12">
+        <div style="margin-bottom: 15px;">
+            <a href="{% url 'add_vendor' %}"><button style="background-color: #05386b; border: green; padding: 10px; border-radius: 12px;" type="button" class="btn-info">Add Vendor +</button></a>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="box-title">List Vendor</h4>
+            </div>
+            <div class="card-body--">
+                <div class="table-stats order-table ov-h">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class="serial">#</th>
+                                <th>Name</th>
+                                <th>Address</th>
+                                <th>Mobile</th>
+                                <th>GST</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if data %}
+                            {% for i in data %}
+                            <tr>
+                                <td class="serial">{{ forloop.counter }}</td>
+                                <td>{{ i.name }}</td>
+                                <td>{{ i.address|default:"-" }}</td>
+                                <td>{{ i.mobile_number|default:"-" }}</td>
+                                <td>{{ i.gst_number|default:"-" }}</td>
+                                <td>
+                                    <a href="{% url 'update_vendor' i.id %}"><button style="background-color: #05386b; border: green; padding: 10px; border-radius: 12px;" type="button" class="btn-info">View</button></a>
+                                    <a href="{% url 'delete_vendor' i.id %}"><button style="background-color: #dc3545; border: none; padding: 10px; border-radius: 12px;" type="button" class="btn-danger">Delete</button></a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <tr><td colspan="6">No Vendor Data</td></tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

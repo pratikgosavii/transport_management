@@ -66,6 +66,12 @@ urlpatterns = [
     path('update-mechanic/<mechanic_id>', update_mechanic, name='update_mechanic'),
     path('delete-mechanic/<mechanic_id>', delete_mechanic, name='delete_mechanic'),
     path('list-mechanic/', list_mechanic, name='list_mechanic'),
+
+    path('add-vendor/', add_vendor, name='add_vendor'),
+    path('add-vendor-ajax/', add_vendor_ajax, name='add_vendor_ajax'),
+    path('update-vendor/<vendor_id>', update_vendor, name='update_vendor'),
+    path('delete-vendor/<vendor_id>', delete_vendor, name='delete_vendor'),
+    path('list-vendor/', list_vendor, name='list_vendor'),
     
     path('update-petrol_pump/<petrol_pump_id>', update_petrol_pump, name='update_petrol_pump'),
     path('delete-petrol_pump/<petrol_pump_id>', delete_petrol_pump, name='delete_petrol_pump'),

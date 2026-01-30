@@ -1851,6 +1851,76 @@ def list_mechanic(request):
 
 @login_required(login_url='login')
 @user_is_active
+@csrf_exempt
+def add_vendor_ajax(request):
+    """AJAX endpoint to add a new vendor; returns JSON with id and name for dropdown. office_location from user."""
+    if request.method == 'POST':
+        forms = vendor_Form(request.POST)
+        if forms.is_valid():
+            a = forms.save(commit=False)
+            a.office_location = request.user.office_location
+            a.save()
+            return JsonResponse({'status': 'True', 'id': a.id, 'value': a.name})
+        else:
+            return JsonResponse({'error': forms.errors.as_json()}, status=400)
+    forms = vendor_Form()
+    return render(request, 'store/add_vendor.html', {'form': forms})
+
+
+@login_required(login_url='login')
+@user_is_active
+def add_vendor(request):
+    if request.method == 'POST':
+        forms = vendor_Form(request.POST)
+        if forms.is_valid():
+            a = forms.save(commit=False)
+            a.office_location = request.user.office_location
+            a.save()
+            return redirect('list_vendor')
+        else:
+            context = {'form': forms}
+            return render(request, 'store/add_vendor.html', context)
+    else:
+        forms = vendor_Form()
+        context = {'form': forms}
+        return render(request, 'store/add_vendor.html', context)
+
+
+@login_required(login_url='login')
+@user_is_active
+def update_vendor(request, vendor_id):
+    instance = vendor.objects.get(id=vendor_id, office_location=request.user.office_location)
+    if request.method == 'POST':
+        forms = vendor_Form(request.POST, instance=instance)
+        if forms.is_valid():
+            forms.save()
+            return redirect('list_vendor')
+        else:
+            context = {'form': forms, 'is_update': True}
+            return render(request, 'store/add_vendor.html', context)
+    else:
+        forms = vendor_Form(instance=instance)
+        context = {'form': forms, 'is_update': True}
+        return render(request, 'store/add_vendor.html', context)
+
+
+@login_required(login_url='login')
+@user_is_active
+def delete_vendor(request, vendor_id):
+    vendor.objects.get(id=vendor_id, office_location=request.user.office_location).delete()
+    return HttpResponseRedirect(reverse('list_vendor'))
+
+
+@login_required(login_url='login')
+@user_is_active
+def list_vendor(request):
+    data = vendor.objects.filter(office_location=request.user.office_location).order_by('-id')
+    context = {'data': data}
+    return render(request, 'store/list_vendor.html', context)
+
+
+@login_required(login_url='login')
+@user_is_active
 def update_petrol_pump(request, petrol_pump_id):
 
     if request.method == 'POST':

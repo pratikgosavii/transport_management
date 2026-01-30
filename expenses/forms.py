@@ -1,7 +1,7 @@
 from django import forms
 
 from .models import *
-from store.models import mechanic
+from store.models import mechanic, vendor
 from django.contrib.admin.widgets import  AdminDateWidget, AdminTimeWidget, AdminSplitDateTime
 from django.forms.widgets import DateTimeInput
 
@@ -167,6 +167,7 @@ class truck_expense_Form(forms.ModelForm):
         # Mechanic: filter by current user's office_location
         if request and getattr(request.user, 'office_location', None):
             self.fields['mechanic'].queryset = mechanic.objects.filter(office_location=request.user.office_location).order_by('name')
+            self.fields['vendor'].queryset = vendor.objects.filter(office_location=request.user.office_location).order_by('name')
         # Mechanic fields
         self.fields['mechanic'].required = False
         self.fields['spare_part_name'].required = False
