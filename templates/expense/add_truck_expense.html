@@ -139,95 +139,47 @@
                     <div class="card-body">
                       <form id="expense_form" action="#" method="post" >
                             {% csrf_token %}
-
-                           
-                            <div class="form-group">
-                                <label for="name" class="control-label mb-1">Expense Type <span style="color: red;">*</span></label>
-                                {{ form.expense_type }}
-                            </div>
-
                             <div class="form-group">
                                 <label for="name" class="control-label mb-1">Truck <span style="color: red;">*</span></label>
                                 {{ form.truck }}
                             </div>
 
-                            <!-- Tyre Expense Fields -->
-                            <div class="tyre-expense-fields">
-                                <div class="form-group">
-                                    <label for="name" class="control-label mb-1">Tyre Number</label>
-                                    {{ form.tyre_no }}
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="name" class="control-label mb-1">Pattern</label>
-                                    {{ form.pattern }}
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="name" class="control-label mb-1">Type</label>
-                                    {{ form.type }}
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="name" class="control-label mb-1">Company</label>
-                                    {{ form.company }}
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="name" class="control-label mb-1">Driver</label>
-                                    {{ form.driver }}
-                                </div>
+                            <div style="display:flex; gap:10px; align-items:center; margin-bottom: 10px;">
+                                <button type="button" id="add-expense-row" class="btn btn-sm btn-primary" style="background-color:#05386b; border:none;">+ Add Row</button>
+                                <small class="text-muted">Truck will remain same; add multiple expense rows below.</small>
                             </div>
 
-                            <!-- Mechanic/Spare Part Expense Fields -->
-                            <div class="mechanic-expense-fields">
-                                <div class="form-group">
-                                    <label for="name" class="control-label mb-1">Mechanic Name</label>
-                                    {{ form.mechanic_name }}
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="name" class="control-label mb-1">Spare Part Name</label>
-                                    {{ form.spare_part_name }}
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="name" class="control-label mb-1">Labour Cost</label>
-                                    {{ form.labour_cost }}
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="name" class="control-label mb-1">Spare Part Cost</label>
-                                    {{ form.cost }}
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="name" class="control-label mb-1">Work Description</label>
-                                    {{ form.work_description }}
-                                </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="expense-rows-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="min-width:140px;">Type</th>
+                                            <th style="min-width:140px;">Tyre No</th>
+                                            <th style="min-width:140px;">Pattern</th>
+                                            <th style="min-width:140px;">Tyre Type</th>
+                                            <th style="min-width:140px;">Company</th>
+                                            <th style="min-width:160px;">Driver</th>
+                                            <th style="min-width:160px;">Mechanic</th>
+                                            <th style="min-width:160px;">Spare Part</th>
+                                            <th style="min-width:120px;">Labour</th>
+                                            <th style="min-width:120px;">Cost</th>
+                                            <th style="min-width:180px;">Work</th>
+                                            <th style="min-width:160px;">Vendor</th>
+                                            <th style="min-width:120px;">Amount *</th>
+                                            <th style="min-width:180px;">Note</th>
+                                            <th style="min-width:140px;">Entry Date</th>
+                                            <th style="min-width:80px;">#</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="expense-rows-body">
+                                        <!-- rows inserted by JS -->
+                                    </tbody>
+                                </table>
                             </div>
 
-                            <div class="form-group">
-                                <label for="name" class="control-label mb-1">Vendor</label>
-                                {{ form.vendor }}
-                            </div>
-
-                            <div class="form-group">
-                                <label for="name" class="control-label mb-1">Amount <span style="color: red;">*</span></label>
-                                {{ form.amount }}
-                                <small class="form-text text-muted" id="amount-hint-mechanic" style="display: none;">
-                                    (Labour Cost + Spare Part Cost will be calculated automatically)
-                                </small>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="name" class="control-label mb-1">Note</label>
-                                {{ form.note }}
-                            </div>
-
-                            <div class="form-group">
-                                <label for="name" class="control-label mb-1">Entry Date</label>
-                                {{ form.entry_date }}
+                            <div class="form-group" style="display:flex; justify-content:flex-end; gap:15px; align-items:center;">
+                                <strong>Total:</strong>
+                                <input type="text" id="grand_total" class="form-control" style="width:200px;" readonly value="0.00">
                             </div>
 
                             <div>
@@ -253,40 +205,133 @@
             
             $('.sele').select2();
 
-            // Function to toggle fields based on expense type
-            function toggleExpenseFields() {
-                var expenseType = $('#expense_type').val();
-                
-                // Hide all expense-specific fields first
-                $('.tyre-expense-fields, .mechanic-expense-fields').hide();
-                $('#amount-hint-mechanic').hide();
-                
-                // Show relevant fields based on expense type
-                if (expenseType === 'tyre') {
-                    $('.tyre-expense-fields').show();
-                } else if (expenseType === 'mechanic') {
-                    $('.mechanic-expense-fields').show();
-                    $('#amount-hint-mechanic').show();
-                }
+            function buildRowHtml() {
+                // Use the same choice sets as the Django form fields
+                const expenseTypeOptions = `{{ form.expense_type|safe }}`; // not used directly
+                // We'll reconstruct selects from the form field HTML by cloning in DOM (below).
+                return `
+                    <tr class="expense-row">
+                        <td class="col-expense-type"></td>
+                        <td><input name="tyre_no[]" class="form-control tyre_no" placeholder="Tyre no"></td>
+                        <td class="col-pattern"></td>
+                        <td class="col-tyre-type"></td>
+                        <td><input name="company[]" class="form-control company" placeholder="Company"></td>
+                        <td class="col-driver"></td>
+                        <td><input name="mechanic_name[]" class="form-control mechanic_name" placeholder="Mechanic"></td>
+                        <td><input name="spare_part_name[]" class="form-control spare_part_name" placeholder="Spare part"></td>
+                        <td><input name="labour_cost[]" class="form-control labour_cost" type="number" step="0.01" min="0" placeholder="0.00"></td>
+                        <td><input name="cost[]" class="form-control cost" type="number" step="0.01" min="0" placeholder="0.00"></td>
+                        <td><input name="work_description[]" class="form-control work_description" placeholder="Work desc"></td>
+                        <td class="col-vendor"></td>
+                        <td><input name="amount[]" class="form-control amount" type="number" step="0.01" min="0" placeholder="0.00" required></td>
+                        <td><input name="note[]" class="form-control note" placeholder="Note"></td>
+                        <td><input name="entry_date[]" class="form-control entry_date" type="date"></td>
+                        <td><button type="button" class="btn btn-sm btn-danger remove-row">X</button></td>
+                    </tr>
+                `;
             }
 
-            // Initialize on page load
-            $(document).ready(function() {
-                toggleExpenseFields();
-                
-                // Toggle fields when expense type changes
-                $('#expense_type').on('change', function() {
-                    toggleExpenseFields();
+            function makeSelectFromField(fieldHtml, nameAttr, extraClass) {
+                // fieldHtml is like <select ...>...</select>
+                const $tmp = $('<div>').html(fieldHtml);
+                const $sel = $tmp.find('select').first();
+                $sel.attr('name', nameAttr);
+                $sel.addClass('form-control sele ' + (extraClass || ''));
+                // Remove id to avoid duplicates
+                $sel.removeAttr('id');
+                return $sel;
+            }
+
+            const fieldHtml = {
+                expense_type: `{{ form.expense_type|safe }}`,
+                pattern: `{{ form.pattern|safe }}`,
+                tyre_type: `{{ form.type|safe }}`,
+                driver: `{{ form.driver|safe }}`,
+                vendor: `{{ form.vendor|safe }}`,
+            };
+
+            function applyRowControls($row) {
+                // Insert selects
+                $row.find('.col-expense-type').append(makeSelectFromField(fieldHtml.expense_type, 'expense_type[]', 'expense_type'));
+                $row.find('.col-pattern').append(makeSelectFromField(fieldHtml.pattern, 'pattern[]', 'pattern'));
+                $row.find('.col-tyre-type').append(makeSelectFromField(fieldHtml.tyre_type, 'type[]', 'type'));
+                $row.find('.col-driver').append(makeSelectFromField(fieldHtml.driver, 'driver[]', 'driver'));
+                $row.find('.col-vendor').append(makeSelectFromField(fieldHtml.vendor, 'vendor[]', 'vendor'));
+
+                // Init select2 for selects inside this row
+                $row.find('.sele').select2();
+
+                // Default hide type-specific columns depending on expense type
+                function toggleRow($r) {
+                    const t = $r.find('select.expense_type').val();
+                    const isTyre = (t === 'tyre');
+                    const isMech = (t === 'mechanic');
+
+                    // tyre inputs
+                    $r.find('.tyre_no, .company').closest('td').toggle(isTyre);
+                    $r.find('select.pattern, select.type, select.driver').closest('td').toggle(isTyre);
+
+                    // mechanic inputs
+                    $r.find('.mechanic_name, .spare_part_name, .labour_cost, .cost, .work_description').closest('td').toggle(isMech);
+
+                    // for other: hide both tyre and mechanic specifics
+                    if (!isTyre && !isMech) {
+                        $r.find('.tyre_no, .company').closest('td').hide();
+                        $r.find('select.pattern, select.type, select.driver').closest('td').hide();
+                        $r.find('.mechanic_name, .spare_part_name, .labour_cost, .cost, .work_description').closest('td').hide();
+                    }
+                }
+
+                $row.on('change', 'select.expense_type', function () {
+                    toggleRow($row);
                 });
 
-                // Auto-calculate total amount for mechanic expenses
-                $('#labour_cost, #cost').on('input', function() {
-                    if ($('#expense_type').val() === 'mechanic') {
-                        var labourCost = parseFloat($('#labour_cost').val()) || 0;
-                        var sparePartCost = parseFloat($('#cost').val()) || 0;
-                        var total = labourCost + sparePartCost;
-                        $('#amount').val(total.toFixed(2));
+                // Mechanic auto-calc: labour + cost -> amount
+                $row.on('input', '.labour_cost, .cost', function () {
+                    const t = $row.find('select.expense_type').val();
+                    if (t === 'mechanic') {
+                        const labour = parseFloat($row.find('.labour_cost').val()) || 0;
+                        const cost = parseFloat($row.find('.cost').val()) || 0;
+                        const total = labour + cost;
+                        $row.find('.amount').val(total.toFixed(2));
+                        updateGrandTotal();
                     }
+                });
+
+                $row.on('input', '.amount', function () {
+                    updateGrandTotal();
+                });
+
+                toggleRow($row);
+            }
+
+            function addRow() {
+                const $row = $(buildRowHtml());
+                $('#expense-rows-body').append($row);
+                applyRowControls($row);
+                updateGrandTotal();
+            }
+
+            function updateGrandTotal() {
+                let total = 0;
+                $('#expense-rows-body .amount').each(function () {
+                    const v = parseFloat($(this).val());
+                    if (!isNaN(v)) total += v;
+                });
+                $('#grand_total').val(total.toFixed(2));
+            }
+
+            $(document).ready(function() {
+                // Start with 1 row
+                addRow();
+
+                $('#add-expense-row').on('click', function () {
+                    addRow();
+                });
+
+                $('#expense-rows-body').on('click', '.remove-row', function () {
+                    $(this).closest('tr').remove();
+                    updateGrandTotal();
                 });
             });
 

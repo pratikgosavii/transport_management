@@ -3,6 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 
 from transactions.models import *
@@ -253,26 +254,133 @@ def add_truck_expense(request):
     
     
     if request.method == 'POST':
+        # Bulk submit: one truck, multiple expense rows
+        from django.db import transaction
 
-        forms = truck_expense_Form(request.POST)
+        forms = truck_expense_Form(request.POST)  # used only to re-render selects consistently on error
 
-        if forms.is_valid():
-            instance = forms.save(commit=False)
-            instance.user = request.user  # Assign the logged-in user
-            instance.save()
+        truck_id = request.POST.get('truck')
+        if not truck_id:
+            messages.error(request, 'Truck is required')
+            return render(request, 'expense/add_truck_expense.html', {'form': forms})
 
-            amount = request.POST.get('amount')
-            
+        # Row fields come as lists
+        expense_types = request.POST.getlist('expense_type[]')
+        tyre_nos = request.POST.getlist('tyre_no[]')
+        patterns = request.POST.getlist('pattern[]')
+        types = request.POST.getlist('type[]')
+        companies = request.POST.getlist('company[]')
+        driver_ids = request.POST.getlist('driver[]')
+        mechanic_names = request.POST.getlist('mechanic_name[]')
+        spare_part_names = request.POST.getlist('spare_part_name[]')
+        labour_costs = request.POST.getlist('labour_cost[]')
+        costs = request.POST.getlist('cost[]')
+        work_descriptions = request.POST.getlist('work_description[]')
+        vendor_ids = request.POST.getlist('vendor[]')
+        amounts = request.POST.getlist('amount[]')
+        notes = request.POST.getlist('note[]')
+        entry_dates = request.POST.getlist('entry_date[]')
+
+        row_count = max(
+            len(expense_types),
+            len(amounts),
+            len(notes),
+            len(vendor_ids),
+            0
+        )
+
+        created = 0
+        total_amount = 0.0
+
+        def _get(lst, idx, default=''):
+            try:
+                return lst[idx]
+            except Exception:
+                return default
+
+        with transaction.atomic():
+            truck_obj = truck_details.objects.get(id=truck_id)
+
+            for i in range(row_count):
+                exp_type = (_get(expense_types, i) or 'other').strip()
+                amount_raw = (_get(amounts, i) or '').strip()
+
+                # Skip empty rows
+                if not exp_type and not amount_raw:
+                    continue
+                if not amount_raw:
+                    # allow mechanic auto-calc to fill, but if still empty -> skip row
+                    continue
+
+                try:
+                    amount_val = float(amount_raw)
+                except Exception:
+                    continue
+
+                vendor_id = (_get(vendor_ids, i) or '').strip()
+                driver_id = (_get(driver_ids, i) or '').strip()
+
+                te = truck_expense(
+                    truck=truck_obj,
+                    expense_type=exp_type,
+                    tyre_no=(_get(tyre_nos, i) or '').strip() or None,
+                    pattern=(_get(patterns, i) or '').strip() or None,
+                    type=(_get(types, i) or '').strip() or None,
+                    company=(_get(companies, i) or '').strip() or None,
+                    mechanic_name=(_get(mechanic_names, i) or '').strip() or None,
+                    spare_part_name=(_get(spare_part_names, i) or '').strip() or None,
+                    work_description=(_get(work_descriptions, i) or '').strip() or None,
+                    note=(_get(notes, i) or '').strip() or None,
+                    user=request.user,
+                    amount=amount_val,
+                )
+
+                # Optional numeric fields
+                labour_raw = (_get(labour_costs, i) or '').strip()
+                cost_raw = (_get(costs, i) or '').strip()
+                try:
+                    te.labour_cost = float(labour_raw) if labour_raw else None
+                except Exception:
+                    te.labour_cost = None
+                try:
+                    te.cost = float(cost_raw) if cost_raw else None
+                except Exception:
+                    te.cost = None
+
+                # Optional FKs
+                if vendor_id:
+                    try:
+                        te.vendor_id = int(vendor_id)
+                    except Exception:
+                        pass
+                if driver_id:
+                    try:
+                        te.driver_id = int(driver_id)
+                    except Exception:
+                        pass
+
+                # Optional entry_date (date input in template)
+                ed = (_get(entry_dates, i) or '').strip()
+                if ed:
+                    try:
+                        te.entry_date = ed  # Django will parse ISO yyyy-mm-dd for DateField
+                    except Exception:
+                        pass
+
+                te.save()
+                created += 1
+                total_amount += amount_val
+
+            if created == 0:
+                messages.error(request, 'Please add at least one expense row with amount.')
+                return render(request, 'expense/add_truck_expense.html', {'form': forms})
+
+            # Update balance once for total
             user_instance = request.user
-            user_instance.balance = user_instance.balance - float(amount)
+            user_instance.balance = user_instance.balance - float(total_amount)
             user_instance.save()
 
-            return redirect('list_truck_expense')
-        else:
-            context = {
-                'form': forms
-            }
-            return render(request, 'expense/add_truck_expense.html', context)
+        return redirect('list_truck_expense')
 
     else:
 
