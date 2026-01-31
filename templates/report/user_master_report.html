@@ -1,0 +1,342 @@
+{% extends 'expense/base_main.html' %}
+
+{% block title %}User Master Report{% endblock title %}
+
+{% block head %}
+<style>
+    .umr-page { padding: 0 0 2rem 0; }
+    .umr-filter-card {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        padding: 20px 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .umr-filter-card .form-group label { font-weight: 600; color: #495057; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .umr-filter-card .btn { min-width: 90px; }
+    .umr-header {
+        background: linear-gradient(135deg, #05386b 0%, #0a4d8c 100%);
+        color: #fff;
+        padding: 20px 24px;
+        border-radius: 10px;
+        margin-bottom: 24px;
+        box-shadow: 0 4px 12px rgba(5,56,107,0.3);
+    }
+    .umr-header h4 { margin: 0; font-weight: 600; font-size: 1.25rem; }
+    .umr-header .sub { opacity: 0.9; font-size: 0.9rem; margin-top: 4px; }
+    .umr-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 28px; }
+    .umr-summary-card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 18px 20px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .umr-summary-card:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
+    .umr-summary-card .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #64748b; font-weight: 600; margin-bottom: 6px; }
+    .umr-summary-card .val { font-size: 1.4rem; font-weight: 700; color: #1e293b; }
+    .umr-summary-card.highlight .val { color: #05386b; font-size: 1.5rem; }
+    .umr-summary-card.expense .val { color: #dc3545; }
+    .umr-summary-card.expense .label { color: #b91c1c; }
+    .umr-section {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        margin-bottom: 24px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .umr-section-title {
+        background: #f8fafc;
+        padding: 14px 20px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #334155;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .umr-section-title .badge { font-size: 0.75rem; font-weight: 500; }
+    .umr-section-title .fa { color: #64748b; width: 18px; }
+    .umr-table-wrap { overflow-x: auto; }
+    .umr-table {
+        width: 100%;
+        font-size: 13px;
+        margin: 0;
+    }
+    .umr-table thead th {
+        background: #f1f5f9 !important;
+        color: #475569;
+        font-weight: 600;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 12px 14px;
+        border-bottom: 2px solid #e2e8f0;
+        white-space: nowrap;
+    }
+    .umr-table tbody td { padding: 12px 14px; vertical-align: middle; border-color: #f1f5f9; }
+    .umr-table tbody tr:hover { background: #f8fafc; }
+    .umr-table tbody tr:nth-child(even) { background: #fafbfc; }
+    .umr-table tbody tr:nth-child(even):hover { background: #f1f5f9; }
+    .umr-table .amount { font-weight: 600; color: #dc3545; }
+    .umr-table .type-badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: capitalize;
+    }
+    .umr-table .type-builty_expense { background: #dbeafe; color: #1d4ed8; }
+    .umr-table .type-truck_expense { background: #d1fae5; color: #047857; }
+    .umr-table .type-diesel_expense { background: #fef3c7; color: #b45309; }
+    .umr-table .type-truck_diesel_expense { background: #fce7f3; color: #be185d; }
+    .umr-table .type-other_expense { background: #e0e7ff; color: #4338ca; }
+    .umr-table .type-salary { background: #cffafe; color: #0e7490; }
+    .umr-table .type-transfer_fund { background: #f3e8ff; color: #7c3aed; }
+    .umr-expense-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .umr-expense-item {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 12px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        transition: all 0.2s;
+    }
+    .umr-expense-item:hover { border-color: #cbd5e1; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .umr-expense-item .name { font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase; }
+    .umr-expense-item .amt { font-size: 1.1rem; font-weight: 700; color: #dc3545; }
+    .umr-empty { text-align: center; padding: 48px 24px; color: #94a3b8; }
+    .umr-empty .fa { font-size: 2.5rem; margin-bottom: 12px; opacity: 0.5; }
+    .umr-empty-msg { font-size: 0.95rem; }
+    .umr-alert-card {
+        background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        border: 1px solid #93c5fd;
+        border-radius: 10px;
+        padding: 24px 28px;
+        color: #1e40af;
+        margin-top: 24px;
+    }
+</style>
+{% endblock head %}
+
+{% block content %}
+
+<div class="umr-page">
+    <!-- Filter -->
+    <div class="umr-filter-card">
+        <form method="get" action="">
+            <div class="row align-items-end">
+                {% if is_superuser %}
+                <div class="col-auto">
+                    <div class="form-group mb-0">
+                        <label for="user">User</label>
+                        <select name="user" id="user" class="form-control sele" style="min-width: 200px;">
+                            <option value="">-- Select User --</option>
+                            {% for u in users_list %}
+                            <option value="{{ u.id }}" {% if selected_user_id == u.id|stringformat:"s" %}selected{% endif %}>{{ u.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                {% else %}
+                <input type="hidden" name="user" value="{{ request.user.id }}">
+                {% endif %}
+                <div class="col-auto">
+                    <div class="form-group mb-0">
+                        <label for="from_date">From Date</label>
+                        <input type="date" name="from_date" id="from_date" class="form-control" value="{{ from_date }}" style="min-width: 150px;">
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="form-group mb-0">
+                        <label for="to_date">To Date</label>
+                        <input type="date" name="to_date" id="to_date" class="form-control" value="{{ to_date }}" style="min-width: 150px;">
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Apply</button>
+                    <a href="{% url 'user_master_report_list' %}" class="btn btn-outline-secondary">Reset</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    {% if user_obj %}
+    <!-- Header -->
+    <div class="umr-header">
+        <h4><i class="fa fa-user"></i> {{ user_obj.username }}</h4>
+        <div class="sub"><i class="fa fa-calendar"></i> {{ from_date }} to {{ to_date }}</div>
+    </div>
+
+    <!-- Top Summary -->
+    <div class="umr-summary-grid">
+        <div class="umr-summary-card highlight">
+            <div class="label">Builty Created</div>
+            <div class="val">{{ builty_count }}</div>
+        </div>
+        <div class="umr-summary-card highlight">
+            <div class="label">Total MT</div>
+            <div class="val">{{ builty_total_mt|floatformat:2 }}</div>
+        </div>
+        <div class="umr-summary-card expense">
+            <div class="label">Total Expense</div>
+            <div class="val">₹ {{ grand_total_expense|floatformat:2 }}</div>
+        </div>
+    </div>
+
+    <!-- Builty List -->
+    <div class="umr-section">
+        <div class="umr-section-title">
+            <i class="fa fa-truck"></i> Builty List
+            <span class="badge badge-secondary">{{ builty_count }}</span>
+        </div>
+        <div class="umr-table-wrap">
+            <table class="table umr-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Builty No</th>
+                        <th>DC Date</th>
+                        <th>Consignor</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Article</th>
+                        <th>Bags</th>
+                        <th>MT</th>
+                        <th>Rate</th>
+                        <th>Freight</th>
+                        <th>Less Adv</th>
+                        <th>Balance</th>
+                        <th>View</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in builty_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><strong>{{ b.builty_no }}</strong></td>
+                        <td>{{ b.DC_date|date:"d M Y" }}</td>
+                        <td>{{ b.consignor.name|default:"-" }}</td>
+                        <td>{{ b.station_from.name|default:"-" }}</td>
+                        <td>{{ b.station_to.name|default:"-" }}</td>
+                        <td>{{ b.article.name|default:"-" }}</td>
+                        <td>{{ b.bags|default:"-" }}</td>
+                        <td>{{ b.mt|default:"-" }}</td>
+                        <td>{{ b.rate|default:"-" }}</td>
+                        <td>{{ b.freight|default:"-" }}</td>
+                        <td>{{ b.less_advance|default:"-" }}</td>
+                        <td>{{ b.balance|default:"-" }}</td>
+                        <td><a href="{% url 'update_builty' b.id %}" class="btn btn-sm btn-outline-primary" target="_blank"><i class="fa fa-eye"></i> View</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="14" class="umr-empty"><i class="fa fa-inbox"></i><div class="umr-empty-msg">No builty in this date range</div></td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Expense by Type -->
+    <div class="umr-section">
+        <div class="umr-section-title">
+            <i class="fa fa-pie-chart"></i> Expense Summary by Type
+        </div>
+        <div class="p-3">
+            <div class="umr-expense-grid">
+                <div class="umr-expense-item">
+                    <span class="name">Builty Expense</span>
+                    <span class="amt">₹ {{ builty_expenses_total|floatformat:2 }}</span>
+                </div>
+                <div class="umr-expense-item">
+                    <span class="name">Truck Expense</span>
+                    <span class="amt">₹ {{ truck_expenses_total|floatformat:2 }}</span>
+                </div>
+                <div class="umr-expense-item">
+                    <span class="name">Diesel Expense</span>
+                    <span class="amt">₹ {{ diesel_expenses_total|floatformat:2 }}</span>
+                </div>
+                <div class="umr-expense-item">
+                    <span class="name">Truck Diesel</span>
+                    <span class="amt">₹ {{ truck_diesel_expenses_total|floatformat:2 }}</span>
+                </div>
+                <div class="umr-expense-item">
+                    <span class="name">Other Expense</span>
+                    <span class="amt">₹ {{ other_expenses_total|floatformat:2 }}</span>
+                </div>
+                <div class="umr-expense-item">
+                    <span class="name">Salary</span>
+                    <span class="amt">₹ {{ salaries_total|floatformat:2 }}</span>
+                </div>
+                <div class="umr-expense-item">
+                    <span class="name">Transfer Fund</span>
+                    <span class="amt">₹ {{ transfer_funds_total|floatformat:2 }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Master View: All Expenses -->
+    <div class="umr-section">
+        <div class="umr-section-title">
+            <i class="fa fa-list"></i> All Expenses (Master View)
+            <span class="badge badge-secondary">{{ combined_data|length }}</span>
+        </div>
+        <div class="umr-table-wrap">
+            <table class="table umr-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Type</th>
+                        <th>Entry Date</th>
+                        <th>Amount</th>
+                        <th>User</th>
+                        <th>Note / Ref</th>
+                        <th>Extra</th>
+                        <th>View</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in combined_data %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><span class="type-badge type-{{ row.0|default:'' }}">{{ row.0 }}</span></td>
+                        <td>{{ row.1|date:"d M Y" }}</td>
+                        <td class="amount">₹ {{ row.2|floatformat:2 }}</td>
+                        <td>{{ row.3.username|default:"-" }}</td>
+                        <td>{{ row.4|default:"-"|truncatechars:50 }}</td>
+                        <td>{{ row.5|default:"-"|truncatechars:35 }}</td>
+                        <td>{% if row.6 %}<a href="{{ row.6 }}" class="btn btn-sm btn-outline-primary" target="_blank"><i class="fa fa-eye"></i> View</a>{% else %}-{% endif %}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="8" class="umr-empty"><i class="fa fa-inbox"></i><div class="umr-empty-msg">No expenses in this date range</div></td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<div class="umr-alert-card">
+    <i class="fa fa-info-circle"></i>
+    {% if is_superuser %}
+    Please select a user and date range, then click <strong>Apply</strong> to view the report.
+    {% else %}
+    Please set the date range and click <strong>Apply</strong> to view your report.
+    {% endif %}
+</div>
+{% endif %}
+
+{% endblock content %}
+
+{% block js %}
+<script>$('.sele').select2();</script>
+{% endblock js %}

@@ -23,6 +23,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 from django.shortcuts import render, redirect
+from django.urls import reverse
 
 
 from django.db.models import Sum
@@ -1659,6 +1660,7 @@ import pandas as pd
 from django.db.models import Q
 from io import StringIO
 import io
+from datetime import date
 
 
 
@@ -2448,6 +2450,238 @@ def master_fund_report(request):
     return response
 
 
+@login_required(login_url='login')
+def user_master_report_list(request):
+    """User Master Report - from date to date, everything a user did: builty (count, list, total MT), all expenses."""
+    user_id = request.GET.get('user')
+    from_date_str = request.GET.get('from_date')
+    to_date_str = request.GET.get('to_date')
+
+    # Resolve user: superuser can select, others get self
+    if request.user.is_superuser:
+        selected_user_id = user_id
+        users_list = User.objects.all().order_by('username')
+    else:
+        selected_user_id = str(request.user.id)
+        users_list = [request.user]
+
+    # Default dates if not provided
+    if not from_date_str:
+        from_date_str = str(date.today())
+    if not to_date_str:
+        to_date_str = str(date.today())
+
+    from_date = None
+    to_date = None
+    try:
+        from datetime import datetime
+        from_date = datetime.strptime(from_date_str, '%Y-%m-%d').date()
+        to_date = datetime.strptime(to_date_str, '%Y-%m-%d').date()
+    except (ValueError, TypeError):
+        from_date = date.today()
+        to_date = date.today()
+
+    context = {
+        'users_list': users_list,
+        'from_date': from_date_str,
+        'to_date': to_date_str,
+        'selected_user_id': selected_user_id,
+        'is_superuser': request.user.is_superuser,
+    }
+
+    if not selected_user_id:
+        context['builty_list'] = []
+        context['builty_count'] = 0
+        context['builty_total_mt'] = 0
+        context['builty_expenses_total'] = 0
+        context['truck_expenses_total'] = 0
+        context['diesel_expenses_total'] = 0
+        context['truck_diesel_expenses_total'] = 0
+        context['other_expenses_total'] = 0
+        context['salaries_total'] = 0
+        context['transfer_funds_total'] = 0
+        context['grand_total_expense'] = 0
+        context['combined_data'] = []
+        context['user_obj'] = None
+        return render(request, 'report/user_master_report.html', context)
+
+    user_obj = User.objects.get(id=selected_user_id)
+
+    # Builty created by user in date range (DC_date)
+    builty_list = builty.objects.filter(user=user_obj, deleted=False, DC_date__gte=from_date, DC_date__lte=to_date).order_by('-DC_date')
+    builty_count = builty_list.count()
+    builty_total_mt = builty_list.aggregate(mt_sum=Sum('mt'))['mt_sum'] or 0
+
+    # Expenses by user in date range (entry_date)
+    builty_expenses = builty_expense.objects.filter(user=user_obj, entry_date__gte=from_date, entry_date__lte=to_date).order_by('entry_date')
+    truck_expenses = truck_expense.objects.filter(user=user_obj, entry_date__gte=from_date, entry_date__lte=to_date).order_by('entry_date')
+    diesel_expenses = diesel_expense.objects.filter(user=user_obj, entry_date__gte=from_date, entry_date__lte=to_date).order_by('entry_date')
+    truck_diesel_expenses = truck_diesel_expense.objects.filter(user=user_obj, entry_date__gte=from_date, entry_date__lte=to_date).order_by('entry_date')
+    other_expenses = other_expense.objects.filter(user=user_obj, entry_date__gte=from_date, entry_date__lte=to_date).order_by('entry_date')
+    salaries_list = salary.objects.filter(user=user_obj, entry_date__gte=from_date, entry_date__lte=to_date).order_by('entry_date')
+    transfer_funds_list = transfer_fund.objects.filter(user=user_obj, entry_date__gte=from_date, entry_date__lte=to_date).order_by('entry_date')
+
+    # Totals
+    builty_expenses_total = builty_expenses.aggregate(s=Sum('amount'))['s'] or 0
+    truck_expenses_total = truck_expenses.aggregate(s=Sum('amount'))['s'] or 0
+    diesel_expenses_total = diesel_expenses.aggregate(s=Sum('amount'))['s'] or 0
+    truck_diesel_expenses_total = truck_diesel_expenses.aggregate(s=Sum('amount'))['s'] or 0
+    other_expenses_total = other_expenses.aggregate(s=Sum('amount'))['s'] or 0
+    salaries_total = salaries_list.aggregate(s=Sum('salary'))['s'] or 0
+    transfer_funds_total = transfer_funds_list.aggregate(s=Sum('amount'))['s'] or 0
+
+    grand_total_expense = (builty_expenses_total + truck_expenses_total + diesel_expenses_total +
+                          truck_diesel_expenses_total + other_expenses_total + salaries_total + transfer_funds_total)
+
+    # Combined master view (all expenses in one list, sorted by date) - each row: (type, date, amount, user, note, extra, view_url)
+    combined_data = []
+    for e in builty_expenses:
+        builty_no = e.builty.builty_no if e.builty else '-'
+        ext = 'Adv:%s Porch:%s' % (e.is_advance, e.is_porch)
+        view_url = reverse('update_builty', args=[e.builty.id]) if e.builty else ''
+        combined_data.append(('builty_expense', e.entry_date, e.amount, e.user, builty_no, ext, view_url))
+    for e in truck_expenses:
+        note = (e.note or '')[:50]
+        view_url = reverse('update_truck_expense', args=[e.id])
+        combined_data.append(('truck_expense', e.entry_date, e.amount, e.user, note, e.truck.truck_number if e.truck else '-', view_url))
+    for e in diesel_expenses:
+        view_url = reverse('update_diesel_expense', args=[e.id])
+        combined_data.append(('diesel_expense', e.entry_date, e.amount, e.user, e.note or '', e.builty.builty_no if e.builty else '-', view_url))
+    for e in truck_diesel_expenses:
+        view_url = reverse('update_truck_diesel_expense', args=[e.id])
+        combined_data.append(('truck_diesel_expense', e.entry_date, e.amount, e.user, e.note or '', e.truck.truck_number if e.truck else '-', view_url))
+    for e in other_expenses:
+        view_url = reverse('update_other_expense', args=[e.id])
+        combined_data.append(('other_expense', e.entry_date, e.amount, e.user, e.note or '', e.expense_category.name if e.expense_category else '-', view_url))
+    for e in salaries_list:
+        view_url = reverse('update_salary', args=[e.id])
+        combined_data.append(('salary', e.entry_date, e.salary, e.user, e.note or '', e.employee.name if e.employee else '-', view_url))
+    for e in transfer_funds_list:
+        to_user = e.transfer_to_user.username if e.transfer_to_user else '-'
+        view_url = reverse('update_transfer_fund', args=[e.id])
+        combined_data.append(('transfer_fund', e.entry_date, e.amount, e.user, e.note or '', to_user, view_url))
+
+    combined_data.sort(key=lambda x: x[1])
+
+    context.update({
+        'user_obj': user_obj,
+        'builty_list': builty_list,
+        'builty_count': builty_count,
+        'builty_total_mt': builty_total_mt,
+        'builty_expenses_total': builty_expenses_total,
+        'truck_expenses_total': truck_expenses_total,
+        'diesel_expenses_total': diesel_expenses_total,
+        'truck_diesel_expenses_total': truck_diesel_expenses_total,
+        'other_expenses_total': other_expenses_total,
+        'salaries_total': salaries_total,
+        'transfer_funds_total': transfer_funds_total,
+        'grand_total_expense': grand_total_expense,
+        'combined_data': combined_data,
+    })
+
+    return render(request, 'report/user_master_report.html', context)
+
+
+@login_required(login_url='login')
+def user_master_report(request):
+    """Download User Master Report as CSV."""
+    user_id = request.GET.get('user')
+    from_date_str = request.GET.get('from_date')
+    to_date_str = request.GET.get('to_date')
+
+    if request.user.is_superuser:
+        selected_user_id = user_id
+    else:
+        selected_user_id = str(request.user.id)
+
+    if not selected_user_id:
+        response = HttpResponse('Please select a user.', content_type='text/plain')
+        return response
+
+    from datetime import datetime
+    from_date = date.today()
+    to_date = date.today()
+    try:
+        if from_date_str:
+            from_date = datetime.strptime(from_date_str, '%Y-%m-%d').date()
+        if to_date_str:
+            to_date = datetime.strptime(to_date_str, '%Y-%m-%d').date()
+    except (ValueError, TypeError):
+        pass
+
+    user_obj = User.objects.get(id=selected_user_id)
+
+    builty_list = builty.objects.filter(user=user_obj, deleted=False, DC_date__gte=from_date, DC_date__lte=to_date).order_by('-DC_date')
+    builty_count = builty_list.count()
+    builty_total_mt = builty_list.aggregate(mt_sum=Sum('mt'))['mt_sum'] or 0
+
+    builty_expenses = builty_expense.objects.filter(user=user_obj, entry_date__gte=from_date, entry_date__lte=to_date)
+    truck_expenses = truck_expense.objects.filter(user=user_obj, entry_date__gte=from_date, entry_date__lte=to_date)
+    diesel_expenses = diesel_expense.objects.filter(user=user_obj, entry_date__gte=from_date, entry_date__lte=to_date)
+    truck_diesel_expenses = truck_diesel_expense.objects.filter(user=user_obj, entry_date__gte=from_date, entry_date__lte=to_date)
+    other_expenses = other_expense.objects.filter(user=user_obj, entry_date__gte=from_date, entry_date__lte=to_date)
+    salaries_list = salary.objects.filter(user=user_obj, entry_date__gte=from_date, entry_date__lte=to_date)
+    transfer_funds_list = transfer_fund.objects.filter(user=user_obj, entry_date__gte=from_date, entry_date__lte=to_date)
+
+    csv_buffer = StringIO()
+    w = csv.writer(csv_buffer)
+
+    w.writerow(['User Master Report', user_obj.username, from_date, to_date])
+    w.writerow([])
+    w.writerow(['BILITY SUMMARY'])
+    w.writerow(['Builty Count', builty_count])
+    w.writerow(['Total MT', builty_total_mt])
+    w.writerow([])
+    w.writerow(['BILITY LIST'])
+    w.writerow(['Builty No', 'DC Date', 'Consignor', 'From', 'To', 'Article', 'Bags', 'MT', 'Rate', 'Freight', 'Less Advance', 'Balance'])
+    for b in builty_list:
+        w.writerow([
+            b.builty_no, b.DC_date,
+            b.consignor.name if b.consignor else '',
+            b.station_from.name if b.station_from else '',
+            b.station_to.name if b.station_to else '',
+            b.article.name if b.article else '',
+            b.bags, b.mt, b.rate, b.freight, b.less_advance, b.balance
+        ])
+    w.writerow([])
+    w.writerow(['EXPENSE SUMMARY'])
+    builty_exp_total = builty_expenses.aggregate(s=Sum('amount'))['s'] or 0
+    truck_exp_total = truck_expenses.aggregate(s=Sum('amount'))['s'] or 0
+    diesel_exp_total = diesel_expenses.aggregate(s=Sum('amount'))['s'] or 0
+    truck_diesel_total = truck_diesel_expenses.aggregate(s=Sum('amount'))['s'] or 0
+    other_exp_total = other_expenses.aggregate(s=Sum('amount'))['s'] or 0
+    sal_total = salaries_list.aggregate(s=Sum('salary'))['s'] or 0
+    tf_total = transfer_funds_list.aggregate(s=Sum('amount'))['s'] or 0
+    w.writerow(['Builty Expense', builty_exp_total])
+    w.writerow(['Truck Expense', truck_exp_total])
+    w.writerow(['Diesel Expense', diesel_exp_total])
+    w.writerow(['Truck Diesel Expense', truck_diesel_total])
+    w.writerow(['Other Expense', other_exp_total])
+    w.writerow(['Salary', sal_total])
+    w.writerow(['Transfer Fund', tf_total])
+    w.writerow(['GRAND TOTAL EXPENSE', builty_exp_total + truck_exp_total + diesel_exp_total + truck_diesel_total + other_exp_total + sal_total + tf_total])
+    w.writerow([])
+    w.writerow(['EXPENSE DETAIL (Master View)'])
+    w.writerow(['Type', 'Entry Date', 'Amount', 'User', 'Note/Ref', 'Extra'])
+    for e in builty_expenses:
+        builty_no = e.builty.builty_no if e.builty else '-'
+        w.writerow(['builty_expense', e.entry_date, e.amount, e.user, builty_no, str(e.is_advance) + '/' + str(e.is_porch)])
+    for e in truck_expenses:
+        w.writerow(['truck_expense', e.entry_date, e.amount, e.user, e.note or '', e.truck.truck_number if e.truck else '-'])
+    for e in diesel_expenses:
+        w.writerow(['diesel_expense', e.entry_date, e.amount, e.user, e.note or '', e.builty.builty_no if e.builty else '-'])
+    for e in truck_diesel_expenses:
+        w.writerow(['truck_diesel_expense', e.entry_date, e.amount, e.user, e.note or '', e.truck.truck_number if e.truck else '-'])
+    for e in other_expenses:
+        w.writerow(['other_expense', e.entry_date, e.amount, e.user, e.note or '', e.expense_category.name if e.expense_category else '-'])
+    for e in salaries_list:
+        w.writerow(['salary', e.entry_date, e.salary, e.user, e.note or '', e.employee.name if e.employee else '-'])
+    for e in transfer_funds_list:
+        w.writerow(['transfer_fund', e.entry_date, e.amount, e.user, e.note or '', e.transfer_to_user.username if e.transfer_to_user else '-'])
+
+    response = HttpResponse(csv_buffer.getvalue(), content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="user_master_report_{}.csv"'.format(user_obj.username)
+    return response
 
 
 from django.db.models import Sum

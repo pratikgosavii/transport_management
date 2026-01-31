@@ -84,5 +84,7 @@ urlpatterns = [
     path('master-fund-report/', master_fund_report, name='master_fund_report'),
     path('master-fund-report-list/', master_fund_report_list, name='master_fund_report_list'),
 
+    path('user-master-report/', user_master_report, name='user_master_report'),
+    path('user-master-report-list/', user_master_report_list, name='user_master_report_list'),
 
 ]
