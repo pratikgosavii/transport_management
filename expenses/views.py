@@ -2535,7 +2535,7 @@ def user_master_report_list(request):
     truck_expenses_total = truck_expenses.aggregate(s=Sum('amount'))['s'] or 0
     diesel_expenses_total = diesel_expenses.aggregate(s=Sum('amount'))['s'] or 0
     truck_diesel_expenses_total = truck_diesel_expenses.aggregate(s=Sum('amount'))['s'] or 0
-    truck_diesel_liters_total = truck_diesel_expenses.aggregate(s=Sum('liter'))['s'] or 0
+    truck_diesel_liters_total = builty_list.aggregate(s=Sum('diesel'))['s'] or 0
     other_expenses_total = other_expenses.aggregate(s=Sum('amount'))['s'] or 0
     salaries_total = salaries_list.aggregate(s=Sum('salary'))['s'] or 0
     transfer_funds_total = transfer_funds_list.aggregate(s=Sum('amount'))['s'] or 0
