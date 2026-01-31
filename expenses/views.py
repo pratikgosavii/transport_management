@@ -2542,13 +2542,10 @@ def user_master_report_list(request):
     truck_expenses_total = truck_expenses.aggregate(s=Sum('amount'))['s'] or 0
     diesel_expenses_total = diesel_expenses.aggregate(s=Sum('amount'))['s'] or 0
     truck_diesel_expenses_total = truck_diesel_expenses.aggregate(s=Sum('amount'))['s'] or 0
-    # Diesel liters: use diesel_expense (builty-linked) - filter by user & entry_date like other expenses
-    truck_diesel_liters_total = diesel_expenses.aggregate(s=Sum('liter'))['s'] or 0
-    # Builties with diesel: (builty, liter) from diesel_expenses where builty exists and liter > 0
-    builty_diesel_list = []
-    for de in diesel_expenses.select_related('builty').exclude(builty__isnull=True).order_by('-entry_date'):
-        if de.builty and de.liter and float(de.liter) > 0:
-            builty_diesel_list.append((de.builty, de.liter))
+    # Diesel liters: use builty.diesel - same source as main Builty List, ensures total and popup match
+    truck_diesel_liters_total = builty_list.aggregate(s=Sum('diesel'))['s'] or 0
+    # Builties with diesel: from builty_list where diesel > 0
+    builty_diesel_list = [(b, b.diesel) for b in builty_list if b.diesel and float(b.diesel) > 0]
     other_expenses_total = other_expenses.aggregate(s=Sum('amount'))['s'] or 0
     salaries_total = salaries_list.aggregate(s=Sum('salary'))['s'] or 0
     transfer_funds_total = transfer_funds_list.aggregate(s=Sum('amount'))['s'] or 0
