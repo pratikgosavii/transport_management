@@ -260,8 +260,12 @@
                     <span class="amt">₹ {{ builty_expenses_porch_total|floatformat:2 }}</span>
                 </div>
                 <div class="umr-expense-item">
-                    <span class="name">Builty (Less Advance)</span>
-                    <span class="amt">₹ {{ builty_expenses_advance_total|floatformat:2 }}</span>
+                    <span class="name">Builty Less Adv (Own - Sahani)</span>
+                    <span class="amt">₹ {{ builty_expenses_advance_owned|floatformat:2 }}</span>
+                </div>
+                <div class="umr-expense-item">
+                    <span class="name">Builty Less Adv (Other)</span>
+                    <span class="amt">₹ {{ builty_expenses_advance_other|floatformat:2 }}</span>
                 </div>
                 <div class="umr-expense-item">
                     <span class="name">Truck Expense</span>
@@ -272,8 +276,8 @@
                     <span class="amt">₹ {{ diesel_expenses_total|floatformat:2 }}</span>
                 </div>
                 <div class="umr-expense-item">
-                    <span class="name">Truck Diesel</span>
-                    <span class="amt">₹ {{ truck_diesel_expenses_total|floatformat:2 }}</span>
+                    <span class="name">Truck Diesel (Liters)</span>
+                    <span class="amt">{{ truck_diesel_liters_total|floatformat:2 }} L</span>
                 </div>
                 <div class="umr-expense-item">
                     <span class="name">Other Expense</span>

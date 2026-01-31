@@ -2496,9 +2496,12 @@ def user_master_report_list(request):
         context['builty_expenses_total'] = 0
         context['builty_expenses_porch_total'] = 0
         context['builty_expenses_advance_total'] = 0
+        context['builty_expenses_advance_owned'] = 0
+        context['builty_expenses_advance_other'] = 0
         context['truck_expenses_total'] = 0
         context['diesel_expenses_total'] = 0
         context['truck_diesel_expenses_total'] = 0
+        context['truck_diesel_liters_total'] = 0
         context['other_expenses_total'] = 0
         context['salaries_total'] = 0
         context['transfer_funds_total'] = 0
@@ -2527,9 +2530,12 @@ def user_master_report_list(request):
     builty_expenses_total = builty_expenses.aggregate(s=Sum('amount'))['s'] or 0
     builty_expenses_porch_total = builty_expenses.filter(is_porch=True).aggregate(s=Sum('amount'))['s'] or 0
     builty_expenses_advance_total = builty_expenses.filter(is_advance=True).aggregate(s=Sum('amount'))['s'] or 0
+    builty_expenses_advance_owned = builty_expenses.filter(is_advance=True, builty__truck_owner__id=1).aggregate(s=Sum('amount'))['s'] or 0
+    builty_expenses_advance_other = builty_expenses.filter(is_advance=True).exclude(builty__truck_owner__id=1).aggregate(s=Sum('amount'))['s'] or 0
     truck_expenses_total = truck_expenses.aggregate(s=Sum('amount'))['s'] or 0
     diesel_expenses_total = diesel_expenses.aggregate(s=Sum('amount'))['s'] or 0
     truck_diesel_expenses_total = truck_diesel_expenses.aggregate(s=Sum('amount'))['s'] or 0
+    truck_diesel_liters_total = truck_diesel_expenses.aggregate(s=Sum('liter'))['s'] or 0
     other_expenses_total = other_expenses.aggregate(s=Sum('amount'))['s'] or 0
     salaries_total = salaries_list.aggregate(s=Sum('salary'))['s'] or 0
     transfer_funds_total = transfer_funds_list.aggregate(s=Sum('amount'))['s'] or 0
@@ -2581,9 +2587,12 @@ def user_master_report_list(request):
         'builty_expenses_total': builty_expenses_total,
         'builty_expenses_porch_total': builty_expenses_porch_total,
         'builty_expenses_advance_total': builty_expenses_advance_total,
+        'builty_expenses_advance_owned': builty_expenses_advance_owned,
+        'builty_expenses_advance_other': builty_expenses_advance_other,
         'truck_expenses_total': truck_expenses_total,
         'diesel_expenses_total': diesel_expenses_total,
         'truck_diesel_expenses_total': truck_diesel_expenses_total,
+        'truck_diesel_liters_total': truck_diesel_liters_total,
         'other_expenses_total': other_expenses_total,
         'salaries_total': salaries_total,
         'transfer_funds_total': transfer_funds_total,
