@@ -2544,8 +2544,8 @@ def user_master_report_list(request):
     truck_diesel_expenses_total = truck_diesel_expenses.aggregate(s=Sum('amount'))['s'] or 0
     # Diesel liters: use builty.diesel - same source as main Builty List, ensures total and popup match
     truck_diesel_liters_total = builty_list.aggregate(s=Sum('diesel'))['s'] or 0
-    # Builties with diesel: from builty_list where diesel > 0
-    builty_diesel_list = [(b, b.diesel) for b in builty_list if b.diesel and float(b.diesel) > 0]
+    # Builties with diesel: query filter
+    builty_diesel_list = builty_list.filter(diesel__gt=0)
     other_expenses_total = other_expenses.aggregate(s=Sum('amount'))['s'] or 0
     salaries_total = salaries_list.aggregate(s=Sum('salary'))['s'] or 0
     transfer_funds_total = transfer_funds_list.aggregate(s=Sum('amount'))['s'] or 0
@@ -2606,6 +2606,7 @@ def user_master_report_list(request):
         'diesel_expenses_total': diesel_expenses_total,
         'truck_diesel_expenses_total': truck_diesel_expenses_total,
         'truck_diesel_liters_total': truck_diesel_liters_total,
+        'builty_diesel_list': builty_diesel_list,
         'other_expenses_total': other_expenses_total,
         'salaries_total': salaries_total,
         'transfer_funds_total': transfer_funds_total,

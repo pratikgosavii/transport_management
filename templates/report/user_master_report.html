@@ -439,21 +439,21 @@
                             {% for item in builty_diesel_list %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td><strong>{{ item.0.builty_no }}</strong></td>
-                                <td>{{ item.0.truck_details.truck_number|default:"-" }}</td>
-                                <td>{{ item.0.DC_date|date:"d M Y" }}</td>
-                                <td>{{ item.0.consignor.name|default:"-" }}</td>
-                                <td>{{ item.0.station_from.name|default:"-" }}</td>
-                                <td>{{ item.0.station_to.name|default:"-" }}</td>
-                                <td>{{ item.0.article.name|default:"-" }}</td>
-                                <td>{{ item.0.bags|default:"-" }}</td>
-                                <td>{{ item.0.mt|default:"-" }}</td>
-                                <td>{{ item.0.rate|default:"-" }}</td>
-                                <td>{{ item.0.freight|default:"-" }}</td>
-                                <td>{{ item.0.less_advance|default:"-" }}</td>
-                                <td>{{ item.0.balance|default:"-" }}</td>
-                                <td>{{ item.1|floatformat:2 }}</td>
-                                <td><a href="{% url 'update_builty' item.0.id %}" class="btn btn-sm btn-outline-primary" target="_blank"><i class="fa fa-eye"></i> View</a></td>
+                                <td><strong>{{ item.builty_no }}</strong></td>
+                                <td>{{ item.truck_details.truck_number|default:"-" }}</td>
+                                <td>{{ item.DC_date|date:"d M Y" }}</td>
+                                <td>{{ item.consignor.name|default:"-" }}</td>
+                                <td>{{ item.station_from.name|default:"-" }}</td>
+                                <td>{{ item.station_to.name|default:"-" }}</td>
+                                <td>{{ item.article.name|default:"-" }}</td>
+                                <td>{{ item.bags|default:"-" }}</td>
+                                <td>{{ item.mt|default:"-" }}</td>
+                                <td>{{ item.rate|default:"-" }}</td>
+                                <td>{{ item.freight|default:"-" }}</td>
+                                <td>{{ item.less_advance|default:"-" }}</td>
+                                <td>{{ item.balance|default:"-" }}</td>
+                                <td>{{ item.diesel|floatformat:2 }}</td>
+                                <td><a href="{% url 'update_builty' item.id %}" class="btn btn-sm btn-outline-primary" target="_blank"><i class="fa fa-eye"></i> View</a></td>
                             </tr>
                             {% empty %}
                             <tr><td colspan="16" class="umr-empty text-muted">No builties with diesel in this date range</td></tr>
