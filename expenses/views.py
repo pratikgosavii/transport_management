@@ -2494,6 +2494,8 @@ def user_master_report_list(request):
         context['builty_count'] = 0
         context['builty_total_mt'] = 0
         context['builty_expenses_total'] = 0
+        context['builty_expenses_porch_total'] = 0
+        context['builty_expenses_advance_total'] = 0
         context['truck_expenses_total'] = 0
         context['diesel_expenses_total'] = 0
         context['truck_diesel_expenses_total'] = 0
@@ -2523,6 +2525,8 @@ def user_master_report_list(request):
 
     # Totals
     builty_expenses_total = builty_expenses.aggregate(s=Sum('amount'))['s'] or 0
+    builty_expenses_porch_total = builty_expenses.filter(is_porch=True).aggregate(s=Sum('amount'))['s'] or 0
+    builty_expenses_advance_total = builty_expenses.filter(is_advance=True).aggregate(s=Sum('amount'))['s'] or 0
     truck_expenses_total = truck_expenses.aggregate(s=Sum('amount'))['s'] or 0
     diesel_expenses_total = diesel_expenses.aggregate(s=Sum('amount'))['s'] or 0
     truck_diesel_expenses_total = truck_diesel_expenses.aggregate(s=Sum('amount'))['s'] or 0
@@ -2533,33 +2537,39 @@ def user_master_report_list(request):
     grand_total_expense = (builty_expenses_total + truck_expenses_total + diesel_expenses_total +
                           truck_diesel_expenses_total + other_expenses_total + salaries_total + transfer_funds_total)
 
-    # Combined master view (all expenses in one list, sorted by date) - each row: (type, date, amount, user, note, extra, view_url)
+    # Combined master view - each row: (type, date, amount, user, note, extra, view_url, display_label)
     combined_data = []
     for e in builty_expenses:
         builty_no = e.builty.builty_no if e.builty else '-'
         ext = 'Adv:%s Porch:%s' % (e.is_advance, e.is_porch)
+        if e.is_porch:
+            exp_type, display_label = 'builty_expense_porch', 'Builty (Porch)'
+        elif e.is_advance:
+            exp_type, display_label = 'builty_expense_advance', 'Builty (Less Advance)'
+        else:
+            exp_type, display_label = 'builty_expense', 'Builty Expense'
         view_url = reverse('update_builty', args=[e.builty.id]) if e.builty else ''
-        combined_data.append(('builty_expense', e.entry_date, e.amount, e.user, builty_no, ext, view_url))
+        combined_data.append((exp_type, e.entry_date, e.amount, e.user, builty_no, ext, view_url, display_label))
     for e in truck_expenses:
         note = (e.note or '')[:50]
         view_url = reverse('update_truck_expense', args=[e.id])
-        combined_data.append(('truck_expense', e.entry_date, e.amount, e.user, note, e.truck.truck_number if e.truck else '-', view_url))
+        combined_data.append(('truck_expense', e.entry_date, e.amount, e.user, note, e.truck.truck_number if e.truck else '-', view_url, 'Truck Expense'))
     for e in diesel_expenses:
         view_url = reverse('update_diesel_expense', args=[e.id])
-        combined_data.append(('diesel_expense', e.entry_date, e.amount, e.user, e.note or '', e.builty.builty_no if e.builty else '-', view_url))
+        combined_data.append(('diesel_expense', e.entry_date, e.amount, e.user, e.note or '', e.builty.builty_no if e.builty else '-', view_url, 'Diesel Expense'))
     for e in truck_diesel_expenses:
         view_url = reverse('update_truck_diesel_expense', args=[e.id])
-        combined_data.append(('truck_diesel_expense', e.entry_date, e.amount, e.user, e.note or '', e.truck.truck_number if e.truck else '-', view_url))
+        combined_data.append(('truck_diesel_expense', e.entry_date, e.amount, e.user, e.note or '', e.truck.truck_number if e.truck else '-', view_url, 'Truck Diesel'))
     for e in other_expenses:
         view_url = reverse('update_other_expense', args=[e.id])
-        combined_data.append(('other_expense', e.entry_date, e.amount, e.user, e.note or '', e.expense_category.name if e.expense_category else '-', view_url))
+        combined_data.append(('other_expense', e.entry_date, e.amount, e.user, e.note or '', e.expense_category.name if e.expense_category else '-', view_url, 'Other Expense'))
     for e in salaries_list:
         view_url = reverse('update_salary', args=[e.id])
-        combined_data.append(('salary', e.entry_date, e.salary, e.user, e.note or '', e.employee.name if e.employee else '-', view_url))
+        combined_data.append(('salary', e.entry_date, e.salary, e.user, e.note or '', e.employee.name if e.employee else '-', view_url, 'Salary'))
     for e in transfer_funds_list:
         to_user = e.transfer_to_user.username if e.transfer_to_user else '-'
         view_url = reverse('update_transfer_fund', args=[e.id])
-        combined_data.append(('transfer_fund', e.entry_date, e.amount, e.user, e.note or '', to_user, view_url))
+        combined_data.append(('transfer_fund', e.entry_date, e.amount, e.user, e.note or '', to_user, view_url, 'Transfer Fund'))
 
     combined_data.sort(key=lambda x: x[1])
 
@@ -2569,6 +2579,8 @@ def user_master_report_list(request):
         'builty_count': builty_count,
         'builty_total_mt': builty_total_mt,
         'builty_expenses_total': builty_expenses_total,
+        'builty_expenses_porch_total': builty_expenses_porch_total,
+        'builty_expenses_advance_total': builty_expenses_advance_total,
         'truck_expenses_total': truck_expenses_total,
         'diesel_expenses_total': diesel_expenses_total,
         'truck_diesel_expenses_total': truck_diesel_expenses_total,

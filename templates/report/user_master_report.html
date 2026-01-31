@@ -93,6 +93,8 @@
         text-transform: capitalize;
     }
     .umr-table .type-builty_expense { background: #dbeafe; color: #1d4ed8; }
+    .umr-table .type-builty_expense_porch { background: #fef3c7; color: #b45309; }
+    .umr-table .type-builty_expense_advance { background: #dbeafe; color: #1d4ed8; }
     .umr-table .type-truck_expense { background: #d1fae5; color: #047857; }
     .umr-table .type-diesel_expense { background: #fef3c7; color: #b45309; }
     .umr-table .type-truck_diesel_expense { background: #fce7f3; color: #be185d; }
@@ -204,6 +206,7 @@
                     <tr>
                         <th>#</th>
                         <th>Builty No</th>
+                        <th>Truck No</th>
                         <th>DC Date</th>
                         <th>Consignor</th>
                         <th>From</th>
@@ -223,6 +226,7 @@
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td><strong>{{ b.builty_no }}</strong></td>
+                        <td>{{ b.truck_details.truck_number|default:"-" }}</td>
                         <td>{{ b.DC_date|date:"d M Y" }}</td>
                         <td>{{ b.consignor.name|default:"-" }}</td>
                         <td>{{ b.station_from.name|default:"-" }}</td>
@@ -237,7 +241,7 @@
                         <td><a href="{% url 'update_builty' b.id %}" class="btn btn-sm btn-outline-primary" target="_blank"><i class="fa fa-eye"></i> View</a></td>
                     </tr>
                     {% empty %}
-                    <tr><td colspan="14" class="umr-empty"><i class="fa fa-inbox"></i><div class="umr-empty-msg">No builty in this date range</div></td></tr>
+                    <tr><td colspan="15" class="umr-empty"><i class="fa fa-inbox"></i><div class="umr-empty-msg">No builty in this date range</div></td></tr>
                     {% endfor %}
                 </tbody>
             </table>
@@ -252,8 +256,12 @@
         <div class="p-3">
             <div class="umr-expense-grid">
                 <div class="umr-expense-item">
-                    <span class="name">Builty Expense</span>
-                    <span class="amt">₹ {{ builty_expenses_total|floatformat:2 }}</span>
+                    <span class="name">Builty (Porch)</span>
+                    <span class="amt">₹ {{ builty_expenses_porch_total|floatformat:2 }}</span>
+                </div>
+                <div class="umr-expense-item">
+                    <span class="name">Builty (Less Advance)</span>
+                    <span class="amt">₹ {{ builty_expenses_advance_total|floatformat:2 }}</span>
                 </div>
                 <div class="umr-expense-item">
                     <span class="name">Truck Expense</span>
@@ -307,7 +315,7 @@
                     {% for row in combined_data %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
-                        <td><span class="type-badge type-{{ row.0|default:'' }}">{{ row.0 }}</span></td>
+                        <td><span class="type-badge type-{{ row.0|default:'' }}">{% if row.7 %}{{ row.7 }}{% else %}{{ row.0 }}{% endif %}</span></td>
                         <td>{{ row.1|date:"d M Y" }}</td>
                         <td class="amount">₹ {{ row.2|floatformat:2 }}</td>
                         <td>{{ row.3.username|default:"-" }}</td>
