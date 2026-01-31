@@ -326,9 +326,10 @@
                     <span class="name">Builty (Porch)</span>
                     <span class="amt">₹ {{ builty_expenses_porch_total|floatformat:2 }}</span>
                 </div>
-                <div class="umr-expense-item">
+                <div class="umr-expense-item" style="flex-direction: column; align-items: flex-start;">
                     <span class="name">Builty Less Adv (Own - Sahani)</span>
                     <span class="amt">₹ {{ builty_expenses_advance_owned|floatformat:2 }}</span>
+                    <button type="button" class="btn btn-sm btn-outline-primary mt-2" data-toggle="modal" data-target="#advanceOwnedModal" style="font-size: 11px;"><i class="fa fa-eye"></i> View</button>
                 </div>
                 <div class="umr-expense-item">
                     <span class="name">Builty Less Adv (Other)</span>
@@ -400,6 +401,66 @@
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Less Advance (Own - Sahani) -->
+<div class="modal fade" id="advanceOwnedModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl" role="document" style="max-width: 95%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Less Advance (Own - Sahani) (₹ {{ builty_expenses_advance_owned|floatformat:2 }} total)</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="table-wrap" style="max-height: 450px; overflow: auto;">
+                    <table class="table umr-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Builty No</th>
+                                <th>Truck No</th>
+                                <th>DC Date</th>
+                                <th>Consignor</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Article</th>
+                                <th>Bags</th>
+                                <th>MT</th>
+                                <th>Rate</th>
+                                <th>Freight</th>
+                                <th>Less Adv</th>
+                                <th>Balance</th>
+                                <th>View</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for e in builty_advance_owned_list %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td><strong>{{ e.builty.builty_no|default:"-" }}</strong></td>
+                                <td>{{ e.builty.truck_details.truck_number|default:"-" }}</td>
+                                <td>{{ e.builty.DC_date|date:"d M Y" }}</td>
+                                <td>{{ e.builty.consignor.name|default:"-" }}</td>
+                                <td>{{ e.builty.station_from.name|default:"-" }}</td>
+                                <td>{{ e.builty.station_to.name|default:"-" }}</td>
+                                <td>{{ e.builty.article.name|default:"-" }}</td>
+                                <td>{{ e.builty.bags|default:"-" }}</td>
+                                <td>{{ e.builty.mt|default:"-" }}</td>
+                                <td>{{ e.builty.rate|default:"-" }}</td>
+                                <td>{{ e.builty.freight|default:"-" }}</td>
+                                <td>{{ e.amount|floatformat:2 }}</td>
+                                <td>{{ e.builty.balance|default:"-" }}</td>
+                                <td><a href="{% url 'update_builty' e.builty.id %}" class="btn btn-sm btn-outline-primary" target="_blank"><i class="fa fa-eye"></i> View</a></td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="15" class="umr-empty text-muted">No less advance (own) in this date range</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -2501,6 +2501,7 @@ def user_master_report_list(request):
         context['builty_expenses_advance_total'] = 0
         context['builty_expenses_advance_owned'] = 0
         context['builty_expenses_advance_other'] = 0
+        context['builty_advance_owned_list'] = []
         context['truck_expenses_total'] = 0
         context['diesel_expenses_total'] = 0
         context['truck_diesel_expenses_total'] = 0
@@ -2539,6 +2540,7 @@ def user_master_report_list(request):
     builty_expenses_advance_total = builty_expenses.filter(is_advance=True).aggregate(s=Sum('amount'))['s'] or 0
     builty_expenses_advance_owned = builty_expenses.filter(is_advance=True, builty__truck_owner__id=1).aggregate(s=Sum('amount'))['s'] or 0
     builty_expenses_advance_other = builty_expenses.filter(is_advance=True).exclude(builty__truck_owner__id=1).aggregate(s=Sum('amount'))['s'] or 0
+    builty_advance_owned_list = builty_expenses.filter(is_advance=True, builty__truck_owner__id=1).select_related('builty').order_by('-entry_date')
     truck_expenses_total = truck_expenses.aggregate(s=Sum('amount'))['s'] or 0
     diesel_expenses_total = diesel_expenses.aggregate(s=Sum('amount'))['s'] or 0
     truck_diesel_expenses_total = truck_diesel_expenses.aggregate(s=Sum('amount'))['s'] or 0
@@ -2602,6 +2604,7 @@ def user_master_report_list(request):
         'builty_expenses_advance_total': builty_expenses_advance_total,
         'builty_expenses_advance_owned': builty_expenses_advance_owned,
         'builty_expenses_advance_other': builty_expenses_advance_other,
+        'builty_advance_owned_list': builty_advance_owned_list,
         'truck_expenses_total': truck_expenses_total,
         'diesel_expenses_total': diesel_expenses_total,
         'truck_diesel_expenses_total': truck_diesel_expenses_total,
