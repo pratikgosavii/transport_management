@@ -2543,7 +2543,12 @@ def user_master_report_list(request):
     diesel_expenses_total = diesel_expenses.aggregate(s=Sum('amount'))['s'] or 0
     truck_diesel_expenses_total = truck_diesel_expenses.aggregate(s=Sum('amount'))['s'] or 0
     truck_diesel_liters_total = builty_list.aggregate(s=Sum('diesel'))['s'] or 0
-    builty_diesel_list = builty_list.filter(diesel__gt=0).order_by('-DC_date')
+    builty_diesel_list = list(builty.objects.filter(
+        user=user_obj, deleted=False,
+        DC_date__gte=from_date, DC_date__lte=to_date
+    ).order_by('-DC_date'))
+    # Filter in Python for diesel > 0 (avoids float comparison issues in DB)
+    builty_diesel_list = [b for b in builty_diesel_list if b.diesel and float(b.diesel) > 0]
     other_expenses_total = other_expenses.aggregate(s=Sum('amount'))['s'] or 0
     salaries_total = salaries_list.aggregate(s=Sum('salary'))['s'] or 0
     transfer_funds_total = transfer_funds_list.aggregate(s=Sum('amount'))['s'] or 0

@@ -218,6 +218,7 @@
                         <th>Freight</th>
                         <th>Less Adv</th>
                         <th>Balance</th>
+                        <th>Diesel (L)</th>
                         <th>View</th>
                     </tr>
                 </thead>
@@ -238,10 +239,11 @@
                         <td>{{ b.freight|default:"-" }}</td>
                         <td>{{ b.less_advance|default:"-" }}</td>
                         <td>{{ b.balance|default:"-" }}</td>
+                        <td>{{ b.diesel|floatformat:2|default:"0.00" }}</td>
                         <td><a href="{% url 'update_builty' b.id %}" class="btn btn-sm btn-outline-primary" target="_blank"><i class="fa fa-eye"></i> View</a></td>
                     </tr>
                     {% empty %}
-                    <tr><td colspan="15" class="umr-empty"><i class="fa fa-inbox"></i><div class="umr-empty-msg">No builty in this date range</div></td></tr>
+                    <tr><td colspan="16" class="umr-empty"><i class="fa fa-inbox"></i><div class="umr-empty-msg">No builty in this date range</div></td></tr>
                     {% endfor %}
                 </tbody>
             </table>
@@ -403,14 +405,14 @@
 
 <!-- Modal: Builty with Diesel -->
 <div class="modal fade" id="dieselBuiltyModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-xl" role="document" style="max-width: 95%;">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Builty with Diesel ({{ truck_diesel_liters_total|floatformat:2 }} L total)</h5>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body p-0">
-                <div class="table-wrap" style="max-height: 400px; overflow-y: auto;">
+                <div class="table-wrap" style="max-height: 450px; overflow: auto;">
                     <table class="table umr-table mb-0">
                         <thead>
                             <tr>
@@ -418,6 +420,16 @@
                                 <th>Builty No</th>
                                 <th>Truck No</th>
                                 <th>DC Date</th>
+                                <th>Consignor</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Article</th>
+                                <th>Bags</th>
+                                <th>MT</th>
+                                <th>Rate</th>
+                                <th>Freight</th>
+                                <th>Less Adv</th>
+                                <th>Balance</th>
                                 <th>Diesel (L)</th>
                                 <th>View</th>
                             </tr>
@@ -429,11 +441,21 @@
                                 <td><strong>{{ b.builty_no }}</strong></td>
                                 <td>{{ b.truck_details.truck_number|default:"-" }}</td>
                                 <td>{{ b.DC_date|date:"d M Y" }}</td>
+                                <td>{{ b.consignor.name|default:"-" }}</td>
+                                <td>{{ b.station_from.name|default:"-" }}</td>
+                                <td>{{ b.station_to.name|default:"-" }}</td>
+                                <td>{{ b.article.name|default:"-" }}</td>
+                                <td>{{ b.bags|default:"-" }}</td>
+                                <td>{{ b.mt|default:"-" }}</td>
+                                <td>{{ b.rate|default:"-" }}</td>
+                                <td>{{ b.freight|default:"-" }}</td>
+                                <td>{{ b.less_advance|default:"-" }}</td>
+                                <td>{{ b.balance|default:"-" }}</td>
                                 <td>{{ b.diesel|floatformat:2 }}</td>
-                                <td><a href="{% url 'update_builty' b.id %}" class="btn btn-sm btn-outline-primary" target="_blank"><i class="fa fa-eye"></i></a></td>
+                                <td><a href="{% url 'update_builty' b.id %}" class="btn btn-sm btn-outline-primary" target="_blank"><i class="fa fa-eye"></i> View</a></td>
                             </tr>
                             {% empty %}
-                            <tr><td colspan="6" class="umr-empty text-muted">No builties with diesel in this date range</td></tr>
+                            <tr><td colspan="16" class="umr-empty text-muted">No builties with diesel in this date range</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
