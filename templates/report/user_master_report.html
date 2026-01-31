@@ -252,7 +252,17 @@
     <div class="umr-section">
         <div class="umr-section-title">
             <i class="fa fa-truck"></i> Porch Builty List
-            <span class="badge badge-secondary">{{ porch_builty_list|length }}</span>
+            <span class="badge badge-secondary">{{ porch_builty_count }}</span>
+        </div>
+        <div class="p-3" style="display: flex; gap: 20px; flex-wrap: wrap; border-bottom: 1px solid #e2e8f0;">
+            <div class="umr-summary-card highlight" style="margin-bottom: 0;">
+                <div class="label">Porch Builty Count</div>
+                <div class="val">{{ porch_builty_count }}</div>
+            </div>
+            <div class="umr-summary-card highlight" style="margin-bottom: 0;">
+                <div class="label">Porch Total MT</div>
+                <div class="val">{{ porch_total_mt|floatformat:2 }}</div>
+            </div>
         </div>
         <div class="umr-table-wrap">
             <table class="table umr-table">
@@ -329,9 +339,10 @@
                     <span class="name">Diesel Expense</span>
                     <span class="amt">₹ {{ diesel_expenses_total|floatformat:2 }}</span>
                 </div>
-                <div class="umr-expense-item">
+                <div class="umr-expense-item" style="flex-direction: column; align-items: flex-start;">
                     <span class="name">Truck Diesel (Liters)</span>
                     <span class="amt">{{ truck_diesel_liters_total|floatformat:2 }} L</span>
+                    <button type="button" class="btn btn-sm btn-outline-primary mt-2" data-toggle="modal" data-target="#dieselBuiltyModal" style="font-size: 11px;"><i class="fa fa-eye"></i> View</button>
                 </div>
                 <div class="umr-expense-item">
                     <span class="name">Other Expense</span>
@@ -386,6 +397,48 @@
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Builty with Diesel -->
+<div class="modal fade" id="dieselBuiltyModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Builty with Diesel ({{ truck_diesel_liters_total|floatformat:2 }} L total)</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="table-wrap" style="max-height: 400px; overflow-y: auto;">
+                    <table class="table umr-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Builty No</th>
+                                <th>Truck No</th>
+                                <th>DC Date</th>
+                                <th>Diesel (L)</th>
+                                <th>View</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for b in builty_diesel_list %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td><strong>{{ b.builty_no }}</strong></td>
+                                <td>{{ b.truck_details.truck_number|default:"-" }}</td>
+                                <td>{{ b.DC_date|date:"d M Y" }}</td>
+                                <td>{{ b.diesel|floatformat:2 }}</td>
+                                <td><a href="{% url 'update_builty' b.id %}" class="btn btn-sm btn-outline-primary" target="_blank"><i class="fa fa-eye"></i></a></td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="6" class="umr-empty text-muted">No builties with diesel in this date range</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>

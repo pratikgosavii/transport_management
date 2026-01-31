@@ -2496,6 +2496,8 @@ def user_master_report_list(request):
         context['builty_expenses_total'] = 0
         context['builty_expenses_porch_total'] = 0
         context['porch_builty_list'] = []
+        context['porch_builty_count'] = 0
+        context['porch_total_mt'] = 0
         context['builty_expenses_advance_total'] = 0
         context['builty_expenses_advance_owned'] = 0
         context['builty_expenses_advance_other'] = 0
@@ -2503,6 +2505,7 @@ def user_master_report_list(request):
         context['diesel_expenses_total'] = 0
         context['truck_diesel_expenses_total'] = 0
         context['truck_diesel_liters_total'] = 0
+        context['builty_diesel_list'] = []
         context['other_expenses_total'] = 0
         context['salaries_total'] = 0
         context['transfer_funds_total'] = 0
@@ -2531,6 +2534,8 @@ def user_master_report_list(request):
     builty_expenses_total = builty_expenses.aggregate(s=Sum('amount'))['s'] or 0
     builty_expenses_porch_total = builty_expenses.filter(is_porch=True).aggregate(s=Sum('amount'))['s'] or 0
     porch_builty_list = builty_expenses.filter(is_porch=True).order_by('entry_date')
+    porch_builty_count = porch_builty_list.count()
+    porch_total_mt = builty_expenses.filter(is_porch=True).aggregate(s=Sum('builty__mt'))['s'] or 0
     builty_expenses_advance_total = builty_expenses.filter(is_advance=True).aggregate(s=Sum('amount'))['s'] or 0
     builty_expenses_advance_owned = builty_expenses.filter(is_advance=True, builty__truck_owner__id=1).aggregate(s=Sum('amount'))['s'] or 0
     builty_expenses_advance_other = builty_expenses.filter(is_advance=True).exclude(builty__truck_owner__id=1).aggregate(s=Sum('amount'))['s'] or 0
@@ -2538,6 +2543,7 @@ def user_master_report_list(request):
     diesel_expenses_total = diesel_expenses.aggregate(s=Sum('amount'))['s'] or 0
     truck_diesel_expenses_total = truck_diesel_expenses.aggregate(s=Sum('amount'))['s'] or 0
     truck_diesel_liters_total = builty_list.aggregate(s=Sum('diesel'))['s'] or 0
+    builty_diesel_list = builty_list.filter(diesel__gt=0).order_by('-DC_date')
     other_expenses_total = other_expenses.aggregate(s=Sum('amount'))['s'] or 0
     salaries_total = salaries_list.aggregate(s=Sum('salary'))['s'] or 0
     transfer_funds_total = transfer_funds_list.aggregate(s=Sum('amount'))['s'] or 0
@@ -2589,6 +2595,8 @@ def user_master_report_list(request):
         'builty_expenses_total': builty_expenses_total,
         'builty_expenses_porch_total': builty_expenses_porch_total,
         'porch_builty_list': porch_builty_list,
+        'porch_builty_count': porch_builty_count,
+        'porch_total_mt': porch_total_mt,
         'builty_expenses_advance_total': builty_expenses_advance_total,
         'builty_expenses_advance_owned': builty_expenses_advance_owned,
         'builty_expenses_advance_other': builty_expenses_advance_other,
