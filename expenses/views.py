@@ -2542,13 +2542,15 @@ def user_master_report_list(request):
     truck_expenses_total = truck_expenses.aggregate(s=Sum('amount'))['s'] or 0
     diesel_expenses_total = diesel_expenses.aggregate(s=Sum('amount'))['s'] or 0
     truck_diesel_expenses_total = truck_diesel_expenses.aggregate(s=Sum('amount'))['s'] or 0
-    truck_diesel_liters_total = builty_list.aggregate(s=Sum('diesel'))['s'] or 0
-    builty_diesel_list = list(builty.objects.filter(
-        user=user_obj, deleted=False,
-        DC_date__gte=from_date, DC_date__lte=to_date
-    ).order_by('-DC_date'))
-    # Filter in Python for diesel > 0 (avoids float comparison issues in DB)
-    builty_diesel_list = [b for b in builty_diesel_list if b.diesel and float(b.diesel) > 0]
+    # Diesel liters: use diesel_expense (linked to builty) - that's where liters are stored
+    builty_ids = list(builty_list.values_list('id', flat=True))
+    diesel_expenses_for_builty = diesel_expense.objects.filter(builty_id__in=builty_ids).exclude(builty__isnull=True)
+    truck_diesel_liters_total = diesel_expenses_for_builty.aggregate(s=Sum('liter'))['s'] or 0
+    # Builties with diesel: (builty, liter) for template
+    builty_diesel_list = []
+    for de in diesel_expenses_for_builty.filter(liter__gt=0).select_related('builty').order_by('-builty__DC_date'):
+        if de.builty:
+            builty_diesel_list.append((de.builty, de.liter))
     other_expenses_total = other_expenses.aggregate(s=Sum('amount'))['s'] or 0
     salaries_total = salaries_list.aggregate(s=Sum('salary'))['s'] or 0
     transfer_funds_total = transfer_funds_list.aggregate(s=Sum('amount'))['s'] or 0
