@@ -2552,7 +2552,7 @@ def user_master_report_list(request):
     salaries_total = salaries_list.aggregate(s=Sum('salary'))['s'] or 0
     transfer_funds_total = transfer_funds_list.aggregate(s=Sum('amount'))['s'] or 0
 
-    grand_total_expense = (builty_expenses_total + truck_expenses_total + diesel_expenses_total +
+    grand_total_expense = (builty_expenses_total + truck_expenses_total +
                           truck_diesel_expenses_total + other_expenses_total + salaries_total + transfer_funds_total)
 
     # Combined master view - each row: (type, date, amount, user, note, extra, view_url, display_label)
