@@ -5,168 +5,176 @@
 {% block head %}
 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>    <!-- imp -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> <!-- imp -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
 
 
 <style>
+  .asas {}
+
+  select {
+    border: 1px solid gray !important;
+    border-radius: 6px !important;
+    position: relative !important;
+    width: 231px !important;
+    margin: 10px !important;
+    line-height: 6ex !important;
+    padding-left: 14px !important;
+    height: 46px !important;
+  }
 
 
+  .menu-nav {
 
-     .asas{}
+    display: flex;
+    justify-content: space-between;
+  }
 
-    select {
-        border: 1px solid gray !important;
-        border-radius: 6px !important;
-        position: relative !important;
-        width: 231px !important;
-        margin: 10px !important;
-        line-height: 6ex !important;
-        padding-left: 14px !important;
-        height: 46px !important;
-      }
+  .menu-item {
+    color: #FCC;
+    padding: 3px;
+  }
 
+  .three-dots:after {
+    cursor: pointer;
+    color: #444;
+    content: '\2807';
+    font-size: 20px;
+    padding: 0 5px;
+  }
 
-        .menu-nav {
+  a {
+    text-decoration: none;
+    color: white;
+  }
 
-            display: flex;
-            justify-content: space-between;
-          }
-
-          .menu-item {
-            color: #FCC;
-            padding: 3px;
-          }
-
-          .three-dots:after {
-            cursor: pointer;
-            color: #444;
-            content: '\2807';
-            font-size: 20px;
-            padding: 0 5px;
-          }
-
-          a {
-            text-decoration: none;
-            color: white;
-          }
-
-          a div {
-            padding: 2px;
-          }
+  a div {
+    padding: 2px;
+  }
 
 
-          .logged-in {
-            color: orange;
-            font-size: 21px;
-          }
-
-
-
-
-          .select2-container {
-             min-width: 200px !important;
-             max-width: 200px !important;
-          }
+  .logged-in {
+    color: orange;
+    font-size: 21px;
+  }
 
 
 
 
-          .selection{
-            height: 50px;
-        display: grid;
-          }
-
-
-          .select2-results__option {
-            padding-right: 20px;
-            vertical-align: middle;
-          }
-          .select2-results__option:before {
-            content: "";
-            display: inline-block;
-            position: relative;
-            height: 20px;
-            width: 20px;
-            border: 2px solid #e9e9e9;
-            border-radius: 4px;
-            background-color: #fff;
-            margin-right: 20px;
-            vertical-align: middle;
-          }
-          .select2-results__option[aria-selected=true]:before {
-            font-family:fontAwesome;
-            content: "\f00c";
-            color: #fff;
-            background-color: #f77750;
-            border: 0;
-            display: inline-block;
-            padding-left: 3px;
-          }
-          .select2-container--default .select2-results__option[aria-selected=true] {
-            background-color: #fff;
-          }
-          .select2-container--default .select2-results__option--highlighted[aria-selected] {
-            background-color: #eaeaeb;
-            color: #272727;
-          }
-          .select2-container--default .select2-selection--multiple {
-            margin-bottom: 10px;
-          }
-          .select2-container--default.select2-container--open.select2-container--below .select2-selection--multiple {
-            border-radius: 4px;
-          }
-          .select2-container--default.select2-container--focus .select2-selection--multiple {
-            border-color: #f77750;
-            border-width: 2px;
-          }
-          .select2-container--default .select2-selection--multiple {
-            border-width: 2px;
-          }
-          .select2-container--open .select2-dropdown--below {
-
-            border-radius: 6px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-            width: max-content !important;
-          }
-          .select2-selection .select2-selection--multiple:after {
-            content: 'hhghgh';
-          }
-          /* select with icons badges single*/
-          .select-icon .select2-selection__placeholder .badge {
-            display: none;
-          }
-          .select-icon .placeholder {
-            display: none;
-          }
-          .select-icon .select2-results__option:before,
-          .select-icon .select2-results__option[aria-selected=true]:before {
-            display: none !important;
-            /* content: "" !important; */
-          }
-          .select-icon  .select2-search--dropdown {
-            display: none;
-          }
-
-
-
-          .select2-container .select2-selection--single {
-            height: 38px;
-          }
-
-    .logged-in {
-        color: orange;
-        font-size: 21px;
-      }
+  .select2-container {
+    min-width: 200px !important;
+    max-width: 200px !important;
+  }
 
 
 
 
+  .selection {
+    height: 50px;
+    display: grid;
+  }
+
+
+  .select2-results__option {
+    padding-right: 20px;
+    vertical-align: middle;
+  }
+
+  .select2-results__option:before {
+    content: "";
+    display: inline-block;
+    position: relative;
+    height: 20px;
+    width: 20px;
+    border: 2px solid #e9e9e9;
+    border-radius: 4px;
+    background-color: #fff;
+    margin-right: 20px;
+    vertical-align: middle;
+  }
+
+  .select2-results__option[aria-selected=true]:before {
+    font-family: fontAwesome;
+    content: "\f00c";
+    color: #fff;
+    background-color: #f77750;
+    border: 0;
+    display: inline-block;
+    padding-left: 3px;
+  }
+
+  .select2-container--default .select2-results__option[aria-selected=true] {
+    background-color: #fff;
+  }
+
+  .select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #eaeaeb;
+    color: #272727;
+  }
+
+  .select2-container--default .select2-selection--multiple {
+    margin-bottom: 10px;
+  }
+
+  .select2-container--default.select2-container--open.select2-container--below .select2-selection--multiple {
+    border-radius: 4px;
+  }
+
+  .select2-container--default.select2-container--focus .select2-selection--multiple {
+    border-color: #f77750;
+    border-width: 2px;
+  }
+
+  .select2-container--default .select2-selection--multiple {
+    border-width: 2px;
+  }
+
+  .select2-container--open .select2-dropdown--below {
+
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    width: max-content !important;
+  }
+
+  .select2-selection .select2-selection--multiple:after {
+    content: 'hhghgh';
+  }
+
+  /* select with icons badges single*/
+  .select-icon .select2-selection__placeholder .badge {
+    display: none;
+  }
+
+  .select-icon .placeholder {
+    display: none;
+  }
+
+  .select-icon .select2-results__option:before,
+  .select-icon .select2-results__option[aria-selected=true]:before {
+    display: none !important;
+    /* content: "" !important; */
+  }
+
+  .select-icon .select2-search--dropdown {
+    display: none;
+  }
+
+
+
+  .select2-container .select2-selection--single {
+    height: 38px;
+  }
+
+  .logged-in {
+    color: orange;
+    font-size: 21px;
+  }
 </style>
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+  integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
 
 
@@ -175,433 +183,443 @@
 {% block content %}
 
 {% comment %}
-    <a href=""> <button class="btn btn-primary" type="submit">
-        Daily Report
-    </button> </a>
+<a href=""> <button class="btn btn-primary" type="submit">
+    Daily Report
+  </button> </a>
 
-    <a href=""> <button class="btn btn-primary" type="submit">
-        Monthly Report
-    </button> </a><br><br> {% endcomment %}
+<a href=""> <button class="btn btn-primary" type="submit">
+    Monthly Report
+  </button> </a><br><br> {% endcomment %}
 
-    <!-- Widgets  -->
+<!-- Widgets  -->
 
-    <div class="container" style="margin: 0;">
-      {% csrf_token %}
+<div class="container" style="margin: 0;">
+  {% csrf_token %}
 
-      <label for="financialYear">Financial Year:</label>
+  <label for="financialYear">Financial Year:</label>
 
-      <select id="financialYear">
-        <option value="2023-2024" {% if financial_year == '2023-2024' %}selected{% endif %}>2023-2024</option>
-        <option value="2024-2025" {% if financial_year == '2024-2025' %}selected{% endif %}>2024-2025</option>
-        <option value="2025-2026" {% if financial_year == '2025-2026' %}selected{% endif %}>2025-2026</option>
-    </select>
+  <select id="financialYear">
+    <option value="2023-2024" {% if financial_year=='2023-2024' %}selected{% endif %}>2023-2024</option>
+    <option value="2024-2025" {% if financial_year=='2024-2025' %}selected{% endif %}>2024-2025</option>
+    <option value="2025-2026" {% if financial_year=='2025-2026' %}selected{% endif %}>2025-2026</option>
+    <option value="2026-2027" {% if financial_year=='2026-2027' %}selected{% endif %}>2026-2027</option>
+  </select>
 
-      <button id="submitBtn">Submit</button>
+  <button id="submitBtn">Submit</button>
+</div>
+
+
+<div class="row">
+  <div class="col-lg-3 col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <div class="stat-widget-five">
+          <div class="stat-icon dib flat-color-1">
+            <i class="fa fa-cart-plus"></i>
+          </div>
+          <div class="stat-content">
+            <div class="text-left dib">
+              <div class="stat-text"><span class="count">{{ builty_count }}</span></div>
+              <div class="stat-heading">Builty</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 
-
-    <div class="row">
-        <div class="col-lg-3 col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <div class="stat-widget-five">
-                        <div class="stat-icon dib flat-color-1">
-                            <i class="fa fa-cart-plus"></i>
-                        </div>
-                        <div class="stat-content">
-                            <div class="text-left dib">
-                                <div class="stat-text"><span class="count">{{ builty_count }}</span></div>
-                                <div class="stat-heading">Builty</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  <div class="col-lg-3 col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <div class="stat-widget-five">
+          <div class="stat-icon dib flat-color-2">
+            <i class="fa fa fa-truck"></i>
+          </div>
+          <div class="stat-content">
+            <div class="text-left dib">
+              <div class="stat-text"><span class="count">{{ truck_count }}</span></div>
+              <div class="stat-heading">Truck</div>
             </div>
+          </div>
         </div>
-
-        <div class="col-lg-3 col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <div class="stat-widget-five">
-                        <div class="stat-icon dib flat-color-2">
-                            <i class="fa fa fa-truck"></i>
-                        </div>
-                        <div class="stat-content">
-                            <div class="text-left dib">
-                                <div class="stat-text"><span class="count">{{ truck_count }}</span></div>
-                                <div class="stat-heading">Truck</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <div class="stat-widget-five">
-                        <div class="stat-icon dib flat-color-4">
-                            <i class="fa fa-users"></i>
-                        </div>
-                        <div class="stat-content">
-                            <div class="text-left dib">
-                                <div class="stat-text"><span class="count">{{ user_count }}</span></div>
-                                <div class="stat-heading">User</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
-    <!-- /Widgets -->
+  </div>
+
+  <div class="col-lg-3 col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <div class="stat-widget-five">
+          <div class="stat-icon dib flat-color-4">
+            <i class="fa fa-users"></i>
+          </div>
+          <div class="stat-content">
+            <div class="text-left dib">
+              <div class="stat-text"><span class="count">{{ user_count }}</span></div>
+              <div class="stat-heading">User</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Widgets -->
 
 
 {% if request.user.is_superuser %}
 
 <p>
 
-    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-      Filters
-    </button>
-  </p>
-  <div class="collapse" id="collapseExample">
-    <div class="card card-body" style="width: fit-content;">
+  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample"
+    aria-expanded="false" aria-controls="collapseExample">
+    Filters
+  </button>
+</p>
+<div class="collapse" id="collapseExample">
+  <div class="card card-body" style="width: fit-content;">
 
 
-        <form method="get" action="" style="padding:15px;">
+    <form method="get" action="" style="padding:15px;">
 
-            {% csrf_token %}
+      {% csrf_token %}
 
-            <div class="form-group" style="display: flex;
+      <div class="form-group" style="display: flex;
             gap: 14px;">
 
 
 
-            <label for="name" class="control-label mb-1" style="margin-left : 0px;">Station From</label>
-                    {{ builty_filter.form.station_from }}
+        <label for="name" class="control-label mb-1" style="margin-left : 0px;">Station From</label>
+        {{ builty_filter.form.station_from }}
 
 
 
-                    <label for="name" class="control-label mb-1" style="margin-left : 0px;">Truck No</label>
+        <label for="name" class="control-label mb-1" style="margin-left : 0px;">Truck No</label>
 
-                    <select class="sele" name="truck_details" id="truck_details" multiple="multiple">
-                      {% for id, name in form.truck_details.field.choices %}
+        <select class="sele" name="truck_details" id="truck_details" multiple="multiple">
+          {% for id, name in form.truck_details.field.choices %}
 
-                      {% if name != '---------' %}
-                      <option value="{{ id }}"> {{ name }} </option>
-                      {% endif %}
-        {% endfor %}
+          {% if name != '---------' %}
+          <option value="{{ id }}"> {{ name }} </option>
+          {% endif %}
+          {% endfor %}
 
-                    </select>
-
-
-                </div>
+        </select>
 
 
-                <div class-"form-group" style="display: flex;gap: 14px;">
-
-                    <label for="name" class="control-label mb-1" style="margin-left : 0px;">Truck Owner</label>
-                    <select class="sele" name="truck_owner" id="truck_owner" multiple="multiple">
-                      {% for id, name in form.truck_owner.field.choices %}
-
-                      {% if name != '---------' %}
-            <option value="{{ id }}"> {{ name }} </option>
-            {% endif %}
-        {% endfor %}
-
-                    </select>
-
-                    <label for="name" class="control-label mb-1" style="margin-left : 0px;">Consginor</label>
-                    <select class="sele" name="consignor" id="consignor" multiple="multiple">
-                      {% for id, name in form.consignor.field.choices %}
-
-                      {% if name != '---------' %}
-            <option value="{{ id }}"> {{ name }} </option>
-            {% endif %}
-
-        {% endfor %}
-
-                    </select>
+      </div>
 
 
-                  <label for="name" class="control-label mb-1" style="margin-left : 0px;">User</label>
-                  {{ builty_filter.form.user }}
+      <div class-"form-group" style="display: flex;gap: 14px;">
+
+        <label for="name" class="control-label mb-1" style="margin-left : 0px;">Truck Owner</label>
+        <select class="sele" name="truck_owner" id="truck_owner" multiple="multiple">
+          {% for id, name in form.truck_owner.field.choices %}
+
+          {% if name != '---------' %}
+          <option value="{{ id }}"> {{ name }} </option>
+          {% endif %}
+          {% endfor %}
+
+        </select>
+
+        <label for="name" class="control-label mb-1" style="margin-left : 0px;">Consginor</label>
+        <select class="sele" name="consignor" id="consignor" multiple="multiple">
+          {% for id, name in form.consignor.field.choices %}
+
+          {% if name != '---------' %}
+          <option value="{{ id }}"> {{ name }} </option>
+          {% endif %}
+
+          {% endfor %}
+
+        </select>
 
 
-                </div><br>
+        <label for="name" class="control-label mb-1" style="margin-left : 0px;">User</label>
+        {{ builty_filter.form.user }}
 
-                    <div class-"form-group" style="display: flex;
+
+      </div><br>
+
+      <div class-"form-group" style="display: flex;
                     gap: 14px;">
 
-                    <label for="name" class="control-label mb-1" style="margin-left : 0px;">Builty Date From</label>
-                    {{ builty_filter.form.DC_date_start__date }}
+        <label for="name" class="control-label mb-1" style="margin-left : 0px;">Builty Date From</label>
+        {{ builty_filter.form.DC_date_start__date }}
 
 
 
-                <label for="name" class="control-label mb-1">Builty Date To</label>
-                {{ builty_filter.form.DC_date_end__date }}
+        <label for="name" class="control-label mb-1">Builty Date To</label>
+        {{ builty_filter.form.DC_date_end__date }}
 
 
 
 
 
-            </div><br>
+      </div><br>
 
-                    <div class-"form-group" style="display: flex;
+      <div class-"form-group" style="display: flex;
                     gap: 14px;">
 
-                    <label for="name" class="control-label mb-1" style="margin-left : 0px;">Challan Date From</label>
-                    {{ builty_filter.form.challan_date_start__date }}
+        <label for="name" class="control-label mb-1" style="margin-left : 0px;">Challan Date From</label>
+        {{ builty_filter.form.challan_date_start__date }}
 
 
 
-                <label for="name" class="control-label mb-1">Challan Date To</label>
-                {{ builty_filter.form.challan_date_end__date }}
+        <label for="name" class="control-label mb-1">Challan Date To</label>
+        {{ builty_filter.form.challan_date_end__date }}
 
 
 
 
 
-            </div>
+      </div>
 
-            <br>
+      <br>
 
-            <a href="{% url 'dashboard' %}"><button class="btn btn-primary" type="button" > Reset </button></a>
+      <a href="{% url 'dashboard' %}"><button class="btn btn-primary" type="button"> Reset </button></a>
 
-            <button class="btn btn-primary" type="submit" > Submit </button>
+      <button class="btn btn-primary" type="submit"> Submit </button>
 
-        </form>
-    </div>
+    </form>
   </div>
+</div>
 
 
 {% endif %}
 
-    <div class="clearfix"></div>
+<div class="clearfix"></div>
 
 
-    {% if data %}
+{% if data %}
 
-    <!-- Orders -->
-    <div class="orders">
-        <div class="row">
-            <div class="col-xl-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="box-title">Master list </h4>
-                    </div>
-                    <div class="card-body--">
-                        <div class="table-stats order-table ov-h">
-                            <table class="table ">
-                                <thead>
-                                    <tr>
-                                        <th class="serial">#</th>
-                                        <th>Builty No</th>
-                                        <th>User</th>
-                                        <th>Date</th>
-                                        <th>Truck No</th>
-                                        <th>Owner</th>
-                                        <th>From</th>
-                                        <th>To</th>
-                                        <th>Taluka</th>
-                                        <th>District</th>
-                                        <th>Consignor</th>
-                                        <th>Consigne</th>
-                                        <th>Account</th>
-                                        <th>Article</th>
-                                        <th>MT</th>
-                                        <th>Rate</th>
-                                        <th>Freight</th>
-                                        <th>Advance</th>
-                                        <th>Balance</th>
-
-                                        <th>#</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% if data %}
-                                    {% for i in data %}
-
-                                    {% if i.deleted == True %}
-
-                                    <tr style="background: #ffb2bc;">
-
-                                        <td class="serial">{{ forloop.counter }}</td>
-
-                                        <td>{{ i.builty_no }}</td>
-                                        <td>{{ i.user }}</td>
-                                        <td>{{ i.DC_date }}</td>
-                                        <td>{{ i.truck_details }}</td>
-                                        <td>{{ i.truck_owner }}</td>
-                                        <td>{{ i.station_from }}</td>
-                                        <td>{{ i.station_to }}</td>
-                                        <td>{{ i.taluka }}</td>
-                                        <td>{{ i.district }}</td>
-                                        <td>{{ i.consignor }}</td>
-                                        <td>{{ i.consignee }}</td>
-                                        <td>{{ i.onaccount }}</td>
-                                        <td>{{ i.article }}</td>
-                                        <td>{{ i.mt }}</td>
-                                        <td>{{ i.rate }}</td>
-                                        <td>{{ i.freight }}</td>
-                                        <td>{{ i.less_advance }}</td>
-                                        <td>{{ i.balance }}</td>
-
-
-                                        </td>
-                                    </tr>
-
-                                    {% elif i.has_request.all.0 %}
-
-                                    <tr style="background: #c1cfff;">
-
-                                        <td class="serial">{{ forloop.counter }}</td>
-
-                                        <td>{{ i.builty_no }}</td>
-                                        <td>{{ i.user }}</td>
-                                        <td>{{ i.DC_date }}</td>
-                                        <td>{{ i.truck_details }}</td>
-                                        <td>{{ i.truck_owner }}</td>
-                                        <td>{{ i.station_from }}</td>
-                                        <td>{{ i.station_to }}</td>
-                                        <td>{{ i.taluka }}</td>
-                                        <td>{{ i.district }}</td>
-                                        <td>{{ i.consignor }}</td>
-                                        <td>{{ i.consignee }}</td>
-                                        <td>{{ i.onaccount }}</td>
-                                        <td>{{ i.article }}</td>
-                                        <td>{{ i.mt }}</td>
-                                        <td>{{ i.rate }}</td>
-                                        <td>{{ i.freight }}</td>
-                                        <td>{{ i.less_advance }}</td>
-                                        <td>{{ i.balance }}</td>
-
-                                        </td>
-                                    </tr>
-
-                                    {% else %}
-
-                                    <tr>
-
-                                        <td class="serial" style="">{{ forloop.counter }}</td>
-
-                                        <td>{{ i.builty_no }}</td>
-                                        <td>{{ i.user }}</td>
-                                        <td>{{ i.DC_date }}</td>
-                                        <td>{{ i.truck_details }}</td>
-                                        <td>{{ i.truck_owner }}</td>
-                                        <td>{{ i.station_from }}</td>
-                                        <td>{{ i.station_to }}</td>
-                                        <td>{{ i.taluka }}</td>
-                                        <td>{{ i.district }}</td>
-                                        <td>{{ i.consignor }}</td>
-                                        <td>{{ i.consignee }}</td>
-                                        <td>{{ i.onaccount }}</td>
-                                        <td>{{ i.article }}</td>
-                                        <td>{{ i.mt }}</td>
-                                        <td>{{ i.rate }}</td>
-                                        <td>{{ i.freight }}</td>
-                                        <td>{{ i.less_advance }}</td>
-                                        <td>{{ i.balance }}</td>
-
-                                        </td>
-                                    </tr>
-
-                                    {% endif%}
-
-
-                                    {% endfor %}
-                                    {% else %}
-                                        <tr><td>No Order Data</td></tr>
-                                    {% endif %}
-                                </tbody>
-                            </table>
-
-
-                            <footer class="site-footer">
-                                <div class="footer-inner bg-white" style="float: right;">
-                                    <div class="row" style="float: right;">
-                                        <p style="font-weight: 700;
-                                        color: black;;margin-left:30px;border : 1px solid grey;padding : 10px;"> Total MT : {{ total_mt }} RS</p>
-                                        <p style="font-weight: 700;
-                                        color: black;;margin-left:30px;border : 1px solid grey;padding : 10px;"> Total Freight : {{ total_freight }} </p>
-                                        <p style="font-weight: 700;
-                                        color: black;margin-left:30px;border : 1px solid grey;padding : 10px;">  Advance : {{ total_advance }} RS</p><br>
-                                        <p style="font-weight: 700;
-                                        color: black;;margin-left:30px;border : 1px solid grey;padding : 10px;">  Balance : {{ total_balance }} RS</p>
-                                      </div>
-
-
-                                    <div class="row" style="float: left; width : 100%">
-
-
-                                    <button style="background-color: #05386b; border: green; padding: 10px;border-radius: 12px;" class="btn-info" onclick="mass_edit_request();" > Submit </button>
-
-                                  </div>
-                                  </div>
-                            </footer>
-
-                            <br>
-                            <nav aria-label="Page navigation example">
-                              <ul class="pagination justify-content-center">
-                              {% if data.has_previous %}
-                                  <li class="page-item">
-                                  <a class="page-link" onclick="pagination({{ data.previous_page_number }})">Previous</a>
-                                </li>
-                              {% else %}
-                                  <li class="page-item disabled">
-                                  <a class="page-link" href="#" tabindex="-1" aria-disabled="True">Previous</a>
-                                </li>
-                              {% endif %}
-
-                              {% if data.number|add:'-4' > 1 %}
-                                  <li class="page-item"><a class="page-link" onclick="pagination({{ data.number }})">&hellip;</a></li>
-                              {% endif %}
-
-                              {% for i in data.paginator.page_range %}
-                                  {% if data.number == i %}
-                                      <li class="page-item active" aria-current="page">
-                                    <span class="page-link">
-                                      {{ i }}
-                                      <span class="sr-only">(current)</span>
-                                    </span>
-                                  </li>
-                                  {% elif i > data.number|add:'-5' and i < data.number|add:'5' %}
-                                       <li class="page-item"><a class="page-link" onclick="pagination({{ i }})">{{ i }}</a></li>
-                                  {% endif %}
-                              {% endfor %}
-
-                              {% if data.paginator.num_pages > data.number|add:'4' %}
-                                 <li class="page-item"><a class="page-link" onclick="pagination({{ data.number|add:'5' }})">&hellip;</a></li>
-                              {% endif %}
-
-                              {% if data.has_next %}
-                                  <li class="page-item">
-                                  <a class="page-link" onclick="pagination({{ data.next_page_number }}">Next</a>
-                                </li>
-                              {% else %}
-                                  <li class="page-item disabled">
-                                  <a class="page-link" href="#" tabindex="-1" aria-disabled="True">Next</a>
-                                </li>
-                              {% endif %}
-                            </ul>
-                          </nav>
-
-
-
-                        </div> <!-- /.table-stats -->
-                    </div>
-                </div> <!-- /.card -->
-            </div>  <!-- /.col-lg-8 -->
-
-
+<!-- Orders -->
+<div class="orders">
+  <div class="row">
+    <div class="col-xl-12">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="box-title">Master list </h4>
         </div>
-    </div>
-    <!-- /.orders -->
+        <div class="card-body--">
+          <div class="table-stats order-table ov-h">
+            <table class="table ">
+              <thead>
+                <tr>
+                  <th class="serial">#</th>
+                  <th>Builty No</th>
+                  <th>User</th>
+                  <th>Date</th>
+                  <th>Truck No</th>
+                  <th>Owner</th>
+                  <th>From</th>
+                  <th>To</th>
+                  <th>Taluka</th>
+                  <th>District</th>
+                  <th>Consignor</th>
+                  <th>Consigne</th>
+                  <th>Account</th>
+                  <th>Article</th>
+                  <th>MT</th>
+                  <th>Rate</th>
+                  <th>Freight</th>
+                  <th>Advance</th>
+                  <th>Balance</th>
 
-    {% endif %}
+                  <th>#</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if data %}
+                {% for i in data %}
+
+                {% if i.deleted == True %}
+
+                <tr style="background: #ffb2bc;">
+
+                  <td class="serial">{{ forloop.counter }}</td>
+
+                  <td>{{ i.builty_no }}</td>
+                  <td>{{ i.user }}</td>
+                  <td>{{ i.DC_date }}</td>
+                  <td>{{ i.truck_details }}</td>
+                  <td>{{ i.truck_owner }}</td>
+                  <td>{{ i.station_from }}</td>
+                  <td>{{ i.station_to }}</td>
+                  <td>{{ i.taluka }}</td>
+                  <td>{{ i.district }}</td>
+                  <td>{{ i.consignor }}</td>
+                  <td>{{ i.consignee }}</td>
+                  <td>{{ i.onaccount }}</td>
+                  <td>{{ i.article }}</td>
+                  <td>{{ i.mt }}</td>
+                  <td>{{ i.rate }}</td>
+                  <td>{{ i.freight }}</td>
+                  <td>{{ i.less_advance }}</td>
+                  <td>{{ i.balance }}</td>
+
+
+                  </td>
+                </tr>
+
+                {% elif i.has_request.all.0 %}
+
+                <tr style="background: #c1cfff;">
+
+                  <td class="serial">{{ forloop.counter }}</td>
+
+                  <td>{{ i.builty_no }}</td>
+                  <td>{{ i.user }}</td>
+                  <td>{{ i.DC_date }}</td>
+                  <td>{{ i.truck_details }}</td>
+                  <td>{{ i.truck_owner }}</td>
+                  <td>{{ i.station_from }}</td>
+                  <td>{{ i.station_to }}</td>
+                  <td>{{ i.taluka }}</td>
+                  <td>{{ i.district }}</td>
+                  <td>{{ i.consignor }}</td>
+                  <td>{{ i.consignee }}</td>
+                  <td>{{ i.onaccount }}</td>
+                  <td>{{ i.article }}</td>
+                  <td>{{ i.mt }}</td>
+                  <td>{{ i.rate }}</td>
+                  <td>{{ i.freight }}</td>
+                  <td>{{ i.less_advance }}</td>
+                  <td>{{ i.balance }}</td>
+
+                  </td>
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                  <td class="serial" style="">{{ forloop.counter }}</td>
+
+                  <td>{{ i.builty_no }}</td>
+                  <td>{{ i.user }}</td>
+                  <td>{{ i.DC_date }}</td>
+                  <td>{{ i.truck_details }}</td>
+                  <td>{{ i.truck_owner }}</td>
+                  <td>{{ i.station_from }}</td>
+                  <td>{{ i.station_to }}</td>
+                  <td>{{ i.taluka }}</td>
+                  <td>{{ i.district }}</td>
+                  <td>{{ i.consignor }}</td>
+                  <td>{{ i.consignee }}</td>
+                  <td>{{ i.onaccount }}</td>
+                  <td>{{ i.article }}</td>
+                  <td>{{ i.mt }}</td>
+                  <td>{{ i.rate }}</td>
+                  <td>{{ i.freight }}</td>
+                  <td>{{ i.less_advance }}</td>
+                  <td>{{ i.balance }}</td>
+
+                  </td>
+                </tr>
+
+                {% endif%}
+
+
+                {% endfor %}
+                {% else %}
+                <tr>
+                  <td>No Order Data</td>
+                </tr>
+                {% endif %}
+              </tbody>
+            </table>
+
+
+            <footer class="site-footer">
+              <div class="footer-inner bg-white" style="float: right;">
+                <div class="row" style="float: right;">
+                  <p style="font-weight: 700;
+                                        color: black;;margin-left:30px;border : 1px solid grey;padding : 10px;"> Total
+                    MT : {{ total_mt }} RS</p>
+                  <p style="font-weight: 700;
+                                        color: black;;margin-left:30px;border : 1px solid grey;padding : 10px;"> Total
+                    Freight : {{ total_freight }} </p>
+                  <p style="font-weight: 700;
+                                        color: black;margin-left:30px;border : 1px solid grey;padding : 10px;"> Advance
+                    : {{ total_advance }} RS</p><br>
+                  <p style="font-weight: 700;
+                                        color: black;;margin-left:30px;border : 1px solid grey;padding : 10px;">
+                    Balance : {{ total_balance }} RS</p>
+                </div>
+
+
+                <div class="row" style="float: left; width : 100%">
+
+
+                  <button style="background-color: #05386b; border: green; padding: 10px;border-radius: 12px;"
+                    class="btn-info" onclick="mass_edit_request();"> Submit </button>
+
+                </div>
+              </div>
+            </footer>
+
+            <br>
+            <nav aria-label="Page navigation example">
+              <ul class="pagination justify-content-center">
+                {% if data.has_previous %}
+                <li class="page-item">
+                  <a class="page-link" onclick="pagination({{ data.previous_page_number }})">Previous</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                  <a class="page-link" href="#" tabindex="-1" aria-disabled="True">Previous</a>
+                </li>
+                {% endif %}
+
+                {% if data.number|add:'-4' > 1 %}
+                <li class="page-item"><a class="page-link" onclick="pagination({{ data.number }})">&hellip;</a></li>
+                {% endif %}
+
+                {% for i in data.paginator.page_range %}
+                {% if data.number == i %}
+                <li class="page-item active" aria-current="page">
+                  <span class="page-link">
+                    {{ i }}
+                    <span class="sr-only">(current)</span>
+                  </span>
+                </li>
+                {% elif i > data.number|add:'-5' and i < data.number|add:'5' %} <li class="page-item"><a
+                    class="page-link" onclick="pagination({{ i }})">{{ i }}</a></li>
+                  {% endif %}
+                  {% endfor %}
+
+                  {% if data.paginator.num_pages > data.number|add:'4' %}
+                  <li class="page-item"><a class="page-link"
+                      onclick="pagination({{ data.number|add:'5' }})">&hellip;</a></li>
+                  {% endif %}
+
+                  {% if data.has_next %}
+                  <li class="page-item">
+                    <a class="page-link" onclick="pagination({{ data.next_page_number }}">Next</a>
+                  </li>
+                  {% else %}
+                  <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="True">Next</a>
+                  </li>
+                  {% endif %}
+              </ul>
+            </nav>
+
+
+
+          </div> <!-- /.table-stats -->
+        </div>
+      </div> <!-- /.card -->
+    </div> <!-- /.col-lg-8 -->
+
+
+  </div>
+</div>
+<!-- /.orders -->
+
+{% endif %}
 
 
 
@@ -613,129 +631,133 @@
 
 
 
-    $('.sele').select2();
+  $('.sele').select2();
 
-    $('#truck_owner').select2({closeOnSelect : false,
-			placeholder : "Placeholder",
-			allowHtml: true,
-			allowClear: true,
-			tags: true} );
+  $('#truck_owner').select2({
+    closeOnSelect: false,
+    placeholder: "Placeholder",
+    allowHtml: true,
+    allowClear: true,
+    tags: true
+  });
 
-    $('#truck_details').select2({closeOnSelect : false,
-			placeholder : "Placeholder",
-			allowHtml: true,
-			allowClear: true,
-			tags: true} );
+  $('#truck_details').select2({
+    closeOnSelect: false,
+    placeholder: "Placeholder",
+    allowHtml: true,
+    allowClear: true,
+    tags: true
+  });
+
+  url = new URL(window.location.href);
+  console.log(url)
+
+  truck_details_options = url.searchParams.getAll("truck_details");
+
+  $("#truck_details").val(truck_details_options).trigger('change');
+
+  truck_owner_options = url.searchParams.getAll("truck_owner");
+
+  $("#truck_owner").val(truck_owner_options).trigger('change');
+
+  consignor_options = url.searchParams.getAll("consignor");
+
+  $("#consignor").val(consignor_options).trigger('change');
+
+
+
+
+
+  function pagination(page_no) {
+
 
     url = new URL(window.location.href);
-    console.log(url)
 
-    truck_details_options = url.searchParams.getAll("truck_details");
+    var search_params = url.searchParams;
 
-    $("#truck_details").val(truck_details_options).trigger('change');
+    // new value of "id" is set to "101"
+    search_params.set('page', page_no);
 
-    truck_owner_options = url.searchParams.getAll("truck_owner");
+    // change the search property of the main url
+    url.search = search_params.toString();
 
-    $("#truck_owner").val(truck_owner_options).trigger('change');
+    // the new url string
+    var new_url = url.toString();
 
-    consignor_options = url.searchParams.getAll("consignor");
+    // output : http://demourl.com/path?id=101&topic=main
+    window.location.href = new_url;
 
-    $("#consignor").val(consignor_options).trigger('change');
-
-
-
-
-
-    function pagination(page_no){
-
-
-        url = new URL(window.location.href);
-
-        var search_params = url.searchParams;
-
-        // new value of "id" is set to "101"
-        search_params.set('page', page_no);
-
-        // change the search property of the main url
-        url.search = search_params.toString();
-
-        // the new url string
-        var new_url = url.toString();
-
-        // output : http://demourl.com/path?id=101&topic=main
-        window.location.href = new_url;
-
-        window.location.search = jQuery.query.set("page", page_no);
+    window.location.search = jQuery.query.set("page", page_no);
 
 
 
-    }
-
-
-    const financialYearSelect = document.getElementById('financialYear');
-const submitBtn = document.getElementById('submitBtn');
-
-// Function to get financial years dynamically
-function getFinancialYears() {
-  const today = new Date();
-  const currentYear = today.getFullYear();
-  let startYear, endYear;
-
-  if (today.getMonth() >= 3) {  // April to December
-    startYear = currentYear;
-    endYear = currentYear + 1;
-  } else {  // January to March
-    startYear = currentYear - 1;
-    endYear = currentYear;
   }
 
-  return [startYear + '-' + endYear, (endYear - 1) + '-' + endYear];
-}
 
-// Function to populate financial year options dynamically
+  const financialYearSelect = document.getElementById('financialYear');
+  const submitBtn = document.getElementById('submitBtn');
 
+  // Function to get financial years dynamically
+  function getFinancialYears() {
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    let startYear, endYear;
 
-
-// Invoke the function to populate financial years
-
-// Event listener for submit button click
-submitBtn.addEventListener('click', function() {
-  const selectedYear = financialYearSelect.value;
-  // Get CSRF token
-
-
-  $.ajax({                       // initialize an AJAX request
-    type: "POST",
-    url: "{% url 'save_financial_year' %}",
-    data: {
-      'financial_year' : selectedYear,       // add the country id to the POST parameters
-        'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
-    },
-    success: function (data) {   // `data` is from `get_topics_ajax` view function
-      var financialYear = data.data;  // Assuming the response contains the financial year
-
-      a = document.getElementById("financial_year")
-      a.innerHTML = 'Financial Year :- ' +  financialYear
+    if (today.getMonth() >= 3) {  // April to December
+      startYear = currentYear;
+      endYear = currentYear + 1;
+    } else {  // January to March
+      startYear = currentYear - 1;
+      endYear = currentYear;
     }
-});
-});
+
+    return [startYear + '-' + endYear, (endYear - 1) + '-' + endYear];
+  }
+
+  // Function to populate financial year options dynamically
 
 
 
-    function getCookie(name) {
-      let cookieValue = null;
-      if (document.cookie && document.cookie !== '') {
-          const cookies = document.cookie.split(';');
-          for (let i = 0; i < cookies.length; i++) {
-              const cookie = cookies[i].trim();
-              // Check if this cookie name matches the name parameter
-              if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                  break;
-              }
-          }
+  // Invoke the function to populate financial years
+
+  // Event listener for submit button click
+  submitBtn.addEventListener('click', function () {
+    const selectedYear = financialYearSelect.value;
+    // Get CSRF token
+
+
+    $.ajax({                       // initialize an AJAX request
+      type: "POST",
+      url: "{% url 'save_financial_year' %}",
+      data: {
+        'financial_year': selectedYear,       // add the country id to the POST parameters
+        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+      },
+      success: function (data) {   // `data` is from `get_topics_ajax` view function
+        var financialYear = data.data;  // Assuming the response contains the financial year
+
+        a = document.getElementById("financial_year")
+        a.innerHTML = 'Financial Year :- ' + financialYear
       }
-      return cookieValue;
+    });
+  });
+
+
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        // Check if this cookie name matches the name parameter
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
   }
 
 
