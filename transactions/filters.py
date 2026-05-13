@@ -123,8 +123,7 @@ class builty_filter2(django_filters.FilterSet):
             })
     )
     builty_no = CharFilter(
-        field_name='builty_no',
-        lookup_expr='icontains',  # Case-insensitive partial match
+        method='filter_exact_builty_no',
         widget=forms.TextInput(
             attrs={
                 'class' : 'form-control date_css',
@@ -132,6 +131,10 @@ class builty_filter2(django_filters.FilterSet):
                 'placeholder': 'Enter builty number...'
             })
     )
+
+    def filter_exact_builty_no(self, queryset, name, value):
+        from django.db.models import Q
+        return queryset.filter(Q(builty_no=value) | Q(builty_no__endswith=f"-{value}"))
 
     
 
@@ -306,8 +309,7 @@ class builty_filter(django_filters.FilterSet):
             })
     )
     builty_no = CharFilter(
-        field_name='builty_no',
-        lookup_expr='icontains',  # Case-insensitive partial match
+        method='filter_exact_builty_no',
         widget=forms.TextInput(
             attrs={
                 'class' : 'form-control date_css',
@@ -315,6 +317,10 @@ class builty_filter(django_filters.FilterSet):
                 'placeholder': 'Enter builty number...'
             })
     )
+
+    def filter_exact_builty_no(self, queryset, name, value):
+        from django.db.models import Q
+        return queryset.filter(Q(builty_no=value) | Q(builty_no__endswith=f"-{value}"))
 
     truck_owner = django_filters.ModelChoiceFilter(
         queryset=truck_owner.objects.all(),
@@ -485,8 +491,7 @@ class ack_filter(django_filters.FilterSet):
     )
 
     builty__builty_no = CharFilter(
-        field_name='builty__builty_no',
-        lookup_expr='icontains',  # Case-insensitive partial match
+        method='filter_exact_builty__builty_no',
         widget=forms.TextInput(
             attrs={
                 'class' : 'form-control date_css',
@@ -494,6 +499,10 @@ class ack_filter(django_filters.FilterSet):
                 'placeholder': 'Enter builty number...'
             })
     )
+
+    def filter_exact_builty__builty_no(self, queryset, name, value):
+        from django.db.models import Q
+        return queryset.filter(Q(builty__builty_no=value) | Q(builty__builty_no__endswith=f"-{value}"))
 
 
     builty__DC_date_start__date = DateFilter(field_name="builty__DC_date", lookup_expr='gte', widget=forms.DateInput(
